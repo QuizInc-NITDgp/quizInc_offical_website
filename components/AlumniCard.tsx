@@ -18,43 +18,44 @@ function InstagramIcon({ className }: { className?: string }) {
   );
 }
 
-function getInitials(name?: string): string {
-  if (!name || typeof name !== "string") return "?";
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "?";
-  if (parts.length === 1) return parts[0][0].toUpperCase();
-  return (parts[0][0] + parts[1][0]).toUpperCase();
-}
-
-interface MemberProps {
+interface AlumniProps {
   name?: string;
   role?: string;
+  organization?: string;
+  graduationYear?: string;
   image?: string;
   linkedin?: string;
   instagram?: string;
 }
 
-export default function MemberCard({
+export default function AlumniCard({
   name = "",
   role = "",
+  organization = "",
+  graduationYear = "",
   image = "",
   linkedin,
   instagram,
-}: MemberProps) {
+}: AlumniProps) {
+  // Google profile photos (lh3.googleusercontent.com) are treated the same
+  // as "no image" — fall back to a blank patterned background.
   const isGooglePhoto = image.includes("googleusercontent.com");
   const hasImage = Boolean(image && image.trim().length > 0) && !isGooglePhoto;
 
   return (
     <div className="relative w-[400px] h-[500px] flex items-center justify-center">
+      {/* Ambient Red Side Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[520px] bg-red-600/50 rounded-full blur-[70px] opacity-80 transition-all duration-500 group-hover:bg-red-500/80 group-hover:blur-[80px] group-hover:scale-110 pointer-events-none z-0" />
 
+      {/* Main Card Wrapper */}
       <div className="group absolute top-1/2 left-1/2 w-[350px] h-[450px] -translate-x-1/2 -translate-y-1/2 rounded-[16px] overflow-hidden shadow-[0_0_30px_rgba(255,30,67,0.4)] border border-red-500/40 cursor-pointer transition-all duration-500 bg-[#0f0205] z-10">
-        
+
+        {/* Background / Profile Image Container */}
         <div className="absolute top-0 left-0 w-full h-full z-10 bg-black transition-transform duration-700 group-hover:-translate-y-[100px]">
           {hasImage ? (
             <Image
               src={image}
-              alt={name || "Member profile"}
+              alt={name || "Alumni profile"}
               fill
               className="object-cover transition-opacity duration-500 group-hover:opacity-40"
             />
@@ -62,6 +63,7 @@ export default function MemberCard({
             <div className="h-full w-full bg-zinc-900 group-hover:opacity-40 transition-opacity duration-500" />
           )}
 
+          {/* Diagonally Spaced Pattern Layer */}
           <div className="absolute -inset-[50%] z-25 pointer-events-none mix-blend-screen opacity-25 -rotate-[25deg] transition-opacity duration-500 group-hover:opacity-15 flex items-center justify-center">
             <div
               className="w-[200%] h-[200%] bg-repeat"
@@ -74,16 +76,26 @@ export default function MemberCard({
           </div>
         </div>
 
+        {/* Default Left-Aligned Details Overlay (Visible Before Hover) */}
         <div className="absolute bottom-0 left-0 right-0 p-6 z-15 flex flex-col text-left bg-gradient-to-t from-black/95 via-black/40 to-transparent transition-opacity duration-300 group-hover:opacity-0 pointer-events-none">
           <h3 className="text-2xl font-black text-white tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
             {name}
           </h3>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-red-400 mt-1">
-            {role}
-          </p>
+          {role && (
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-red-400 mt-1">
+              {role}
+            </p>
+          )}
+          {organization && (
+            <p className="text-sm font-bold text-red-400 mt-1">
+              {organization}
+            </p>
+          )}
         </div>
 
+        {/* Social Icons Overlay (Animates on Hover) */}
         <ul className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex gap-3 pointer-events-none group-hover:pointer-events-auto">
+          {/* LinkedIn Icon */}
           <li className="list-none">
             <a
               href={linkedin || "#"}
@@ -96,6 +108,7 @@ export default function MemberCard({
             </a>
           </li>
 
+          {/* Instagram Icon */}
           <li className="list-none">
             <a
               href={instagram || "#"}
@@ -109,13 +122,19 @@ export default function MemberCard({
           </li>
         </ul>
 
+        {/* Hover Slide-Up Softened Details Panel */}
         <div className="absolute -bottom-[120px] left-0 w-full h-[120px] z-30 p-[10px] bg-white/90 backdrop-blur-md opacity-0 transition-all duration-400 group-hover:bottom-0 group-hover:opacity-100 delay-500 flex flex-col justify-center items-center text-center">
           <h2 className="text-2xl font-bold text-zinc-900 m-0 p-0">
             {name}
             <br />
-            <span className="block text-[11px] font-semibold uppercase tracking-[0.2em] text-red-600 leading-[2rem] mt-1">
+            <span className="block text-[11px] font-semibold uppercase tracking-[0.2em] text-red-600 leading-[1.6rem] mt-1">
               {role}
             </span>
+            {organization && (
+              <span className="block text-xs font-bold text-red-600 leading-[1.4rem]">
+                {organization}
+              </span>
+            )}
           </h2>
         </div>
 

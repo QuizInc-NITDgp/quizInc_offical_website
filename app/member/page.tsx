@@ -1,13 +1,14 @@
 import MemberCard from "@/components/MemberCard";
 import TunnelBackground from "@/components/TunnelBackground";
-import { getMembers } from "@/lib/member";
+import { fetchMembersAndAlumniDynamic } from "@/lib/member";
 
 export default async function MembersPage() {
-  const members = await getMembers();
+  const { currentMembers } = await fetchMembersAndAlumniDynamic();
+  console.log("Fetched Current Members:", currentMembers);
 
-  const fourthYearMembers = members.filter((m) => m.year === "fourth");
-  const thirdYearMembers = members.filter((m) => m.year === "third");
-  const secondYearMembers = members.filter((m) => m.year === "second");
+  const fourthYearMembers = currentMembers.filter((m) => m.year === "fourth");
+  const thirdYearMembers = currentMembers.filter((m) => m.year === "third");
+  const secondYearMembers = currentMembers.filter((m) => m.year === "second");
 
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pt-48 md:pt-56 pb-40 text-center">
@@ -31,7 +32,14 @@ export default async function MembersPage() {
           </div>
           <div className="grid grid-cols-1 gap-12 sm:gap-14 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-items-center">
             {fourthYearMembers.map((member) => (
-              <MemberCard key={member.id} {...member} />
+              <MemberCard 
+                key={member.id} 
+                name={member.name}
+                role={member.positionInQuizInc}
+                image={member.photo}
+                linkedin={member.linkedin}
+                instagram={member.facebook}
+              />
             ))}
           </div>
         </section>
@@ -46,7 +54,14 @@ export default async function MembersPage() {
           </div>
           <div className="grid grid-cols-1 gap-12 sm:gap-14 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-items-center">
             {thirdYearMembers.map((member) => (
-              <MemberCard key={member.id} {...member} />
+              <MemberCard 
+                key={member.id} 
+                name={member.name}
+                role={member.positionInQuizInc}
+                image={member.photo}
+                linkedin={member.linkedin}
+                instagram={member.facebook}
+              />
             ))}
           </div>
         </section>
@@ -61,7 +76,14 @@ export default async function MembersPage() {
           </div>
           <div className="grid grid-cols-1 gap-12 sm:gap-14 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-items-center">
             {secondYearMembers.map((member) => (
-              <MemberCard key={member.id} {...member} />
+              <MemberCard 
+                key={member.id} 
+                name={member.name}
+                role={member.positionInQuizInc}
+                image={member.photo}
+                linkedin={member.linkedin}
+                instagram={member.facebook}
+              />
             ))}
           </div>
         </section>

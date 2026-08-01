@@ -7,7 +7,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "res-console.cloudinary.com",
       },
-      // add this too — most Cloudinary URLs actually come from res.cloudinary.com
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
