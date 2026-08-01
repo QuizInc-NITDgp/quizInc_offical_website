@@ -68,11 +68,15 @@ export default function MemberCard({
             </div>
           )}
 
-          {/* Smaller, More Visible Diagonal Watermark Overlay */}
-          <div className="absolute -inset-[50%] z-20 pointer-events-none opacity-30 mix-blend-screen -rotate-[30deg] scale-125 transition-opacity duration-500 group-hover:opacity-15 flex items-center justify-center">
+          {/* Diagonally Spaced Pattern Layer with Smaller Logo Size */}
+          <div className="absolute -inset-[50%] z-25 pointer-events-none mix-blend-screen opacity-25 -rotate-[25deg] transition-opacity duration-500 group-hover:opacity-15 flex items-center justify-center">
             <div
-              className="w-full h-full bg-repeat bg-[length:90px_90px]"
-              style={{ backgroundImage: "url('/logo.jpg')" }}
+              className="w-[200%] h-[200%] bg-repeat"
+              style={{
+                backgroundImage: "url('/q.png')",
+                backgroundSize: "140px 140px",
+                backgroundPosition: "center",
+              }}
             />
           </div>
         </div>
@@ -88,7 +92,7 @@ export default function MemberCard({
         </div>
 
         {/* Social Icons Overlay (Animates on Hover) */}
-        <ul className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex gap-3 pointer-events-none group-hover:pointer-events-auto">
+        <ul className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex gap-3 pointer-events-none group-hover:pointer-events-auto">
           {/* LinkedIn Icon */}
           <li className="list-none">
             <a
@@ -117,7 +121,7 @@ export default function MemberCard({
         </ul>
 
         {/* Hover Slide-Up Softened Details Panel */}
-        <div className="absolute -bottom-[120px] left-0 w-full h-[120px] z-20 p-[10px] bg-white/90 backdrop-blur-md opacity-0 transition-all duration-400 group-hover:bottom-0 group-hover:opacity-100 delay-500 flex flex-col justify-center items-center text-center">
+        <div className="absolute -bottom-[120px] left-0 w-full h-[120px] z-30 p-[10px] bg-white/90 backdrop-blur-md opacity-0 transition-all duration-400 group-hover:bottom-0 group-hover:opacity-100 delay-500 flex flex-col justify-center items-center text-center">
           <h2 className="text-2xl font-bold text-zinc-900 m-0 p-0">
             {name}
             <br />
