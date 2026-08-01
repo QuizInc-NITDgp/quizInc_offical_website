@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import gsap from "gsap";
 
 function LinkedinIcon({ className }: { className?: string }) {
   return (
@@ -12,323 +10,123 @@ function LinkedinIcon({ className }: { className?: string }) {
   );
 }
 
-function FacebookIcon({ className }: { className?: string }) {
+function InstagramIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-      <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H7.5v-3H10V9.5C10 7.01 11.49 5.6 13.78 5.6c1.1 0 2.25.2 2.25.2v2.47h-1.27c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.45 3h-2.33v6.8c4.56-.93 8-4.96 8-9.8z" />
+      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
     </svg>
   );
 }
 
+function getInitials(name?: string): string {
+  if (!name || typeof name !== "string") return "?";
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "?";
+  if (parts.length === 1) return parts[0][0].toUpperCase();
+  return (parts[0][0] + parts[1][0]).toUpperCase();
+}
+
 interface MemberProps {
-  name: string;
-  role: string;
-  image: string;
+  name?: string;
+  role?: string;
+  image?: string;
   linkedin?: string;
-  facebook?: string;
+  instagram?: string;
 }
 
 export default function MemberCard({
-  name,
-  role,
-  image,
+  name = "",
+  role = "",
+  image = "",
   linkedin,
-  facebook,
+  instagram,
 }: MemberProps) {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const cardRef = useRef<HTMLDivElement | null>(null);
-  const imageRef = useRef<HTMLDivElement | null>(null);
-  const tweenRef = useRef<gsap.core.Tween | null>(null);
-  const idleFloatRef = useRef<gsap.core.Tween | null>(null);
-
-  const [isHovered, setIsHovered] = useState(false);
-
-  // Setup GSAP Laser Border + Gentle Idle Floating
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const setCanvasSize = () => {
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * 2;
-      canvas.height = rect.height * 2;
-      ctx.scale(2, 2);
-    };
-
-    setCanvasSize();
-
-    const beam = { progress: 0 };
-
-    // GSAP Continuous Laser Orbit
-    tweenRef.current = gsap.to(beam, {
-      progress: 1,
-      duration: 6, // Slow cruise speed when idle
-      repeat: -1,
-      ease: "none",
-      onUpdate: () => {
-        const w = canvas.offsetWidth;
-        const h = canvas.offsetHeight;
-        const r = 24;
-        const pad = 4;
-
-        ctx.clearRect(0, 0, w, h);
-
-        const perimeter = 2 * (w - 2 * r) + 2 * (h - 2 * r) + 2 * Math.PI * r;
-        const currentLength = beam.progress * perimeter;
-
-        const getPointAtLength = (len: number) => {
-          let distance = (len + perimeter) % perimeter;
-
-          if (distance < w - 2 * r) return { x: r + distance, y: pad };
-          distance -= w - 2 * r;
-
-          if (distance < (Math.PI * r) / 2) {
-            const angle = -Math.PI / 2 + distance / r;
-            return {
-              x: w - r + Math.cos(angle) * (r - pad),
-              y: r + Math.sin(angle) * (r - pad),
-            };
-          }
-          distance -= (Math.PI * r) / 2;
-
-          if (distance < h - 2 * r) return { x: w - pad, y: r + distance };
-          distance -= h - 2 * r;
-
-          if (distance < (Math.PI * r) / 2) {
-            const angle = distance / r;
-            return {
-              x: w - r + Math.cos(angle) * (r - pad),
-              y: h - r + Math.sin(angle) * (r - pad),
-            };
-          }
-          distance -= (Math.PI * r) / 2;
-
-          if (distance < w - 2 * r) return { x: w - r - distance, y: h - pad };
-          distance -= w - 2 * r;
-
-          if (distance < (Math.PI * r) / 2) {
-            const angle = Math.PI / 2 + distance / r;
-            return {
-              x: r + Math.cos(angle) * (r - pad),
-              y: h - r + Math.sin(angle) * (r - pad),
-            };
-          }
-          distance -= (Math.PI * r) / 2;
-
-          if (distance < h - 2 * r) return { x: pad, y: h - r - distance };
-          distance -= h - 2 * r;
-
-          const angle = Math.PI + distance / r;
-          return {
-            x: r + Math.cos(angle) * (r - pad),
-            y: r + Math.sin(angle) * (r - pad),
-          };
-        };
-
-        // Render Laser Tail
-        const trailLength = 120;
-        const segments = 30;
-
-        for (let i = 0; i < segments; i++) {
-          const t1 = currentLength - (i / segments) * trailLength;
-          const t2 = currentLength - ((i + 1) / segments) * trailLength;
-
-          const p1 = getPointAtLength(t1);
-          const p2 = getPointAtLength(t2);
-
-          const alpha = 1 - i / segments;
-
-          ctx.beginPath();
-          ctx.moveTo(p1.x, p1.y);
-          ctx.lineTo(p2.x, p2.y);
-          ctx.strokeStyle = `rgba(255, 30, 67, ${alpha})`;
-          ctx.lineWidth = 3 + (1 - i / segments) * 2;
-          ctx.shadowColor = "#ff1e43";
-          ctx.shadowBlur = 12;
-          ctx.lineCap = "round";
-          ctx.stroke();
-        }
-      },
-    });
-
-    // Idle Subtle Vertical Floating Effect
-    idleFloatRef.current = gsap.to(cardRef.current, {
-      y: -6,
-      duration: 2.5,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-    });
-
-    return () => {
-      tweenRef.current?.kill();
-      idleFloatRef.current?.kill();
-    };
-  }, []);
-
-  // Mouse Move Tilt Handler
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-
-    const rotateX = ((y - centerY) / centerY) * -15;
-    const rotateY = ((x - centerX) / centerX) * 15;
-
-    gsap.to(cardRef.current, {
-      rotateX: rotateX,
-      rotateY: rotateY,
-      duration: 0.3,
-      ease: "power2.out",
-    });
-
-    if (imageRef.current) {
-      gsap.to(imageRef.current, {
-        x: (x - centerX) * 0.08,
-        y: (y - centerY) * 0.08,
-        duration: 0.3,
-        ease: "power2.out",
-      });
-    }
-  };
-
-  // Mouse Enter: Speed up laser, pause idle float
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-
-    if (idleFloatRef.current) idleFloatRef.current.pause();
-
-    if (tweenRef.current) {
-      gsap.to(tweenRef.current, {
-        timeScale: 3, // Overdrive speed on hover
-        duration: 0.5,
-      });
-    }
-  };
-
-  // Mouse Leave: Slow down laser, resume idle float
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-
-    if (tweenRef.current) {
-      gsap.to(tweenRef.current, {
-        timeScale: 1, // Reset to smooth cruise speed
-        duration: 0.8,
-      });
-    }
-
-    if (cardRef.current) {
-      gsap.to(cardRef.current, {
-        rotateX: 0,
-        rotateY: 0,
-        duration: 0.6,
-        ease: "power2.out",
-        onComplete: () => {
-          idleFloatRef.current?.resume();
-        },
-      });
-    }
-
-    if (imageRef.current) {
-      gsap.to(imageRef.current, {
-        x: 0,
-        y: 0,
-        duration: 0.6,
-        ease: "power2.out",
-      });
-    }
-  };
+  const hasImage = Boolean(image && image.trim().length > 0);
 
   return (
-    <div
-      className="perspective-1000 group relative flex items-center justify-center p-2"
-      style={{ perspective: "1200px" }}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      {/* 3D Transform Outer Container */}
-      <div
-        ref={cardRef}
-        className="relative w-80 h-[460px] rounded-[24px] bg-[#0a0002] p-1 shadow-2xl transition-shadow duration-500 transform-style-3d"
-        style={{ transformStyle: "preserve-3d" }}
-      >
-        {/* Dynamic Laser Canvas */}
-        <canvas
-          ref={canvasRef}
-          className={`absolute inset-0 h-full w-full pointer-events-none z-30 transition-opacity duration-500 ${
-            isHovered ? "opacity-100" : "opacity-45"
-          }`}
-        />
+    <div className="relative w-[400px] h-[500px] flex items-center justify-center">
+      {/* Ambient Red Side Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[520px] bg-red-600/50 rounded-full blur-[70px] opacity-80 transition-all duration-500 group-hover:bg-red-500/80 group-hover:blur-[80px] group-hover:scale-110 pointer-events-none z-0" />
 
-        {/* Pulsing Base Frame Outline */}
-        <div className="absolute inset-0 rounded-[24px] border border-[#ff1e43]/40 pointer-events-none transition-all duration-500 group-hover:border-[#ff1e43] animate-pulse" />
-
-        {/* Ambient Dark Red Glow */}
-        <div className="absolute inset-0 rounded-[24px] bg-gradient-to-b from-[#ff1e43]/15 via-transparent to-[#ff1e43]/25 blur-xl opacity-50 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none" />
-
-        {/* Holographic HUD Grid Pattern */}
-        <div className="absolute inset-0 rounded-[24px] bg-[radial-gradient(#ff1e43_1px,transparent_1px)] [background-size:16px_16px] opacity-10 transition-opacity duration-500 group-hover:opacity-25 pointer-events-none z-10" />
-
-        {/* Card Content Canvas */}
-        <div className="relative h-full w-full overflow-hidden rounded-[20px] bg-[#0f0205] border border-white/5">
-          {/* Parallax Image Layer */}
-          <div ref={imageRef} className="absolute inset-0 h-full w-full scale-110">
+      {/* Main Card Wrapper */}
+      <div className="group absolute top-1/2 left-1/2 w-[350px] h-[450px] -translate-x-1/2 -translate-y-1/2 rounded-[16px] overflow-hidden shadow-[0_0_30px_rgba(255,30,67,0.4)] border border-red-500/40 cursor-pointer transition-all duration-500 bg-[#0f0205] z-10">
+        
+        {/* Background / Profile Image Container */}
+        <div className="absolute top-0 left-0 w-full h-full z-10 bg-black transition-transform duration-700 group-hover:-translate-y-[100px]">
+          {hasImage ? (
             <Image
               src={image}
-              alt={name}
+              alt={name || "Member profile"}
               fill
-              className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
+              className="object-cover transition-opacity duration-500 group-hover:opacity-40"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center bg-zinc-900 group-hover:opacity-40 transition-opacity duration-500">
+              <span className="text-6xl font-black text-red-500/70 drop-shadow-[0_0_15px_rgba(255,30,67,0.4)]">
+                {getInitials(name)}
+              </span>
+            </div>
+          )}
+
+          {/* Smaller, More Visible Diagonal Watermark Overlay */}
+          <div className="absolute -inset-[50%] z-20 pointer-events-none opacity-30 mix-blend-screen -rotate-[30deg] scale-125 transition-opacity duration-500 group-hover:opacity-15 flex items-center justify-center">
+            <div
+              className="w-full h-full bg-repeat bg-[length:90px_90px]"
+              style={{ backgroundImage: "url('/logo.jpg')" }}
             />
           </div>
-
-          {/* Dark Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent z-10" />
-
-          {/* HOVER OVERLAY WITH SOCIAL LINKS */}
-          <div className="absolute inset-0 flex items-center justify-center gap-4 bg-black/75 backdrop-blur-md opacity-0 transition-all duration-300 group-hover:opacity-100 z-40">
-            {linkedin && (
-              <a
-                href={linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn Profile"
-                className="flex h-12 w-12 items-center justify-center rounded-full border border-red-500/50 bg-black/80 text-white transition-all duration-300 hover:scale-110 hover:border-red-400 hover:bg-[#ff1e43] hover:shadow-[0_0_25px_rgba(255,30,67,0.9)]"
-              >
-                <LinkedinIcon className="h-5 w-5" />
-              </a>
-            )}
-
-            {facebook && (
-              <a
-                href={facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Facebook Profile"
-                className="flex h-12 w-12 items-center justify-center rounded-full border border-red-500/50 bg-black/80 text-white transition-all duration-300 hover:scale-110 hover:border-red-400 hover:bg-[#ff1e43] hover:shadow-[0_0_25px_rgba(255,30,67,0.9)]"
-              >
-                <FacebookIcon className="h-5 w-5" />
-              </a>
-            )}
-          </div>
-
-          {/* Bottom Section: Name & Role */}
-          <div className="absolute bottom-0 left-0 right-0 p-6 text-left z-20 flex flex-col">
-            <h3 className="text-2xl font-black text-white tracking-tight group-hover:text-red-400 transition-colors drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
-              {name}
-            </h3>
-            <p className="text-xs font-bold uppercase tracking-widest text-rose-200/80 mt-1">
-              {role}
-            </p>
-          </div>
         </div>
+
+        {/* Default Left-Aligned Details Overlay (Visible Before Hover) */}
+        <div className="absolute bottom-0 left-0 right-0 p-6 z-15 flex flex-col text-left bg-gradient-to-t from-black/95 via-black/40 to-transparent transition-opacity duration-300 group-hover:opacity-0 pointer-events-none">
+          <h3 className="text-2xl font-black text-white tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
+            {name}
+          </h3>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-red-400 mt-1">
+            {role}
+          </p>
+        </div>
+
+        {/* Social Icons Overlay (Animates on Hover) */}
+        <ul className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex gap-3 pointer-events-none group-hover:pointer-events-auto">
+          {/* LinkedIn Icon */}
+          <li className="list-none">
+            <a
+              href={linkedin || "#"}
+              target={linkedin ? "_blank" : "_self"}
+              rel="noopener noreferrer"
+              aria-label="LinkedIn Profile"
+              className="relative flex items-center justify-center w-[50px] h-[50px] bg-white/90 text-[#0077b5] text-2xl font-bold rounded-full transition-all duration-400 translate-y-[200px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-100 hover:bg-[#0077b5] hover:text-white hover:shadow-[0_0_20px_rgba(0,119,181,0.6)]"
+            >
+              <LinkedinIcon className="w-6 h-6 transition-transform duration-700 hover:rotate-y-180" />
+            </a>
+          </li>
+
+          {/* Instagram Icon */}
+          <li className="list-none">
+            <a
+              href={instagram || "#"}
+              target={instagram ? "_blank" : "_self"}
+              rel="noopener noreferrer"
+              aria-label="Instagram Profile"
+              className="relative flex items-center justify-center w-[50px] h-[50px] bg-white/90 text-[#e1306c] text-2xl font-bold rounded-full transition-all duration-400 translate-y-[200px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-200 hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] hover:text-white hover:shadow-[0_0_20px_rgba(225,48,108,0.6)]"
+            >
+              <InstagramIcon className="w-6 h-6 transition-transform duration-700 hover:rotate-y-180" />
+            </a>
+          </li>
+        </ul>
+
+        {/* Hover Slide-Up Softened Details Panel */}
+        <div className="absolute -bottom-[120px] left-0 w-full h-[120px] z-20 p-[10px] bg-white/90 backdrop-blur-md opacity-0 transition-all duration-400 group-hover:bottom-0 group-hover:opacity-100 delay-500 flex flex-col justify-center items-center text-center">
+          <h2 className="text-2xl font-bold text-zinc-900 m-0 p-0">
+            {name}
+            <br />
+            <span className="block text-[11px] font-semibold uppercase tracking-[0.2em] text-red-600 leading-[2rem] mt-1">
+              {role}
+            </span>
+          </h2>
+        </div>
+
       </div>
     </div>
   );
