@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import TunnelBackground from "@/components/TunnelBackground";
 import "./globals.css";
 import { Baloo_2, Bungee } from "next/font/google";
+import Footer from "@/components/Footer";
 
 const baloo = Baloo_2({
   subsets: ["latin"],
@@ -29,7 +30,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         {/* Main Route Content */}
         {children}
+
+        <Footer />
       </body>
+      
     </html>
   );
 }

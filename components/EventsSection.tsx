@@ -43,7 +43,7 @@ export default function EventsSection() {
   const cardsRef = useRef<HTMLDivElement | null>(null);
 
   // ============================================================
-  // STACK -> ARRANGE ANIMATION
+  // STACK -> ARRANGE ANIMATION (DESKTOP) + INDIVIDUAL REVEAL (MOBILE)
   // ============================================================
 
   useEffect(() => {
@@ -59,125 +59,159 @@ export default function EventsSection() {
 
       if (cards.length === 0) return;
 
-      // Find center of entire cards container
-      const containerRect =
-        container.getBoundingClientRect();
-
-      const centerX =
-        containerRect.left + containerRect.width / 2;
-
-      const centerY =
-        containerRect.top + containerRect.height / 2;
+      const mm = gsap.matchMedia();
 
       // --------------------------------------------------------
-      // Put every card in the center
+      // DESKTOP / TABLET: original stack -> arrange animation
       // --------------------------------------------------------
+      mm.add("(min-width: 768px)", () => {
+        const containerRect =
+          container.getBoundingClientRect();
 
-      cards.forEach((card, index) => {
-        const rect = card.getBoundingClientRect();
+        const centerX =
+          containerRect.left + containerRect.width / 2;
 
-        const cardCenterX =
-          rect.left + rect.width / 2;
+        const centerY =
+          containerRect.top + containerRect.height / 2;
 
-        const cardCenterY =
-          rect.top + rect.height / 2;
+        cards.forEach((card, index) => {
+          const rect = card.getBoundingClientRect();
 
-        const offsetX =
-          centerX - cardCenterX;
+          const cardCenterX =
+            rect.left + rect.width / 2;
 
-        const offsetY =
-          centerY - cardCenterY;
+          const cardCenterY =
+            rect.top + rect.height / 2;
 
-        gsap.set(card, {
-          x: offsetX,
-          y: offsetY,
+          const offsetX =
+            centerX - cardCenterX;
 
-          rotation: (index - (cards.length - 1) / 2) * 1.5,
+          const offsetY =
+            centerY - cardCenterY;
 
-          scale: 0.96,
+          gsap.set(card, {
+            x: offsetX,
+            y: offsetY,
 
-          opacity: 0,
+            rotation: (index - (cards.length - 1) / 2) * 1.5,
 
-          zIndex: cards.length - index,
+            scale: 0.96,
 
-          transformOrigin: "50% 50%",
+            opacity: 0,
+
+            zIndex: cards.length - index,
+
+            transformOrigin: "50% 50%",
+
+            force3D: true,
+
+            willChange: "transform, opacity",
+
+            backfaceVisibility: "hidden",
+          });
+        });
+
+        const timeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: container,
+
+            start: "top 80%",
+
+            once: true,
+          },
+        });
+
+        timeline.to(cards, {
+          opacity: 1,
+
+          duration: 0.35,
+
+          ease: "power2.out",
+        });
+
+        timeline.to({}, { duration: 0.2 });
+
+        timeline.to(cards, {
+          x: 0,
+          y: 0,
+
+          rotation: 0,
+
+          scale: 1,
+
+          duration: 1.25,
+
+          stagger: {
+            each: 0.16,
+            from: "start",
+          },
+
+          ease: "power2.inOut",
 
           force3D: true,
 
-          willChange: "transform, opacity",
-
-          backfaceVisibility: "hidden",
+          overwrite: "auto",
         });
+
+        timeline.set(cards, {
+          clearProps: "zIndex,willChange",
+        });
+
+        return () => {
+          gsap.set(cards, { clearProps: "all" });
+        };
       });
 
       // --------------------------------------------------------
-      // Animation timeline
+      // MOBILE: each card slides/fades in individually as it
+      // enters view — alternating direction for a noticeable,
+      // "walking down the list" effect while scrolling.
       // --------------------------------------------------------
+      mm.add("(max-width: 767px)", () => {
+        cards.forEach((card, index) => {
+          const fromLeft = index % 2 === 0;
 
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: container,
+          gsap.fromTo(
+            card,
+            {
+              opacity: 0,
+              x: fromLeft ? -60 : 60,
+              y: 30,
+              rotation: fromLeft ? -3 : 3,
+              scale: 0.92,
+            },
+            {
+              opacity: 1,
+              x: 0,
+              y: 0,
+              rotation: 0,
+              scale: 1,
+              duration: 0.8,
+              ease: "back.out(1.4)",
+              force3D: true,
+              scrollTrigger: {
+                trigger: card,
+                start: "top 88%",
+                once: true,
+              },
+            }
+          );
+        });
 
-          start: "top 80%",
-
-          once: true,
-        },
-      });
-
-      // --------------------------------------------------------
-      // STEP 1: Show stacked cards
-      // --------------------------------------------------------
-
-      timeline.to(cards, {
-        opacity: 1,
-
-        duration: 0.35,
-
-        ease: "power2.out",
-      });
-
-      // Small pause so stack is actually visible
-      timeline.to({}, { duration: 0.2 });
-
-      // --------------------------------------------------------
-      // STEP 2: Arrange one by one
-      // --------------------------------------------------------
-
-      timeline.to(cards, {
-        x: 0,
-        y: 0,
-
-        rotation: 0,
-
-        scale: 1,
-
-        duration: 1.25,
-
-        stagger: {
-          each: 0.16,
-          from: "start",
-        },
-
-        ease: "power2.inOut",
-
-        force3D: true,
-
-        overwrite: "auto",
-      });
-
-      // Remove temporary animation properties after finishing
-      timeline.set(cards, {
-        clearProps: "zIndex,willChange",
+        return () => {
+          gsap.set(cards, { clearProps: "all" });
+        };
       });
     }, sectionRef);
 
     return () => {
       ctx.revert();
+      ScrollTrigger.getAll().forEach((t) => t.kill());
     };
   }, []);
 
   // ============================================================
-  // 3D HOVER
+  // 3D HOVER (DESKTOP)
   // ============================================================
 
   const handleMouseMove = (
@@ -221,10 +255,6 @@ export default function EventsSection() {
     });
   };
 
-  // ============================================================
-  // RESET HOVER
-  // ============================================================
-
   const handleMouseLeave = (
     e: React.MouseEvent<HTMLDivElement>
   ) => {
@@ -244,6 +274,48 @@ export default function EventsSection() {
 
       force3D: true,
     });
+  };
+
+  // ============================================================
+  // TAP EFFECT (MOBILE) — since hover never fires on touch,
+  // this gives a noticeable "pop" + glow beam when tapped/held.
+  // ============================================================
+
+  const handleTouchStart = (
+    e: React.TouchEvent<HTMLDivElement>
+  ) => {
+    const card = e.currentTarget;
+
+    card.classList.add("mobile-active");
+
+    gsap.to(card, {
+      scale: 1.03,
+      y: -6,
+      duration: 0.25,
+      ease: "power2.out",
+      overwrite: "auto",
+      force3D: true,
+    });
+  };
+
+  const handleTouchEnd = (
+    e: React.TouchEvent<HTMLDivElement>
+  ) => {
+    const card = e.currentTarget;
+
+    gsap.to(card, {
+      scale: 1,
+      y: 0,
+      duration: 0.4,
+      ease: "power3.out",
+      overwrite: "auto",
+      force3D: true,
+    });
+
+    // Let the glow linger briefly after release, then fade out
+    setTimeout(() => {
+      card.classList.remove("mobile-active");
+    }, 400);
   };
 
   return (
@@ -295,6 +367,8 @@ export default function EventsSection() {
               key={event.title}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
               className="
                 event-card
                 group
@@ -352,10 +426,6 @@ export default function EventsSection() {
                   bg-[#120003]/95
                 "
               />
-
-              {/* ============= EVENT NUMBER ============= */}
-
-
 
               {/* ============= QUIZINC LOGO ============= */}
 

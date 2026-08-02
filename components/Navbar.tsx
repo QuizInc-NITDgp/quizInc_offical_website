@@ -37,21 +37,25 @@ export default function Navbar() {
 
   return (
     <header
-      className="
-        fixed
-        left-0
-        right-0
-        top-0
-        z-50
-        w-full
+  className="
+    fixed
+    top-0
+    left-0
+    right-0
+    z-50
+    w-full
 
-        pl-5
-        py-3
+    pl-4
+    py-3
 
-        md:pl-10
-        md:py-2
-      "
-    >
+    sm:pl-5
+
+    lg:pl-8
+    lg:py-2
+
+    xl:pl-10
+  "
+>
       {/* ================================================= */}
       {/* SCROLL BACKGROUND */}
       {/* ================================================= */}
@@ -206,10 +210,9 @@ export default function Navbar() {
                     hover:scale-105
                     hover:text-red-400
 
-                    ${
-                      isActive
-                        ? "scale-105 text-red-400"
-                        : "text-white"
+                    ${isActive
+                      ? "scale-105 text-red-400"
+                      : "text-white"
                     }
                   `}
                 >
@@ -234,10 +237,9 @@ export default function Navbar() {
                       transition-all
                       duration-300
 
-                      ${
-                        isActive
-                          ? "w-full"
-                          : "w-0 group-hover:w-full"
+                      ${isActive
+                        ? "w-full"
+                        : "w-0 group-hover:w-full"
                       }
                     `}
                   />
@@ -251,41 +253,42 @@ export default function Navbar() {
         {/* MOBILE HAMBURGER */}
         {/* ================================================= */}
 
-        <button
-          onClick={() => setIsOpen((prev) => !prev)}
-          aria-label="Toggle navigation menu"
-          className="
-            z-50
-            mr-4
+       <button
+  onClick={() => setIsOpen((prev) => !prev)}
+  aria-label="Toggle navigation menu"
+  className="
+    z-50
+    mr-8
 
-            flex
-            items-center
-            justify-center
+    flex
+    shrink-0
+    items-center
+    justify-center
 
-            rounded-lg
+    rounded-lg
 
-            border
-            border-red-500/40
+    border
+    border-red-500/40
 
-            bg-black/60
+    bg-black/60
 
-            p-2
+    p-2
 
-            text-white
+    text-white
 
-            backdrop-blur-md
+    backdrop-blur-md
 
-            shadow-[0_0_15px_rgba(255,30,67,0.2)]
+    shadow-[0_0_15px_rgba(255,30,67,0.2)]
 
-            transition-all
+    transition-all
 
-            hover:bg-red-950/40
+    hover:bg-red-950/40
 
-            active:scale-95
+    active:scale-95
 
-            md:hidden
-          "
-        >
+    lg:hidden
+  "
+>
           {isOpen ? (
             <X className="h-5 w-5 text-red-400" />
           ) : (
@@ -372,10 +375,9 @@ export default function Navbar() {
                     hover:translate-x-1
                     hover:text-red-400
 
-                    ${
-                      isActive
-                        ? "translate-x-1 font-bold text-red-400"
-                        : "text-white/90"
+                    ${isActive
+                      ? "translate-x-1 font-bold text-red-400"
+                      : "text-white/90"
                     }
                   `}
                 >
