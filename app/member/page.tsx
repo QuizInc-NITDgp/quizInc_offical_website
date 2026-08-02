@@ -1,6 +1,7 @@
 import MemberCard from "@/components/MemberCard";
 import TunnelBackground from "@/components/TunnelBackground";
 import { getMembers } from "@/lib/member";
+import TypewriterText from "@/components/TypewriterText";
 
 export default async function MembersPage() {
   const members = await getMembers();
