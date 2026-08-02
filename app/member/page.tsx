@@ -63,7 +63,7 @@ export default async function MembersPage() {
           <div className="flex items-center justify-center gap-6 mb-20">
             <div className="h-[1px] w-24 sm:w-48 bg-gradient-to-r from-transparent to-red-500/60" />
             <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl md:text-5xl drop-shadow-[0_0_20px_rgba(255,30,67,0.5)]">
-              Fourth Year
+              Final Year
             </h2>
             <div className="h-[1px] w-24 sm:w-48 bg-gradient-to-l from-transparent to-red-500/60" />
           </div>
@@ -86,7 +86,7 @@ export default async function MembersPage() {
           <div className="flex items-center justify-center gap-6 mb-20">
             <div className="h-[1px] w-24 sm:w-48 bg-gradient-to-r from-transparent to-red-500/60" />
             <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl md:text-5xl drop-shadow-[0_0_20px_rgba(255,30,67,0.5)]">
-              Third Year
+              Pre Final Year
             </h2>
             <div className="h-[1px] w-24 sm:w-48 bg-gradient-to-l from-transparent to-red-500/60" />
           </div>
