@@ -28,14 +28,14 @@ function LinkedinIcon({ className }: { className?: string }) {
 }
 
 const socialLinks = [
-  { icon: FacebookIcon, href: "#", label: "Facebook" },
-  { icon: InstagramIcon, href: "#", label: "Instagram" },
-  { icon: LinkedinIcon, href: "#", label: "LinkedIn" },
+  { icon: FacebookIcon, href: "https://www.facebook.com/share/18eSG6rasV/", label: "Facebook" },
+  { icon: InstagramIcon, href: "https://www.instagram.com/quizincnitdgp?igsh=aGx5YTE0cmR2dnpt", label: "Instagram" },
+  { icon: LinkedinIcon, href: "https://in.linkedin.com/company/quizinc", label: "LinkedIn" },
 ];
 
 const quickLinks = [
   { label: "Home", href: "/" },
-  { label: "About Us", href: "/AboutUs" },
+  { label: "Alumni", href: "/alumni" },
   { label: "Quizittch Cup", href: "/Qc" },
   { label: "Events", href: "/events" },
   { label: "Gallery", href: "/gallery" },
@@ -44,7 +44,7 @@ const quickLinks = [
 
 export default function Footer() {
   return (
-    <footer className="relative z-10 w-full border-t border-b border-red-500/25 bg-[#0a0002] px-6 pt-16 pb-8 md:px-12 lg:px-20">
+   <footer className="relative z-10 w-full border-t border-b border-red-500/25 bg-[#0a0002] px-6 pt-6 pb-6 sm:pt-16 sm:pb-8 md:px-12 lg:px-20">
       {/* Ambient glow */}
       <div className="pointer-events-none absolute left-1/2 top-0 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-600/15 blur-[100px]" />
 

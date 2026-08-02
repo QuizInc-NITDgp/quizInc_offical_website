@@ -1,8 +1,6 @@
 "use client";
 
 import PhotoGlobe from "@/components/PhotoGlobe";
-import TypewriterText from "./TypewriterText";
-
 
 export default function AboutSection() {
   return (
@@ -16,7 +14,7 @@ export default function AboutSection() {
         <div
           className="
             relative
-            min-h-[850px] lg:min-h-0
+            overflow-hidden
             rounded-[28px]
             border
             border-red-500/25
@@ -34,7 +32,7 @@ export default function AboutSection() {
           <div className="pointer-events-none absolute -left-20 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-red-600/15 blur-[100px]" />
 
           {/* TWO COLUMNS */}
-          <div className="relative flex flex-col gap-14 lg:flex-row lg:items-start lg:gap-20 xl:gap-28">
+          <div className="relative flex flex-col gap-14 lg:flex-row lg:items-center lg:gap-20 xl:gap-28">
 
             {/* ================= LEFT ================= */}
             <div className="w-full lg:w-1/2 lg:shrink-0">
@@ -51,11 +49,9 @@ export default function AboutSection() {
 
               {/* Text */}
               <div className="mt-10">
-
-                <p>
+                <p className="text-sm leading-relaxed text-rose-100/75 md:text-base">
                   QuizInc, the quiz club of NIT Durgapur, was founded in 2003 by two undergraduate students Harish Mohan and Anup Nair. It is an open platform fostering curiosity, intellectual growth, and social responsibility. With a legacy spanning over two decades, QuizInc organizes quizzes, treasure hunts, and fandom competitions while collaborating with renowned institutions across India. The club also conducts outreach programs to inspire learning beyond the campus. QuizInc remains committed to empowering students through knowledge, critical thinking, and a shared purpose of curiosity, service, and collaboration.
                 </p>
-
               </div>
             </div>
 
@@ -65,11 +61,8 @@ export default function AboutSection() {
                 relative
                 flex
                 w-full
-                min-h-[300px]
-                items-start
+                items-center
                 justify-center
-                overflow-visible
-                lg:min-h-0
                 lg:w-1/2
               "
             >
@@ -78,27 +71,9 @@ export default function AboutSection() {
               <div className="pointer-events-none absolute h-[320px] w-[320px] rounded-full bg-red-600/15 blur-[100px]" />
 
               {/* Photo Q */}
-              {/* Photo Q */}
-<div
-  className="
-    relative
-    mt-6
-    w-[calc(100%+64px)]
-    -mx-8
-    origin-top
-    scale-[0.75]
-    sm:scale-[0.9]
-    md:w-[calc(100%+112px)]
-    md:-mx-14
-    md:scale-[1.05]
-    lg:-mt-6
-    lg:w-auto
-    lg:mx-0
-    lg:scale-[1.2]
-  "
->
-  <PhotoGlobe />
-</div>
+              <div className="relative w-full max-w-[360px] flex items-center justify-center">
+                <PhotoGlobe />
+              </div>
 
             </div>
 

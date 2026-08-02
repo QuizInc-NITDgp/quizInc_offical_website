@@ -34,7 +34,11 @@ export default function TunnelBackground() {
     handleResize();
     window.addEventListener("resize", handleResize);
 
-    const particleCount = 280;
+    // Mobile-aware particle count: fewer on small screens to protect perf,
+    // significantly more on desktop for a denser tunnel effect.
+    const isMobileScreen = (canvas.width || 1200) < 640;
+    const particleCount = isMobileScreen ? 320 : 600;
+
     const particles: QuestionMark[] = [];
 
     const createParticle = (customZ?: number): QuestionMark => {

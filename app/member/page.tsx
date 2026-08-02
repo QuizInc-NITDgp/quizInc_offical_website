@@ -10,6 +10,21 @@ export default async function MembersPage() {
   const thirdYearMembers = currentMembers.filter((m) => m.year === "third");
   const secondYearMembers = currentMembers.filter((m) => m.year === "second");
 
+  const facultyAdvisors = [
+    {
+      id: "faculty-1",
+      name: "Debasis Chakraborty",
+      role: "Faculty-in-Charge",
+      image: "/facultyadvisor1.jpg",
+    },
+    {
+      id: "faculty-2",
+      name: "Dr. Parag Kumar Guhathakurta",
+      role: "Faculty-in-Charge",
+      image: "/facultyadvisor2.jpg",
+    },
+  ];
+
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pt-48 md:pt-56 pb-40 text-center">
       <TunnelBackground />
@@ -22,7 +37,29 @@ export default async function MembersPage() {
           THE VOICES & BRAINS BEHIND QUIZINC
         </p>
 
+        {/* ================= FACULTY ADVISORS SECTION ================= */}
         <section className="mt-28 md:mt-36">
+          <div className="flex items-center justify-center gap-6 mb-20">
+            <div className="h-[1px] w-24 sm:w-48 bg-gradient-to-r from-transparent to-red-500/60" />
+            <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl md:text-5xl drop-shadow-[0_0_20px_rgba(255,30,67,0.5)]">
+              Faculty Advisors
+            </h2>
+            <div className="h-[1px] w-24 sm:w-48 bg-gradient-to-l from-transparent to-red-500/60" />
+          </div>
+          <div className="grid grid-cols-1 gap-12 sm:gap-14 md:grid-cols-2 justify-items-center max-w-3xl mx-auto">
+            {facultyAdvisors.map((faculty) => (
+              <MemberCard 
+                key={faculty.id} 
+                name={faculty.name}
+                role={faculty.role}
+                image={faculty.image}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* ================= FOURTH YEAR SECTION ================= */}
+        <section className="mt-36 md:mt-48">
           <div className="flex items-center justify-center gap-6 mb-20">
             <div className="h-[1px] w-24 sm:w-48 bg-gradient-to-r from-transparent to-red-500/60" />
             <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl md:text-5xl drop-shadow-[0_0_20px_rgba(255,30,67,0.5)]">
@@ -44,6 +81,7 @@ export default async function MembersPage() {
           </div>
         </section>
 
+        {/* ================= THIRD YEAR SECTION ================= */}
         <section className="mt-36 md:mt-48">
           <div className="flex items-center justify-center gap-6 mb-20">
             <div className="h-[1px] w-24 sm:w-48 bg-gradient-to-r from-transparent to-red-500/60" />
@@ -66,6 +104,7 @@ export default async function MembersPage() {
           </div>
         </section>
 
+        {/* ================= SECOND YEAR SECTION ================= */}
         <section className="mt-36 md:mt-48">
           <div className="flex items-center justify-center gap-6 mb-20">
             <div className="h-[1px] w-24 sm:w-48 bg-gradient-to-r from-transparent to-red-500/60" />

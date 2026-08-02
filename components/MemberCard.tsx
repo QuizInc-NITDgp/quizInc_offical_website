@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 
 function LinkedinIcon({ className }: { className?: string }) {
@@ -18,14 +19,6 @@ function InstagramIcon({ className }: { className?: string }) {
   );
 }
 
-function getInitials(name?: string): string {
-  if (!name || typeof name !== "string") return "?";
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "?";
-  if (parts.length === 1) return parts[0][0].toUpperCase();
-  return (parts[0][0] + parts[1][0]).toUpperCase();
-}
-
 interface MemberProps {
   name?: string;
   role?: string;
@@ -41,28 +34,34 @@ export default function MemberCard({
   linkedin,
   instagram,
 }: MemberProps) {
+  const [isTouched, setIsTouched] = useState(false);
+
   const isGooglePhoto = image.includes("googleusercontent.com");
   const hasImage = Boolean(image && image.trim().length > 0) && !isGooglePhoto;
 
   return (
-    <div className="relative w-[400px] h-[500px] flex items-center justify-center">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[520px] bg-red-600/50 rounded-full blur-[70px] opacity-80 transition-all duration-500 group-hover:bg-red-500/80 group-hover:blur-[80px] group-hover:scale-110 pointer-events-none z-0" />
+    <div 
+      className="relative w-[400px] h-[500px] flex items-center justify-center"
+      onClick={() => setIsTouched(!isTouched)}
+    >
+      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[520px] bg-red-600/50 rounded-full blur-[70px] opacity-80 transition-all duration-500 group-hover:bg-red-500/80 group-hover:blur-[80px] group-hover:scale-110 pointer-events-none z-0 ${isTouched ? "bg-red-500/80 blur-[80px] scale-110" : ""}`} />
 
-      <div className="group absolute top-1/2 left-1/2 w-[350px] h-[450px] -translate-x-1/2 -translate-y-1/2 rounded-[16px] overflow-hidden shadow-[0_0_30px_rgba(255,30,67,0.4)] border border-red-500/40 cursor-pointer transition-all duration-500 bg-[#0f0205] z-10">
+      <div className={`group absolute top-1/2 left-1/2 w-[350px] h-[450px] -translate-x-1/2 -translate-y-1/2 rounded-[16px] overflow-hidden shadow-[0_0_30px_rgba(255,30,67,0.4)] border border-red-500/40 cursor-pointer transition-all duration-500 bg-[#0f0205] z-10 ${isTouched ? "active-touch" : ""}`}>
         
-        <div className="absolute top-0 left-0 w-full h-full z-10 bg-black transition-transform duration-700 group-hover:-translate-y-[100px]">
+        {/* Top Image Container */}
+        <div className={`absolute top-0 left-0 w-full h-full z-10 bg-black transition-transform duration-700 group-hover:-translate-y-[100px] ${isTouched ? "-translate-y-[100px]" : ""}`}>
           {hasImage ? (
             <Image
               src={image}
               alt={name || "Member profile"}
               fill
-              className="object-cover transition-opacity duration-500 group-hover:opacity-40"
+              className={`object-cover transition-opacity duration-500 group-hover:opacity-40 ${isTouched ? "opacity-40" : ""}`}
             />
           ) : (
-            <div className="h-full w-full bg-zinc-900 group-hover:opacity-40 transition-opacity duration-500" />
+            <div className={`h-full w-full bg-zinc-900 transition-opacity duration-500 group-hover:opacity-40 ${isTouched ? "opacity-40" : ""}`} />
           )}
 
-          <div className="absolute -inset-[50%] z-25 pointer-events-none mix-blend-screen opacity-25 -rotate-[25deg] transition-opacity duration-500 group-hover:opacity-15 flex items-center justify-center">
+          <div className={`absolute -inset-[50%] z-25 pointer-events-none mix-blend-screen opacity-25 -rotate-[25deg] transition-opacity duration-500 group-hover:opacity-15 flex items-center justify-center ${isTouched ? "opacity-15" : ""}`}>
             <div
               className="w-[200%] h-[200%] bg-repeat"
               style={{
@@ -74,8 +73,9 @@ export default function MemberCard({
           </div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 p-6 z-15 flex flex-col text-left bg-gradient-to-t from-black/95 via-black/40 to-transparent transition-opacity duration-300 group-hover:opacity-0 pointer-events-none">
-          <h3 className="text-2xl font-black text-white tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
+        {/* Initial Name & Role Overlay */}
+        <div className={`absolute bottom-0 left-0 right-0 p-6 z-15 flex flex-col text-left bg-gradient-to-t from-black/95 via-black/40 to-transparent transition-opacity duration-300 group-hover:opacity-0 pointer-events-none ${isTouched ? "opacity-0" : ""}`}>
+          <h3 className="text-2xl font-black text-white uppercase tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
             {name}
           </h3>
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-red-400 mt-1">
@@ -83,6 +83,7 @@ export default function MemberCard({
           </p>
         </div>
 
+        {/* Social Icons */}
         <ul className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex gap-3 pointer-events-none group-hover:pointer-events-auto">
           <li className="list-none">
             <a
@@ -90,7 +91,7 @@ export default function MemberCard({
               target={linkedin ? "_blank" : "_self"}
               rel="noopener noreferrer"
               aria-label="LinkedIn Profile"
-              className="relative flex items-center justify-center w-[50px] h-[50px] bg-white/90 text-[#0077b5] text-2xl font-bold rounded-full transition-all duration-400 translate-y-[200px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-100 hover:bg-[#0077b5] hover:text-white hover:shadow-[0_0_20px_rgba(0,119,181,0.6)]"
+              className={`relative flex items-center justify-center w-[50px] h-[50px] bg-white/90 text-[#0077b5] text-2xl font-bold rounded-full transition-all duration-400 translate-y-[200px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-100 hover:bg-[#0077b5] hover:text-white hover:shadow-[0_0_20px_rgba(0,119,181,0.6)] ${isTouched ? "!translate-y-0 !opacity-100 pointer-events-auto" : ""}`}
             >
               <LinkedinIcon className="w-6 h-6 transition-transform duration-700 hover:rotate-y-180" />
             </a>
@@ -102,15 +103,16 @@ export default function MemberCard({
               target={instagram ? "_blank" : "_self"}
               rel="noopener noreferrer"
               aria-label="Instagram Profile"
-              className="relative flex items-center justify-center w-[50px] h-[50px] bg-white/90 text-[#e1306c] text-2xl font-bold rounded-full transition-all duration-400 translate-y-[200px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-200 hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] hover:text-white hover:shadow-[0_0_20px_rgba(225,48,108,0.6)]"
+              className={`relative flex items-center justify-center w-[50px] h-[50px] bg-white/90 text-[#e1306c] text-2xl font-bold rounded-full transition-all duration-400 translate-y-[200px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-200 hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] hover:text-white hover:shadow-[0_0_20px_rgba(225,48,108,0.6)] ${isTouched ? "!translate-y-0 !opacity-100 pointer-events-auto" : ""}`}
             >
               <InstagramIcon className="w-6 h-6 transition-transform duration-700 hover:rotate-y-180" />
             </a>
           </li>
         </ul>
 
-        <div className="absolute -bottom-[120px] left-0 w-full h-[120px] z-30 p-[10px] bg-white/90 backdrop-blur-md opacity-0 transition-all duration-400 group-hover:bottom-0 group-hover:opacity-100 delay-500 flex flex-col justify-center items-center text-center">
-          <h2 className="text-2xl font-bold text-zinc-900 m-0 p-0">
+        {/* Bottom Slide-up Details Panel */}
+        <div className={`absolute -bottom-[120px] left-0 w-full h-[120px] z-30 p-[10px] bg-white/90 backdrop-blur-md opacity-0 transition-all duration-400 group-hover:bottom-0 group-hover:opacity-100 delay-500 flex flex-col justify-center items-center text-center ${isTouched ? "!bottom-0 !opacity-100" : ""}`}>
+          <h2 className="text-2xl font-bold text-zinc-900 uppercase m-0 p-0">
             {name}
             <br />
             <span className="block text-[11px] font-semibold uppercase tracking-[0.2em] text-red-600 leading-[2rem] mt-1">

@@ -14,7 +14,7 @@ const bungee = Bungee({
   subsets: ["latin"],
   weight: ["400"],
   variable: "--font-bungee",
-});
+}); 
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

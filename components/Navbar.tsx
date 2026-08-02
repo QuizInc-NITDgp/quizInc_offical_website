@@ -8,10 +8,9 @@ import { Menu, X } from "lucide-react";
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "About Us", href: "/AboutUs" },
   { label: "Quizittch Cup", href: "/Qc" },
   { label: "Alumnis", href: "/alumni" },
-  { label: "Members", href: "/member" },
+  { label: "Team", href: "/member" },
   { label: "Events", href: "/events" },
   { label: "Gallery", href: "/gallery" },
   { label: "Contact us", href: "/contact" },
@@ -56,9 +55,7 @@ export default function Navbar() {
     xl:pl-10
   "
 >
-      {/* ================================================= */}
-      {/* SCROLL BACKGROUND */}
-      {/* ================================================= */}
+     
 
       <div
         className={`

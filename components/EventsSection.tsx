@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -509,9 +510,56 @@ export default function EventsSection() {
           ))}
         </div>
 
+        {/* ================= MORE EVENTS BUTTON ================= */}
+
+        <div className="mt-16 flex justify-center">
+          <Link
+            href="/events"
+            className="
+              group
+              relative
+              inline-flex
+              items-center
+              gap-3
+              overflow-hidden
+              rounded-full
+              border
+              border-red-500/30
+              bg-black/60
+              px-8
+              py-4
+              text-sm
+              font-bold
+              uppercase
+              tracking-widest
+              text-white
+              backdrop-blur-md
+              transition-all
+              duration-300
+              hover:border-red-500/60
+              hover:bg-red-950/30
+              hover:shadow-[0_0_30px_rgba(255,0,40,0.3)]
+            "
+          >
+            <span className="relative z-10 transition-transform duration-300 group-hover:-translate-x-1">
+              More Events
+            </span>
+            <svg
+              className="relative z-10 h-4 w-4 text-red-500 transition-transform duration-300 group-hover:translate-x-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2.5"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+            <div className="absolute inset-0 bg-gradient-to-r from-red-600/10 to-rose-600/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          </Link>
+        </div>
+
         {/* ================= BOTTOM TEXT ================= */}
 
-        <div className="mt-20 text-center">
+        <div className="mt-16 text-center">
           <p className="text-sm uppercase tracking-[0.3em] text-red-400/70">
             Curiosity • Competition • Community
           </p>
