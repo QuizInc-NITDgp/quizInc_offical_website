@@ -36,26 +36,25 @@ export default function Navbar() {
 
   return (
     <header
-  className="
-    fixed
-    top-0
-    left-0
-    right-0
-    z-50
-    w-full
+      className="
+        fixed
+        top-0
+        left-0
+        right-0
+        z-50
+        w-full
 
-    pl-4
-    py-3
+        pl-4
+        py-4
 
-    sm:pl-5
+        sm:pl-5
 
-    lg:pl-8
-    lg:py-2
+        lg:pl-8
+        lg:py-3
 
-    xl:pl-10
-  "
->
-     
+        xl:pl-10
+      "
+    >
 
       <div
         className={`
@@ -103,12 +102,12 @@ export default function Navbar() {
           <Image
             src="/logo.jpg"
             alt="QuizInc Logo"
-            width={70}
-            height={45}
+            width={90}
+            height={58}
             priority
             className="
               h-auto
-              w-[65px]
+              w-[85px]
               object-contain
               drop-shadow-[0_0_12px_rgba(255,30,67,0.3)]
             "
@@ -156,7 +155,7 @@ export default function Navbar() {
               flex
               items-center
 
-              gap-6
+              gap-8
 
               rounded-l-full
 
@@ -165,9 +164,9 @@ export default function Navbar() {
               via-[#100003]/90
               to-[#100003]/75
 
-              pl-9
-              pr-10
-              py-2
+              pl-12
+              pr-14
+              py-3.5
 
               backdrop-blur-md
 
@@ -195,8 +194,8 @@ export default function Navbar() {
                     px-2
                     py-1
 
-                    font-serif
-                    text-sm
+                    font-baloo
+                    text-base
                     font-semibold
 
                     drop-shadow-sm
@@ -250,46 +249,46 @@ export default function Navbar() {
         {/* MOBILE HAMBURGER */}
         {/* ================================================= */}
 
-       <button
-  onClick={() => setIsOpen((prev) => !prev)}
-  aria-label="Toggle navigation menu"
-  className="
-    z-50
-    mr-8
+        <button
+          onClick={() => setIsOpen((prev) => !prev)}
+          aria-label="Toggle navigation menu"
+          className="
+            z-50
+            mr-8
 
-    flex
-    shrink-0
-    items-center
-    justify-center
+            flex
+            shrink-0
+            items-center
+            justify-center
 
-    rounded-lg
+            rounded-lg
 
-    border
-    border-red-500/40
+            border
+            border-red-500/40
 
-    bg-black/60
+            bg-black/60
 
-    p-2
+            p-2.5
 
-    text-white
+            text-white
 
-    backdrop-blur-md
+            backdrop-blur-md
 
-    shadow-[0_0_15px_rgba(255,30,67,0.2)]
+            shadow-[0_0_15px_rgba(255,30,67,0.2)]
 
-    transition-all
+            transition-all
 
-    hover:bg-red-950/40
+            hover:bg-red-950/40
 
-    active:scale-95
+            active:scale-95
 
-    lg:hidden
-  "
->
+            lg:hidden
+          "
+        >
           {isOpen ? (
-            <X className="h-5 w-5 text-red-400" />
+            <X className="h-6 w-6 text-red-400" />
           ) : (
-            <Menu className="h-5 w-5 text-rose-100" />
+            <Menu className="h-6 w-6 text-rose-100" />
           )}
         </button>
       </div>
@@ -306,7 +305,7 @@ export default function Navbar() {
           z-40
 
           flex
-          w-60
+          w-64
           flex-col
           justify-between
 
@@ -360,10 +359,10 @@ export default function Navbar() {
                     border-b
                     border-red-500/10
 
-                    py-2
+                    py-2.5
 
-                    font-serif
-                    text-sm
+                    font-baloo
+                    text-base
                     font-semibold
 
                     transition-all

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useRef } from "react";
 import Image from "next/image";
 
 function LinkedinIcon({ className }: { className?: string }) {
@@ -28,97 +28,149 @@ interface MemberProps {
 }
 
 export default function MemberCard({
-  name = "",
-  role = "",
+  name = "John Doe",
+  role = "Creative Director",
   image = "",
   linkedin,
   instagram,
 }: MemberProps) {
   const [isTouched, setIsTouched] = useState(false);
+  const [transformStyle, setTransformStyle] = useState("");
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const isGooglePhoto = image.includes("googleusercontent.com");
   const hasImage = Boolean(image && image.trim().length > 0) && !isGooglePhoto;
 
+  // 3D Parallax Tilt Effect
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    const rotateX = ((y - centerY) / centerY) * -8; // Pitch tilt angle
+    const rotateY = ((x - centerX) / centerX) * 8;  // Yaw tilt angle
+
+    setTransformStyle(`perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`);
+  };
+
+  const handleMouseLeave = () => {
+    setTransformStyle("perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)");
+  };
+
   return (
     <div 
-      className="relative w-[400px] h-[500px] flex items-center justify-center"
+      className="relative w-[400px] h-[500px] flex items-center justify-center perspective-1000 select-none"
       onClick={() => setIsTouched(!isTouched)}
     >
-      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[520px] bg-red-600/50 rounded-full blur-[70px] opacity-80 transition-all duration-500 group-hover:bg-red-500/80 group-hover:blur-[80px] group-hover:scale-110 pointer-events-none z-0 ${isTouched ? "bg-red-500/80 blur-[80px] scale-110" : ""}`} />
+      {/* Background Animated Ambient Red Glow */}
+      <div 
+        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[520px] bg-red-600/40 rounded-full blur-[80px] transition-all duration-700 ease-out pointer-events-none z-0 group-hover:bg-red-500/70 group-hover:blur-[90px] group-hover:scale-110 ${
+          isTouched ? "bg-red-500/70 blur-[90px] scale-110" : "animate-pulse"
+        }`} 
+      />
 
-      <div className={`group absolute top-1/2 left-1/2 w-[350px] h-[450px] -translate-x-1/2 -translate-y-1/2 rounded-[16px] overflow-hidden shadow-[0_0_30px_rgba(255,30,67,0.4)] border border-red-500/40 cursor-pointer transition-all duration-500 bg-[#0f0205] z-10 ${isTouched ? "active-touch" : ""}`}>
-        
+      {/* Main Interactive Card Container */}
+      <div 
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{ transform: transformStyle, transition: "transform 0.15s ease-out, box-shadow 0.5s ease" }}
+        className={`group absolute top-1/2 left-1/2 w-[350px] h-[450px] -translate-x-1/2 -translate-y-1/2 rounded-[20px] overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.8),0_0_20px_rgba(239,68,68,0.3)] border border-red-500/30 cursor-pointer bg-[#0a0204] z-10 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.9),0_0_35px_rgba(239,68,68,0.6)] hover:border-red-500/60 ${
+          isTouched ? "active-touch" : ""
+        }`}
+      >
+
         {/* Top Image Container */}
-        <div className={`absolute top-0 left-0 w-full h-full z-10 bg-black transition-transform duration-700 group-hover:-translate-y-[100px] ${isTouched ? "-translate-y-[100px]" : ""}`}>
+        <div 
+          className={`absolute top-0 left-0 w-full h-full z-10 bg-black transition-transform duration-700 cubic-bezier(0.16, 1, 0.3, 1) group-hover:-translate-y-[110px] ${
+            isTouched ? "-translate-y-[110px]" : ""
+          }`}
+        >
           {hasImage ? (
             <Image
               src={image}
               alt={name || "Member profile"}
               fill
-              className={`object-cover transition-opacity duration-500 group-hover:opacity-40 ${isTouched ? "opacity-40" : ""}`}
+              className={`object-cover transition-all duration-700 group-hover:opacity-40 group-hover:scale-105 ${
+                isTouched ? "opacity-40 scale-105" : ""
+              }`}
             />
           ) : (
-            <div className={`h-full w-full bg-zinc-900 transition-opacity duration-500 group-hover:opacity-40 ${isTouched ? "opacity-40" : ""}`} />
+            <div className={`h-full w-full bg-gradient-to-br from-zinc-900 via-black to-zinc-950 transition-opacity duration-500 group-hover:opacity-40 ${
+              isTouched ? "opacity-40" : ""
+            }`} />
           )}
 
-          <div className={`absolute -inset-[50%] z-25 pointer-events-none mix-blend-screen opacity-25 -rotate-[25deg] transition-opacity duration-500 group-hover:opacity-15 flex items-center justify-center ${isTouched ? "opacity-15" : ""}`}>
-            <div
-              className="w-[200%] h-[200%] bg-repeat"
-              style={{
-                backgroundImage: "url('/q.png')",
-                backgroundSize: "140px 140px",
-                backgroundPosition: "center",
-              }}
-            />
-          </div>
+          {/* Shimmer Light Leak Effect */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none transform -translate-x-full group-hover:translate-x-full duration-1000" />
         </div>
 
-        {/* Initial Name & Role Overlay */}
-        <div className={`absolute bottom-0 left-0 right-0 p-6 z-15 flex flex-col text-left bg-gradient-to-t from-black/95 via-black/40 to-transparent transition-opacity duration-300 group-hover:opacity-0 pointer-events-none ${isTouched ? "opacity-0" : ""}`}>
-          <h3 className="text-2xl font-black text-white uppercase tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
+        {/* Initial Overlay Name & Role (Fade out on hover) */}
+        <div 
+          className={`absolute bottom-0 left-0 right-0 p-6 z-15 flex flex-col text-left bg-gradient-to-t from-black via-black/60 to-transparent transition-all duration-500 group-hover:opacity-0 group-hover:translate-y-4 pointer-events-none ${
+            isTouched ? "opacity-0 translate-y-4" : ""
+          }`}
+        >
+          <h3 className="text-3xl font-black text-white uppercase tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] transition-all">
             {name}
           </h3>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-red-400 mt-1">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-red-400 mt-1.5">
             {role}
           </p>
         </div>
 
-        {/* Social Icons */}
-        <ul className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex gap-3 pointer-events-none group-hover:pointer-events-auto">
+        {/* Social Floating Icons with Stagger Animations */}
+        <ul className="absolute top-[42%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex gap-4 pointer-events-none group-hover:pointer-events-auto">
+          {/* LinkedIn Icon */}
           <li className="list-none">
             <a
               href={linkedin || "#"}
               target={linkedin ? "_blank" : "_self"}
               rel="noopener noreferrer"
               aria-label="LinkedIn Profile"
-              className={`relative flex items-center justify-center w-[50px] h-[50px] bg-white/90 text-[#0077b5] text-2xl font-bold rounded-full transition-all duration-400 translate-y-[200px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-100 hover:bg-[#0077b5] hover:text-white hover:shadow-[0_0_20px_rgba(0,119,181,0.6)] ${isTouched ? "!translate-y-0 !opacity-100 pointer-events-auto" : ""}`}
+              onClick={(e) => e.stopPropagation()}
+              className={`relative flex items-center justify-center w-[54px] h-[54px] bg-white/95 text-[#0077b5] text-2xl font-bold rounded-2xl shadow-lg border border-white/20 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) translate-y-[150px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-100 hover:scale-110 hover:bg-[#0077b5] hover:text-white hover:shadow-[0_0_25px_rgba(0,119,181,0.8)] ${
+                isTouched ? "!translate-y-0 !opacity-100 pointer-events-auto" : ""
+              }`}
             >
-              <LinkedinIcon className="w-6 h-6 transition-transform duration-700 hover:rotate-y-180" />
+              <LinkedinIcon className="w-6 h-6 transition-transform duration-500 hover:scale-110" />
             </a>
           </li>
 
+          {/* Instagram Icon */}
           <li className="list-none">
             <a
               href={instagram || "#"}
               target={instagram ? "_blank" : "_self"}
               rel="noopener noreferrer"
               aria-label="Instagram Profile"
-              className={`relative flex items-center justify-center w-[50px] h-[50px] bg-white/90 text-[#e1306c] text-2xl font-bold rounded-full transition-all duration-400 translate-y-[200px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-200 hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] hover:text-white hover:shadow-[0_0_20px_rgba(225,48,108,0.6)] ${isTouched ? "!translate-y-0 !opacity-100 pointer-events-auto" : ""}`}
+              onClick={(e) => e.stopPropagation()}
+              className={`relative flex items-center justify-center w-[54px] h-[54px] bg-white/95 text-[#e1306c] text-2xl font-bold rounded-2xl shadow-lg border border-white/20 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) translate-y-[150px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-200 hover:scale-110 hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] hover:text-white hover:shadow-[0_0_25px_rgba(225,48,108,0.8)] ${
+                isTouched ? "!translate-y-0 !opacity-100 pointer-events-auto" : ""
+              }`}
             >
-              <InstagramIcon className="w-6 h-6 transition-transform duration-700 hover:rotate-y-180" />
+              <InstagramIcon className="w-6 h-6 transition-transform duration-500 hover:scale-110" />
             </a>
           </li>
         </ul>
 
-        {/* Bottom Slide-up Details Panel */}
-        <div className={`absolute -bottom-[120px] left-0 w-full h-[120px] z-30 p-[10px] bg-white/90 backdrop-blur-md opacity-0 transition-all duration-400 group-hover:bottom-0 group-hover:opacity-100 delay-500 flex flex-col justify-center items-center text-center ${isTouched ? "!bottom-0 !opacity-100" : ""}`}>
-          <h2 className="text-2xl font-bold text-zinc-900 uppercase m-0 p-0">
+        {/* Bottom Slide-Up Glassmorphism Detail Panel */}
+        <div 
+          className={`absolute -bottom-[120px] left-0 w-full h-[120px] z-30 p-4 bg-black/80 backdrop-blur-xl border-t border-red-500/30 opacity-0 transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1) group-hover:bottom-0 group-hover:opacity-100 flex flex-col justify-center items-center text-center ${
+            isTouched ? "!bottom-0 !opacity-100" : ""
+          }`}
+        >
+          <h2 className="text-xl font-black text-white uppercase tracking-wide m-0 p-0 w-full bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
             {name}
-            <br />
-            <span className="block text-[11px] font-semibold uppercase tracking-[0.2em] text-red-600 leading-[2rem] mt-1">
-              {role}
-            </span>
           </h2>
+          <span className="text-xs font-bold uppercase tracking-[0.25em] text-red-500 mt-1">
+            {role}
+          </span>
+          <div className="w-8 h-[2px] bg-red-600 rounded-full mt-2.5 transition-all duration-500 group-hover:w-16" />
         </div>
 
       </div>

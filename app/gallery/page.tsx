@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import DomeGallery from "@/components/DomeGallery";
+import { useState, useEffect, useRef } from "react";
+import DomeGallery, { DomeGalleryRef } from "@/components/DomeGallery";
+import TunnelBackground from "@/components/TunnelBackground";
 
 const photos = [
   "/photo1.JPG",
@@ -28,49 +29,69 @@ const photos = [
 
 export default function PhotoGlobe() {
   const [isMounted, setIsMounted] = useState(false);
+  const galleryRef = useRef<DomeGalleryRef>(null);
 
-  // Prevent hydration mismatch for window/client-side rendering
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  const handleRotate = (direction: "left" | "right") => {
+    const degrees = direction === "left" ? 35 : -35;
+    galleryRef.current?.rotateBy(degrees);
+  };
 
   if (!isMounted) return null;
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-black">
-      {/* Overlay Header */}
-      <header className="absolute top-14 sm:top-16 left-0 right-0 z-20 flex flex-col items-center justify-center pointer-events-none px-4 text-center mb-6 sm:mb-0">
-        <div className="relative flex flex-col items-center pointer-events-auto pt-8 sm:pb-0 px-4 sm:py-0 sm:px-0">
-          {/* Soft glow/shadow backdrop behind text so it stays readable over the globe */}
-          <div className="absolute -inset-x-4 -inset-y-2 sm:-inset-x-6 sm:-inset-y-4 bg-black/50 blur-2xl rounded-[1.5rem] sm:rounded-[2rem] -z-10 sm:pt-5" />
+      {/* Background */}
+      <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
+        <TunnelBackground />
+      </div>
 
-          <h1 className="font-heading text-xl leading-tight font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-rose-100 to-red-400 sm:text-5xl md:text-6xl sm:leading-[0.95] drop-shadow-[0_2px_20px_rgba(0,0,0,0.9)] mb-0 sm:mb-0 sm:mt-5">
-            Welcome to QuizInc
-            Gallery
-          </h1>
-          
-          {/* Reduced space above, and added a wrapper with padding/margin below the entire text block */}
-          <div className="mt-1 sm:mt-2 pb-6 sm:pb-8">
-            <p className="text-[9px] sm:text-base font-extrabold uppercase tracking-[0.2em] sm:tracking-[0.3em] text-red-400 drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
-              Drag or scroll to explore <br className="sm:hidden" />
-              the memory sphere
-            </p>
-          </div>
-        </div>
-      </header>
-
-      {/* 3D Dome / Rotating Globe Gallery Container */}
-      <div className="absolute inset-0 w-full h-full pt-15 pb-0">
+      {/* 3D Dome Gallery Container - Full Viewport */}
+      <div className="absolute inset-0 w-full h-full z-10">
         <DomeGallery
+          ref={galleryRef}
           images={photos}
-          fit={0.8}
-          minRadius={600}
-          maxVerticalRotationDeg={0} // Enabled slight vertical range for better globe feel
+          fit={1.1}
+          padFactor={0}
+          minRadius={800}
+          maxVerticalRotationDeg={0}
           segments={34}
           dragDampening={2}
           grayscale={false}
+          overlayBlurColor="transparent"
         />
       </div>
+
+      {/* Title Header - Positioned safely below top navigation */}
+      <header className="absolute top-20 sm:top-24 left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center w-full px-4">
+        <h1 className="inline-block font-heading text-2xl sm:text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-rose-100 to-red-400 drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] tracking-tight">
+          QuizInc Universe
+        </h1>
+      </header>
+
+      {/* Navigation Buttons */}
+      <button
+        onClick={() => handleRotate("left")}
+        className="absolute left-6 top-1/2 -translate-y-1/2 z-30 p-4 rounded-full bg-black/30 hover:bg-black/60 border border-white/10 text-white/70 hover:text-white backdrop-blur-md transition-all duration-300 pointer-events-auto shadow-[0_0_20px_rgba(0,0,0,0.5)] group cursor-pointer"
+        aria-label="Rotate Left"
+      >
+        <svg className="w-6 h-6 transition-transform duration-300 group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      <button
+        onClick={() => handleRotate("right")}
+        className="absolute right-6 top-1/2 -translate-y-1/2 z-30 p-4 rounded-full bg-black/30 hover:bg-black/60 border border-white/10 text-white/70 hover:text-white backdrop-blur-md transition-all duration-300 pointer-events-auto shadow-[0_0_20px_rgba(0,0,0,0.5)] group cursor-pointer"
+        aria-label="Rotate Right"
+      >
+        <svg className="w-6 h-6 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
     </div>
   );
 }

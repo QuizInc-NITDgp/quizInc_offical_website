@@ -1,12 +1,20 @@
 import Navbar from "@/components/Navbar";
 import TunnelBackground from "@/components/TunnelBackground";
 import "./globals.css";
-import { Baloo_2, Bungee } from "next/font/google";
+
 import Footer from "@/components/Footer";
+
+import { Baloo_2, Bungee, Space_Grotesk } from "next/font/google";
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-space",
+});
 
 const baloo = Baloo_2({
   subsets: ["latin"],
-  weight: ["600", "700"],
+  weight: ["600", "700", "800"], // add 800
   variable: "--font-baloo",
 });
 

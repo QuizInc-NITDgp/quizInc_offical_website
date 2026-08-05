@@ -9,33 +9,33 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 const events = [
   {
     title: "Quizzitch Cup",
-    description:
-      "Quizzitch Cup is the flagship event hosted by QuizInc, the official quiz club of NIT Durgapur. The 2025 edition organized a treasure hunt and a Harry Potter Auction, alongside quizzes on India, Fandom, Cipherquest (NSFW),Geopolitics, and Sports",
+    image: "/quizzitch.jpeg",
+    slug: "quizzitch-cup",
   },
   {
     title: "Qriosity",
-    description:
-       "Qriosity is an annual offline quiz hosted by QuizInc, designed specifically for the freshers of NIT Durgapur. Crafted to introduce the freshers to the world of competitive quizzing, Qriosity aims to spark curiosity and foster a sense of healthy competition among the participants."    
+    image: "/qriosity.jpeg",
+    slug: "qriosity",
   },
   {
     title: "FIFA WC Quiz",
-    description:
- "Qriosity is an annual offline quiz hosted by QuizInc, designed specifically for the freshers of NIT Durgapur. Crafted to introduce the freshers to the world of competitive quizzing, Qriosity aims to spark curiosity and foster a sense of healthy competition among the participants."
+    image: "/fifawcquiz.jpeg",
+    slug: "fifa-wc-quiz",
   },
   {
     title: "Howzatt",
-    description:
-      "Howzzat is the annual cricket quiz organized by QuizInc, NIT Durgapur, conducted through Instagram Stories and the final round on Google Meet. The event brings together cricket enthusiasts from across the country, testing their knowledge of the sport in a fun and engaging way.",
+    image: "/howzzat.jpeg",
+    slug: "howzatt",
   },
   {
     title: "Qmanji",
-    description:
-      "Qmanji was a high energy, campus spanning adventure in the Quizzitch Cup, organized by QuizInc. Teams chased cryptic trails, made split second choices, and figured out where each clue is trying to lead them. ",
+    image: "/qmanji.jpeg",
+    slug: "qmanji",
   },
   {
     title: "Inter College Quiz",
-    description:
-      "The Inter College MELA Quiz was hosted during Recstacy 2026, by the collaboration of QuizInc and Students' Gymkhana. It wasn't just a competition; it was a high-octane celebration of media, entertainment, literature and arts.",
+    image: "/intercollegequiz.jpeg",
+    slug: "inter-college-quiz",
   },
 ];
 
@@ -52,62 +52,36 @@ export default function EventsSection() {
 
     const ctx = gsap.context(() => {
       const container = cardsRef.current;
-
       if (!container) return;
 
-      const cards =
-        gsap.utils.toArray<HTMLElement>(".event-card");
-
+      const cards = gsap.utils.toArray<HTMLElement>(".event-card");
       if (cards.length === 0) return;
 
       const mm = gsap.matchMedia();
 
-      // --------------------------------------------------------
-      // DESKTOP / TABLET: original stack -> arrange animation
-      // --------------------------------------------------------
+      // Desktop / Tablet animation
       mm.add("(min-width: 768px)", () => {
-        const containerRect =
-          container.getBoundingClientRect();
-
-        const centerX =
-          containerRect.left + containerRect.width / 2;
-
-        const centerY =
-          containerRect.top + containerRect.height / 2;
+        const containerRect = container.getBoundingClientRect();
+        const centerX = containerRect.left + containerRect.width / 2;
+        const centerY = containerRect.top + containerRect.height / 2;
 
         cards.forEach((card, index) => {
           const rect = card.getBoundingClientRect();
-
-          const cardCenterX =
-            rect.left + rect.width / 2;
-
-          const cardCenterY =
-            rect.top + rect.height / 2;
-
-          const offsetX =
-            centerX - cardCenterX;
-
-          const offsetY =
-            centerY - cardCenterY;
+          const cardCenterX = rect.left + rect.width / 2;
+          const cardCenterY = rect.top + rect.height / 2;
+          const offsetX = centerX - cardCenterX;
+          const offsetY = centerY - cardCenterY;
 
           gsap.set(card, {
             x: offsetX,
             y: offsetY,
-
             rotation: (index - (cards.length - 1) / 2) * 1.5,
-
             scale: 0.96,
-
             opacity: 0,
-
             zIndex: cards.length - index,
-
             transformOrigin: "50% 50%",
-
             force3D: true,
-
             willChange: "transform, opacity",
-
             backfaceVisibility: "hidden",
           });
         });
@@ -115,18 +89,14 @@ export default function EventsSection() {
         const timeline = gsap.timeline({
           scrollTrigger: {
             trigger: container,
-
             start: "top 80%",
-
             once: true,
           },
         });
 
         timeline.to(cards, {
           opacity: 1,
-
           duration: 0.35,
-
           ease: "power2.out",
         });
 
@@ -135,22 +105,15 @@ export default function EventsSection() {
         timeline.to(cards, {
           x: 0,
           y: 0,
-
           rotation: 0,
-
           scale: 1,
-
           duration: 1.25,
-
           stagger: {
             each: 0.16,
             from: "start",
           },
-
           ease: "power2.inOut",
-
           force3D: true,
-
           overwrite: "auto",
         });
 
@@ -163,11 +126,7 @@ export default function EventsSection() {
         };
       });
 
-      // --------------------------------------------------------
-      // MOBILE: each card slides/fades in individually as it
-      // enters view — alternating direction for a noticeable,
-      // "walking down the list" effect while scrolling.
-      // --------------------------------------------------------
+      // Mobile reveal animation
       mm.add("(max-width: 767px)", () => {
         cards.forEach((card, index) => {
           const fromLeft = index % 2 === 0;
@@ -215,11 +174,8 @@ export default function EventsSection() {
   // 3D HOVER (DESKTOP)
   // ============================================================
 
-  const handleMouseMove = (
-    e: React.MouseEvent<HTMLDivElement>
-  ) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const card = e.currentTarget;
-
     const rect = card.getBoundingClientRect();
 
     const mouseX = e.clientX - rect.left;
@@ -228,70 +184,47 @@ export default function EventsSection() {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    const rotateY =
-      ((mouseX - centerX) / centerX) * 6;
-
-    const rotateX =
-      -((mouseY - centerY) / centerY) * 6;
+    const rotateY = ((mouseX - centerX) / centerX) * 6;
+    const rotateX = -((mouseY - centerY) / centerY) * 6;
 
     gsap.to(card, {
       rotateX,
       rotateY,
-
-      y: -10,
-
+      y: -6,
       scale: 1.025,
-
       transformPerspective: 900,
-
       transformOrigin: "center",
-
       duration: 0.3,
-
       ease: "power2.out",
-
       overwrite: "auto",
-
       force3D: true,
     });
   };
 
-  const handleMouseLeave = (
-    e: React.MouseEvent<HTMLDivElement>
-  ) => {
+  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
     gsap.to(e.currentTarget, {
       rotateX: 0,
       rotateY: 0,
-
       y: 0,
-
       scale: 1,
-
       duration: 0.5,
-
       ease: "power3.out",
-
       overwrite: "auto",
-
       force3D: true,
     });
   };
 
   // ============================================================
-  // TAP EFFECT (MOBILE) — since hover never fires on touch,
-  // this gives a noticeable "pop" + glow beam when tapped/held.
+  // TAP EFFECT (MOBILE)
   // ============================================================
 
-  const handleTouchStart = (
-    e: React.TouchEvent<HTMLDivElement>
-  ) => {
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     const card = e.currentTarget;
-
     card.classList.add("mobile-active");
 
     gsap.to(card, {
       scale: 1.03,
-      y: -6,
+      y: -4,
       duration: 0.25,
       ease: "power2.out",
       overwrite: "auto",
@@ -299,9 +232,7 @@ export default function EventsSection() {
     });
   };
 
-  const handleTouchEnd = (
-    e: React.TouchEvent<HTMLDivElement>
-  ) => {
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
     const card = e.currentTarget;
 
     gsap.to(card, {
@@ -313,7 +244,6 @@ export default function EventsSection() {
       force3D: true,
     });
 
-    // Let the glow linger briefly after release, then fade out
     setTimeout(() => {
       card.classList.remove("mobile-active");
     }, 400);
@@ -323,47 +253,42 @@ export default function EventsSection() {
     <section
       ref={sectionRef}
       id="events-section"
-      className="relative min-h-screen scroll-mt-20 px-6 py-28 -mt-px"
+      className="relative min-h-screen scroll-mt-20 px-6 py-20 -mt-px"
     >
-      <div className="relative z-10 mx-auto max-w-7xl">
-
+      <div className="relative z-10 mx-auto max-w-6xl">
         {/* ================= HEADING ================= */}
-
         <div className="text-center">
-          <p className="text-sm font-bold uppercase tracking-[0.4em] text-red-400">
+          <p className="text-xs font-bold uppercase tracking-[0.4em] text-red-400">
             What We Do
           </p>
 
-          <h2 className="mt-4 text-4xl font-black tracking-tight text-white sm:text-5xl md:text-6xl">
-            Our{" "}
-            <span className="text-red-500">
-              Events
-            </span>
+          <h2 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl md:text-5xl">
+            Our <span className="text-red-500">Events</span>
           </h2>
 
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-rose-100/70 md:text-lg">
-            From intense battles of knowledge to adventurous
-            treasure hunts, QuizInc creates experiences where
-            curiosity, competition, and community come together.
+          <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-rose-100/70 md:text-base">
+            From intense battles of knowledge to adventurous treasure hunts,
+            QuizInc creates experiences where curiosity, competition, and
+            community come together.
           </p>
         </div>
 
-        {/* ================= CARDS ================= */}
-
+        {/* ================= 3 CARDS PER ROW GRID ================= */}
         <div
           ref={cardsRef}
           className="
             relative
-            mt-16
+            mt-12
             grid
             grid-cols-1
-            gap-7
-            md:grid-cols-2
+            gap-6
+            sm:grid-cols-2
+            md:grid-cols-3
             lg:grid-cols-3
             [perspective:1200px]
           "
         >
-          {events.map((event, index) => (
+          {events.map((event) => (
             <div
               key={event.title}
               onMouseMove={handleMouseMove}
@@ -374,136 +299,140 @@ export default function EventsSection() {
                 event-card
                 group
                 relative
+                aspect-[3/5]
+                w-full
                 overflow-hidden
                 rounded-2xl
                 border
                 border-red-500/20
-                bg-black/40
-                p-8
-                text-left
+                bg-black/60
+                shadow-lg
                 backdrop-blur-sm
                 [transform-style:preserve-3d]
                 [backface-visibility:hidden]
-                transition-[border-color,background-color,box-shadow]
+                transition-[border-color,box-shadow]
                 duration-300
-                hover:border-red-500/40
-                hover:bg-red-950/20
-                hover:shadow-[0_20px_50px_rgba(255,0,40,0.25)]
+                hover:border-red-500/50
+                hover:shadow-[0_15px_35px_rgba(255,0,40,0.25)]
               "
             >
+              {/* Background Poster Image */}
+              {event.image ? (
+                <Image
+                  src={event.image}
+                  alt={event.title}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                  className="
+                    object-cover
+                    object-center
+                    transition-transform
+                    duration-700
+                    ease-out
+                    group-hover:scale-108
+                  "
+                />
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-b from-red-950/40 via-black/80 to-black" />
+              )}
 
-              {/* ============= BORDER BEAM ============= */}
-
+              {/* Dark Gradient Overlay for Text Readability */}
               <div
                 className="
                   pointer-events-none
                   absolute
                   inset-0
-                  rounded-2xl
-                  opacity-0
+                  bg-gradient-to-t
+                  from-black/95
+                  via-black/35
+                  to-transparent
                   transition-opacity
                   duration-300
-                  group-hover:opacity-100
+                  group-hover:opacity-90
                 "
-              >
-                <div
-                  className="
-                    absolute
-                    -inset-[100%]
-                    animate-[borderSpin_2.4s_linear_infinite]
-                    bg-[conic-gradient(from_0deg,transparent_0deg,transparent_305deg,#ff1e43_330deg,#ff758c_345deg,transparent_360deg)]
-                  "
+              />
+
+              {/* QuizInc Logo Watermark (Top Left) */}
+              <div className="absolute top-3.5 left-3.5 z-10 h-7 w-7 sm:top-4 sm:left-4 sm:h-8 sm:w-8">
+                <Image
+                  src="/q.png"
+                  alt="QuizInc"
+                  fill
+                  sizes="32px"
+                  className="object-contain drop-shadow-md"
                 />
               </div>
 
-              {/* ============= INNER BACKGROUND ============= */}
-
-              <div
-                className="
-                  pointer-events-none
-                  absolute
-                  inset-[1px]
-                  rounded-[15px]
-                  bg-[#120003]/95
-                "
-              />
-
-              {/* ============= QUIZINC LOGO ============= */}
-
-              <div className="relative mb-7 flex items-center gap-4">
-
-                {/* QuizInc Logo */}
-                <div className="relative h-12 w-12 shrink-0">
-                  <Image
-                    src="/q.png"
-                    alt="QuizInc"
-                    fill
-                    sizes="48px"
-                    className="
-        object-contain
-        transition-transform
-        duration-300
-        group-hover:scale-110
-      "
-                  />
-                </div>
-
+              {/* Card Content (Bottom Aligned) */}
+              <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col items-start p-4 sm:p-5">
                 {/* Event Title */}
-                <h3 className="text-2xl font-bold text-white">
+                <h3 className="text-lg font-bold text-white drop-shadow-md sm:text-xl transition-transform duration-300 group-hover:-translate-y-0.5">
                   {event.title}
                 </h3>
 
+                <div className="mt-2 h-[2px] w-8 bg-red-500 transition-all duration-500 group-hover:w-full" />
+
+                {/* View More Redirect Button */}
+                <Link
+                  href={`/events#${event.slug}`}
+                  className="
+                    mt-3
+                    inline-flex
+                    w-full
+                    items-center
+                    justify-between
+                    rounded-lg
+                    border
+                    border-red-500/30
+                    bg-red-950/40
+                    px-3.5
+                    py-2
+                    text-xs
+                    font-bold
+                    uppercase
+                    tracking-wider
+                    text-white
+                    backdrop-blur-md
+                    transition-all
+                    duration-300
+                    hover:border-red-500
+                    hover:bg-red-600
+                    hover:shadow-[0_0_15px_rgba(255,0,40,0.4)]
+                  "
+                >
+                  <span>View Details</span>
+                  <svg
+                    className="h-3.5 w-3.5 text-red-400 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M14 5l7 7m0 0l-7 7m7-7H3"
+                    />
+                  </svg>
+                </Link>
               </div>
 
-              {/* ============= DESCRIPTION ============= */}
-
-              <p
-                className="
-                  relative
-                  mt-4
-                  text-sm
-                  leading-relaxed
-                  text-rose-100/65
-                  md:text-base
-                  [transform:translateZ(20px)]
-                "
-              >
-                {event.description}
-              </p>
-
-              {/* ============= BOTTOM LINE ============= */}
-
-              <div
-                className="
-                  relative
-                  mt-8
-                  h-[1px]
-                  w-12
-                  bg-red-500/60
-                  transition-all
-                  duration-500
-                  group-hover:w-full
-                  [transform:translateZ(25px)]
-                "
-              />
-
-              {/* ============= INTERNAL GLOW ============= */}
-
+              {/* Internal Red Glow on Hover */}
               <div
                 className="
                   pointer-events-none
                   absolute
-                  -bottom-24
+                  -bottom-20
                   left-1/2
-                  h-40
-                  w-40
+                  h-36
+                  w-36
                   -translate-x-1/2
                   rounded-full
                   bg-red-500/0
-                  blur-[60px]
+                  blur-[50px]
                   transition-all
                   duration-500
-                  group-hover:bg-red-500/15
+                  group-hover:bg-red-500/20
                 "
               />
             </div>
@@ -511,8 +440,7 @@ export default function EventsSection() {
         </div>
 
         {/* ================= MORE EVENTS BUTTON ================= */}
-
-        <div className="mt-16 flex justify-center">
+        <div className="mt-14 flex justify-center">
           <Link
             href="/events"
             className="
@@ -520,15 +448,15 @@ export default function EventsSection() {
               relative
               inline-flex
               items-center
-              gap-3
+              gap-2.5
               overflow-hidden
               rounded-full
               border
               border-red-500/30
               bg-black/60
-              px-8
-              py-4
-              text-sm
+              px-6
+              py-3
+              text-xs
               font-bold
               uppercase
               tracking-widest
@@ -538,29 +466,32 @@ export default function EventsSection() {
               duration-300
               hover:border-red-500/60
               hover:bg-red-950/30
-              hover:shadow-[0_0_30px_rgba(255,0,40,0.3)]
+              hover:shadow-[0_0_25px_rgba(255,0,40,0.3)]
             "
           >
-            <span className="relative z-10 transition-transform duration-300 group-hover:-translate-x-1">
-              More Events
+            <span className="relative z-10 transition-transform duration-300 group-hover:-translate-x-0.5">
+              Explore All Events
             </span>
             <svg
-              className="relative z-10 h-4 w-4 text-red-500 transition-transform duration-300 group-hover:translate-x-1"
+              className="relative z-10 h-3.5 w-3.5 text-red-500 transition-transform duration-300 group-hover:translate-x-0.5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
               strokeWidth="2.5"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M14 5l7 7m0 0l-7 7m7-7H3"
+              />
             </svg>
             <div className="absolute inset-0 bg-gradient-to-r from-red-600/10 to-rose-600/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           </Link>
         </div>
 
         {/* ================= BOTTOM TEXT ================= */}
-
-        <div className="mt-16 text-center">
-          <p className="text-sm uppercase tracking-[0.3em] text-red-400/70">
+        <div className="mt-12 text-center">
+          <p className="text-xs uppercase tracking-[0.3em] text-red-400/70">
             Curiosity • Competition • Community
           </p>
         </div>

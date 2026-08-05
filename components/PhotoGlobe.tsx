@@ -56,9 +56,14 @@ export default function PhotoGlobe() {
         "
       />
 
-      {/* Q-Shape Container */}
-      <div className="relative h-[340px] w-[280px] sm:h-[360px] sm:w-[300px]">
-        <div className="absolute inset-0 translate-y-4">
+      {/*
+        Q-Shape Container — sized to contain the FULL coordinate range
+        (y goes up to 125) using a fixed 0–132 scale, so the shape stays
+        centered instead of overflowing. Pixel size kept compact so the
+        widget doesn't blow up the parent card's height.
+      */}
+      <div className="relative h-[360px] w-[220px] sm:h-[390px] sm:w-[240px] flex items-center justify-center">
+        <div className="absolute inset-0">
           {qShapeCoordinates.map(([x, y], index) => {
             const photo = photos[index % photos.length];
             const isSelected = activePhoto === photo;
@@ -71,15 +76,15 @@ export default function PhotoGlobe() {
                 onClick={() => setActivePhoto(photo)}
                 className={`
                   absolute
-                  h-[44px]
-                  w-[44px]
-                  sm:h-[42px]
-                  sm:w-[42px]
+                  h-[30px]
+                  w-[30px]
+                  sm:h-[32px]
+                  sm:w-[32px]
                   -translate-x-1/2
                   -translate-y-1/2
                   cursor-pointer
                   overflow-hidden
-                  rounded-xl
+                  rounded-lg
                   border-2
                   bg-black/90
                   transition-all
@@ -88,19 +93,19 @@ export default function PhotoGlobe() {
                   ${
                     activePhoto
                       ? "opacity-15 scale-75 border-red-500/20 blur-[1px]"
-                      : "border-red-500/70 shadow-[0_0_12px_rgba(255,30,67,0.6)] hover:z-50 hover:scale-[2.8] hover:border-red-300 hover:shadow-[0_0_30px_rgba(255,30,67,0.95)] hover:brightness-110"
+                      : "border-red-500/70 shadow-[0_0_10px_rgba(255,30,67,0.6)] hover:z-50 hover:scale-[2.6] hover:border-red-300 hover:shadow-[0_0_30px_rgba(255,30,67,0.95)] hover:brightness-110"
                   }
                 `}
                 style={{
                   left: `${x}%`,
-                  top: `${y}%`,
+                  top: `${(y / 132) * 100}%`,
                 }}
               >
                 <Image
                   src={photo}
                   alt={`QuizInc memory ${index + 1}`}
                   fill
-                  sizes="140px"
+                  sizes="100px"
                   quality={100}
                   className="object-cover"
                 />
@@ -112,12 +117,12 @@ export default function PhotoGlobe() {
 
       {/* Centered Active Image Overlay with fully transparent background */}
       {activePhoto && (
-        <div 
+        <div
           className="absolute inset-0 z-50 flex items-center justify-center bg-transparent transition-all duration-300"
           onClick={() => setActivePhoto(null)}
         >
-          <div 
-            className="relative h-[220px] w-[220px] overflow-hidden rounded-2xl border-2 border-red-300 bg-black shadow-[0_0_60px_rgba(255,30,67,0.95)] brightness-110 transition-transform duration-500 scale-100"
+          <div
+            className="relative h-[180px] w-[180px] overflow-hidden rounded-2xl border-2 border-red-300 bg-black shadow-[0_0_60px_rgba(255,30,67,0.95)] brightness-110 transition-transform duration-500 scale-100"
             onClick={(e) => {
               e.stopPropagation();
               setActivePhoto(null);
@@ -127,7 +132,7 @@ export default function PhotoGlobe() {
               src={activePhoto}
               alt="Selected memory"
               fill
-              sizes="400px"
+              sizes="300px"
               quality={100}
               className="object-cover cursor-pointer"
             />

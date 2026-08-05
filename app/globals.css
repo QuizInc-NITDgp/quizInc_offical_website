@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@theme {
+  --font-baloo: var(--font-baloo), sans-serif;
+  --font-bungee: var(--font-bungee), sans-serif;
+  --font-space: var(--font-space), sans-serif;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -26,7 +32,6 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 @keyframes borderSpin {
