@@ -19,10 +19,11 @@ function InstagramIcon({ className }: { className?: string }) {
   );
 }
 
-interface AlumniProps {
+export interface AlumniProps {
   name?: string;
   role?: string;
   organization?: string;
+  graduationYear?: string;
   image?: string;
   linkedin?: string;
   instagram?: string;
@@ -32,6 +33,7 @@ export default function AlumniCard({
   name = "Jane Doe",
   role = "Senior Engineer",
   organization = "Google",
+  graduationYear,
   image = "",
   linkedin,
   instagram,
@@ -49,10 +51,10 @@ export default function AlumniCard({
     const rect = cardRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
+
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
-    
+
     const rotateX = ((y - centerY) / centerY) * -8;
     const rotateY = ((x - centerX) / centerX) * 8;
 
@@ -64,19 +66,19 @@ export default function AlumniCard({
   };
 
   return (
-    <div 
+    <div
       className="relative w-[400px] h-[500px] flex items-center justify-center perspective-1000 select-none touch-manipulation"
       onClick={() => setIsTouched((prev) => !prev)}
     >
       {/* Background Animated Ambient Red Glow */}
-      <div 
+      <div
         className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[520px] bg-red-600/40 rounded-full blur-[80px] transition-all duration-700 ease-out pointer-events-none z-0 group-hover:bg-red-500/70 group-hover:blur-[90px] group-hover:scale-110 ${
           isTouched ? "bg-red-500/70 blur-[90px] scale-110" : "animate-pulse"
-        }`} 
+        }`}
       />
 
       {/* Main Interactive Card Container */}
-      <div 
+      <div
         ref={cardRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
@@ -85,9 +87,15 @@ export default function AlumniCard({
           isTouched ? "active-card" : ""
         }`}
       >
+        {/* Optional Graduation Year Badge (Top-Right) */}
+        {graduationYear && (
+          <div className="absolute top-4 right-4 z-20 px-3 py-1 rounded-full bg-black/60 border border-red-500/40 backdrop-blur-md text-[10px] font-bold tracking-widest text-red-400 uppercase">
+            Batch &apos;{graduationYear.slice(-2)}
+          </div>
+        )}
 
         {/* Top Profile Image Container */}
-        <div 
+        <div
           className={`absolute top-0 left-0 w-full h-full z-10 bg-black transition-transform duration-700 cubic-bezier(0.16, 1, 0.3, 1) group-hover:-translate-y-[120px] ${
             isTouched ? "-translate-y-[120px]" : ""
           }`}
@@ -102,9 +110,11 @@ export default function AlumniCard({
               }`}
             />
           ) : (
-            <div className={`h-full w-full bg-gradient-to-br from-zinc-900 via-black to-zinc-950 transition-opacity duration-500 group-hover:opacity-40 ${
-              isTouched ? "opacity-40" : ""
-            }`} />
+            <div
+              className={`h-full w-full bg-gradient-to-br from-zinc-900 via-black to-zinc-950 transition-opacity duration-500 group-hover:opacity-40 ${
+                isTouched ? "opacity-40" : ""
+              }`}
+            />
           )}
 
           {/* Shimmer Light Leak Effect */}
@@ -112,7 +122,7 @@ export default function AlumniCard({
         </div>
 
         {/* Initial Overlay Details (Fade out on hover/touch) */}
-        <div 
+        <div
           className={`absolute bottom-0 left-0 right-0 p-6 z-15 flex flex-col text-left bg-gradient-to-t from-black via-black/70 to-transparent transition-all duration-500 group-hover:opacity-0 group-hover:translate-y-4 pointer-events-none ${
             isTouched ? "opacity-0 translate-y-4" : ""
           }`}
@@ -135,9 +145,11 @@ export default function AlumniCard({
         </div>
 
         {/* Social Floating Icons with Stagger Animations */}
-        <ul className={`absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex gap-4 ${
-          isTouched ? "pointer-events-auto" : "pointer-events-none group-hover:pointer-events-auto"
-        }`}>
+        <ul
+          className={`absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex gap-4 ${
+            isTouched ? "pointer-events-auto" : "pointer-events-none group-hover:pointer-events-auto"
+          }`}
+        >
           {/* LinkedIn Icon */}
           <li className="list-none">
             <a
@@ -147,8 +159,8 @@ export default function AlumniCard({
               aria-label="LinkedIn Profile"
               onClick={(e) => e.stopPropagation()}
               className={`relative flex items-center justify-center w-[54px] h-[54px] bg-white/95 text-[#0077b5] text-2xl font-bold rounded-2xl shadow-lg border border-white/20 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) hover:scale-110 hover:bg-[#0077b5] hover:text-white hover:shadow-[0_0_25px_rgba(0,119,181,0.8)] ${
-                isTouched 
-                  ? "translate-y-0 opacity-100 delay-100" 
+                isTouched
+                  ? "translate-y-0 opacity-100 delay-100"
                   : "translate-y-[150px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-100"
               }`}
             >
@@ -165,8 +177,8 @@ export default function AlumniCard({
               aria-label="Instagram Profile"
               onClick={(e) => e.stopPropagation()}
               className={`relative flex items-center justify-center w-[54px] h-[54px] bg-white/95 text-[#e1306c] text-2xl font-bold rounded-2xl shadow-lg border border-white/20 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) hover:scale-110 hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] hover:text-white hover:shadow-[0_0_25px_rgba(225,48,108,0.8)] ${
-                isTouched 
-                  ? "translate-y-0 opacity-100 delay-200" 
+                isTouched
+                  ? "translate-y-0 opacity-100 delay-200"
                   : "translate-y-[150px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-200"
               }`}
             >
@@ -176,7 +188,7 @@ export default function AlumniCard({
         </ul>
 
         {/* Bottom Slide-Up Glassmorphism Detail Panel */}
-        <div 
+        <div
           className={`absolute -bottom-[120px] left-0 w-full h-[120px] z-30 p-4 bg-black/80 backdrop-blur-xl border-t border-red-500/30 opacity-0 transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1) group-hover:bottom-0 group-hover:opacity-100 flex flex-col justify-center items-center text-center ${
             isTouched ? "!bottom-0 !opacity-100" : ""
           }`}
@@ -193,13 +205,12 @@ export default function AlumniCard({
 
           {organization && (
             <span className="text-xs font-bold uppercase tracking-wide text-red-400 mt-0.5">
-              {organization}
+              {organization} {graduationYear ? `• Class of ${graduationYear}` : ""}
             </span>
           )}
 
           <div className="w-8 h-[2px] bg-red-600 rounded-full mt-2.5 transition-all duration-500 group-hover:w-16" />
         </div>
-
       </div>
     </div>
   );
