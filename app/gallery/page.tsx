@@ -65,11 +65,13 @@ export default function PhotoGlobe() {
         />
       </div>
 
-      {/* Title Header - Positioned safely below top navigation */}
-      <header className="absolute top-20 sm:top-24 left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center w-full px-4">
-        <h1 className="inline-block font-heading text-2xl sm:text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-rose-100 to-red-400 drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] tracking-tight">
-          QuizInc Universe
-        </h1>
+      {/* Title Header - Positioned safely below top navigation inside a Pill Container */}
+      <header className="absolute top-20 sm:top-24 left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center w-full px-4 flex justify-center">
+        <div className="inline-block px-6 py-2.5 rounded-full bg-black/60 border border-red-500/30 backdrop-blur-xl shadow-[0_0_25px_rgba(239,68,68,0.2)]">
+          <h1 className="font-heading text-xl sm:text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-rose-100 to-red-400 tracking-tight">
+            QuizInc Universe
+          </h1>
+        </div>
       </header>
 
       {/* Navigation Buttons */}

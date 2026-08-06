@@ -67,12 +67,12 @@ export default function AlumniCard({
 
   return (
     <div
-      className="relative w-[400px] h-[500px] flex items-center justify-center perspective-1000 select-none touch-manipulation"
+      className="relative w-full h-[360px] sm:h-[450px] md:w-[400px] md:h-[500px] flex items-center justify-center perspective-1000 select-none touch-manipulation"
       onClick={() => setIsTouched((prev) => !prev)}
     >
       {/* Background Animated Ambient Red Glow */}
       <div
-        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[520px] bg-red-600/40 rounded-full blur-[80px] transition-all duration-700 ease-out pointer-events-none z-0 group-hover:bg-red-500/70 group-hover:blur-[90px] group-hover:scale-110 ${
+        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-[420px] max-h-[520px] bg-red-600/40 rounded-full blur-[60px] sm:blur-[80px] transition-all duration-700 ease-out pointer-events-none z-0 group-hover:bg-red-500/70 group-hover:blur-[90px] group-hover:scale-110 ${
           isTouched ? "bg-red-500/70 blur-[90px] scale-110" : "animate-pulse"
         }`}
       />
@@ -83,13 +83,13 @@ export default function AlumniCard({
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         style={{ transform: transformStyle, transition: "transform 0.15s ease-out, box-shadow 0.5s ease" }}
-        className={`group absolute top-1/2 left-1/2 w-[350px] h-[450px] -translate-x-1/2 -translate-y-1/2 rounded-[20px] overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.8),0_0_20px_rgba(239,68,68,0.3)] border border-red-500/30 cursor-pointer bg-[#0a0204] z-10 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.9),0_0_35px_rgba(239,68,68,0.6)] hover:border-red-500/60 ${
+        className={`group absolute top-1/2 left-1/2 w-[92%] h-[92%] sm:w-[350px] sm:h-[450px] -translate-x-1/2 -translate-y-1/2 rounded-[16px] sm:rounded-[20px] overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.8),0_0_20px_rgba(239,68,68,0.3)] border border-red-500/30 cursor-pointer bg-[#0a0204] z-10 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.9),0_0_35px_rgba(239,68,68,0.6)] hover:border-red-500/60 ${
           isTouched ? "active-card" : ""
         }`}
       >
         {/* Optional Graduation Year Badge (Top-Right) */}
         {graduationYear && (
-          <div className="absolute top-4 right-4 z-20 px-3 py-1 rounded-full bg-black/60 border border-red-500/40 backdrop-blur-md text-[10px] font-bold tracking-widest text-red-400 uppercase">
+          <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-20 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-black/60 border border-red-500/40 backdrop-blur-md text-[9px] sm:text-[10px] font-bold tracking-widest text-red-400 uppercase">
             Batch &apos;{graduationYear.slice(-2)}
           </div>
         )}
@@ -123,22 +123,22 @@ export default function AlumniCard({
 
         {/* Initial Overlay Details (Fade out on hover/touch) */}
         <div
-          className={`absolute bottom-0 left-0 right-0 p-6 z-15 flex flex-col text-left bg-gradient-to-t from-black via-black/70 to-transparent transition-all duration-500 group-hover:opacity-0 group-hover:translate-y-4 pointer-events-none ${
+          className={`absolute bottom-0 left-0 right-0 p-4 sm:p-6 z-15 flex flex-col text-left bg-gradient-to-t from-black via-black/70 to-transparent transition-all duration-500 group-hover:opacity-0 group-hover:translate-y-4 pointer-events-none ${
             isTouched ? "opacity-0 translate-y-4" : ""
           }`}
         >
-          <h3 className="text-3xl font-black text-white tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
+          <h3 className="text-xl sm:text-3xl font-black text-white tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] truncate">
             {name}
           </h3>
 
           {role && (
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-red-500 mt-1.5">
+            <p className="text-[10px] sm:text-xs font-bold tracking-[0.2em] text-red-400 uppercase mt-1 sm:mt-1.5 truncate">
               {role}
             </p>
           )}
 
           {organization && (
-            <p className="text-sm font-bold text-red-400 mt-0.5 tracking-wide">
+            <p className="text-[10px] sm:text-xs font-bold tracking-[0.2em] text-red-400 uppercase mt-0.5 truncate">
               {organization}
             </p>
           )}
@@ -158,13 +158,13 @@ export default function AlumniCard({
               rel="noopener noreferrer"
               aria-label="LinkedIn Profile"
               onClick={(e) => e.stopPropagation()}
-              className={`relative flex items-center justify-center w-[54px] h-[54px] bg-white/95 text-[#0077b5] text-2xl font-bold rounded-2xl shadow-lg border border-white/20 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) hover:scale-110 hover:bg-[#0077b5] hover:text-white hover:shadow-[0_0_25px_rgba(0,119,181,0.8)] ${
+              className={`relative flex items-center justify-center w-[46px] h-[46px] sm:w-[54px] sm:h-[54px] bg-white/95 text-[#0077b5] text-2xl font-bold rounded-2xl shadow-lg border border-white/20 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) hover:scale-110 hover:bg-[#0077b5] hover:text-white hover:shadow-[0_0_25px_rgba(0,119,181,0.8)] ${
                 isTouched
                   ? "translate-y-0 opacity-100 delay-100"
                   : "translate-y-[150px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-100"
               }`}
             >
-              <LinkedinIcon className="w-6 h-6 transition-transform duration-500 hover:scale-110" />
+              <LinkedinIcon className="w-5 h-5 sm:w-6 sm:h-6 transition-transform duration-500 hover:scale-110" />
             </a>
           </li>
 
@@ -176,13 +176,13 @@ export default function AlumniCard({
               rel="noopener noreferrer"
               aria-label="Instagram Profile"
               onClick={(e) => e.stopPropagation()}
-              className={`relative flex items-center justify-center w-[54px] h-[54px] bg-white/95 text-[#e1306c] text-2xl font-bold rounded-2xl shadow-lg border border-white/20 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) hover:scale-110 hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] hover:text-white hover:shadow-[0_0_25px_rgba(225,48,108,0.8)] ${
+              className={`relative flex items-center justify-center w-[46px] h-[46px] sm:w-[54px] sm:h-[54px] bg-white/95 text-[#e1306c] text-2xl font-bold rounded-2xl shadow-lg border border-white/20 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) hover:scale-110 hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] hover:text-white hover:shadow-[0_0_25px_rgba(225,48,108,0.8)] ${
                 isTouched
                   ? "translate-y-0 opacity-100 delay-200"
                   : "translate-y-[150px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-200"
               }`}
             >
-              <InstagramIcon className="w-6 h-6 transition-transform duration-500 hover:scale-110" />
+              <InstagramIcon className="w-5 h-5 sm:w-6 sm:h-6 transition-transform duration-500 hover:scale-110" />
             </a>
           </li>
         </ul>
@@ -193,19 +193,19 @@ export default function AlumniCard({
             isTouched ? "!bottom-0 !opacity-100" : ""
           }`}
         >
-          <h2 className="text-xl font-black text-white uppercase tracking-wide m-0 p-0 w-full bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
+          <h2 className="text-lg sm:text-xl font-black text-white uppercase tracking-wide m-0 p-0 w-full truncate bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
             {name}
           </h2>
 
           {role && (
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-red-500 mt-1">
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-red-400 mt-1 truncate w-full">
               {role}
             </span>
           )}
 
           {organization && (
-            <span className="text-xs font-bold uppercase tracking-wide text-red-400 mt-0.5">
-              {organization} {graduationYear ? `• Class of ${graduationYear}` : ""}
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-red-400 mt-0.5 truncate w-full">
+              {organization} 
             </span>
           )}
 

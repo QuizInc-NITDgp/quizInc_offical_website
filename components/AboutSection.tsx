@@ -1,6 +1,7 @@
 "use client";
 
 import PhotoGlobe from "@/components/PhotoGlobe";
+import ScrollReveal from "./Scrollreveal";
 
 export default function AboutSection() {
   return (
@@ -35,8 +36,7 @@ export default function AboutSection() {
           <div className="relative flex flex-col gap-14 lg:flex-row lg:items-center lg:gap-16 xl:gap-24">
 
             {/* ================= LEFT ================= */}
-            <div className="w-full lg:w-[52%] lg:shrink-0">
-
+            <ScrollReveal className="w-full lg:w-[52%] lg:shrink-0">
               <h2 className="text-left text-4xl font-extrabold tracking-tight text-white md:text-5xl font-baloo">
                 About <span className="text-red-500">QuizInc</span>
               </h2>
@@ -50,10 +50,11 @@ export default function AboutSection() {
                   QuizInc, the quiz club of NIT Durgapur, was founded in 2003 by two undergraduate students Harish Mohan and Anup Nair. It is an open platform fostering curiosity, intellectual growth, and social responsibility. With a legacy spanning over two decades, QuizInc organizes quizzes, treasure hunts, and fandom competitions while collaborating with renowned institutions across India. The club also conducts outreach programs to inspire learning beyond the campus. QuizInc remains committed to empowering students through knowledge, critical thinking, and a shared purpose of curiosity, service, and collaboration.
                 </p>
               </div>
-            </div>
+            </ScrollReveal>
 
             {/* ================= RIGHT ================= */}
-            <div
+            <ScrollReveal
+              delayMs={200}
               className="
                 relative
                 flex
@@ -65,7 +66,6 @@ export default function AboutSection() {
                 lg:py-4
               "
             >
-
               {/* Glow behind Q */}
               <div className="pointer-events-none absolute h-[280px] w-[280px] rounded-full bg-red-600/15 blur-[90px]" />
 
@@ -73,8 +73,7 @@ export default function AboutSection() {
               <div className="relative w-full max-w-[260px] flex items-center justify-center px-4 py-4">
                 <PhotoGlobe />
               </div>
-
-            </div>
+            </ScrollReveal>
 
           </div>
         </div>

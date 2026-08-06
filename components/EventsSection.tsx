@@ -43,10 +43,6 @@ export default function EventsSection() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const cardsRef = useRef<HTMLDivElement | null>(null);
 
-  // ============================================================
-  // STACK -> ARRANGE ANIMATION (DESKTOP) + INDIVIDUAL REVEAL (MOBILE)
-  // ============================================================
-
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
@@ -59,7 +55,9 @@ export default function EventsSection() {
 
       const mm = gsap.matchMedia();
 
-      // Desktop / Tablet animation
+      // ============================================================
+      // DESKTOP / TABLET ANIMATION (UNCHANGED)
+      // ============================================================
       mm.add("(min-width: 768px)", () => {
         const containerRect = container.getBoundingClientRect();
         const centerX = containerRect.left + containerRect.width / 2;
@@ -126,35 +124,91 @@ export default function EventsSection() {
         };
       });
 
-      // Mobile reveal animation
+      // ============================================================
+      // MOBILE SCROLL-DRIVEN STACKING ANIMATION (OVERLAPPING CARDS)
+      // ============================================================
       mm.add("(max-width: 767px)", () => {
+        // Use yPercent (relative to each card's own rendered height)
+        // instead of a measured pixel value from the container.
+        // Measuring container.offsetHeight at mount can return 0 or
+        // an unreliable number before layout has fully settled,
+        // which silently breaks the whole stack (cards 2+ never
+        // visibly move). yPercent sidesteps that entirely.
         cards.forEach((card, index) => {
-          const fromLeft = index % 2 === 0;
+          const tilt = index % 2 === 0 ? -4 : 4;
 
-          gsap.fromTo(
+          gsap.set(card, {
+            position: "absolute",
+            top: 0,
+            left: "50%",
+            xPercent: -50,
+            // every card, including the first, starts hidden and
+            // only appears once the user scrolls into the section.
+            opacity: 0,
+            // start each card fully below its own height, so it
+            // has to travel up and over the previous card.
+            yPercent: 130,
+            y: 0,
+            scale: 1,
+            rotation: tilt,
+            zIndex: index + 1,
+            filter: "brightness(1)",
+            force3D: true,
+          });
+        });
+
+        // Force ScrollTrigger to recalculate positions once layout
+        // (including images) has settled, so the pin/scrub math
+        // isn't based on a stale or incomplete measurement.
+        requestAnimationFrame(() => ScrollTrigger.refresh());
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: container,
+            start: "top 20%",
+            end: `+=${cards.length * 220}`,
+            pin: true,
+            scrub: 0.5,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        cards.forEach((card, index) => {
+          const tilt = index % 2 === 0 ? -4 : 4;
+          const position = index * 0.75;
+
+          // Every card — including the first — slides up from
+          // below and settles in with a slight tilt.
+          tl.to(
             card,
             {
-              opacity: 0,
-              x: fromLeft ? -60 : 60,
-              y: 30,
-              rotation: fromLeft ? -3 : 3,
-              scale: 0.92,
-            },
-            {
+              yPercent: 0,
               opacity: 1,
-              x: 0,
-              y: 0,
-              rotation: 0,
-              scale: 1,
-              duration: 0.8,
-              ease: "back.out(1.4)",
-              force3D: true,
-              scrollTrigger: {
-                trigger: card,
-                start: "top 88%",
-                once: true,
-              },
-            }
+              rotation: tilt,
+              ease: "power2.out",
+              duration: 1,
+            },
+            position
+          );
+
+          if (index === 0) return;
+
+          const prevCard = cards[index - 1];
+
+          // The card being covered recedes slightly — scales down,
+          // shifts back, and dims — to sell the sense that it's now
+          // a layer underneath the incoming card.
+          tl.to(
+            prevCard,
+            {
+              scale: 0.94,
+              y: -16,
+              filter: "brightness(0.7)",
+              ease: "power2.out",
+              duration: 1,
+            },
+            position
           );
         });
 
@@ -173,14 +227,11 @@ export default function EventsSection() {
   // ============================================================
   // 3D HOVER (DESKTOP)
   // ============================================================
-
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const card = e.currentTarget;
     const rect = card.getBoundingClientRect();
-
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
-
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
@@ -217,14 +268,13 @@ export default function EventsSection() {
   // ============================================================
   // TAP EFFECT (MOBILE)
   // ============================================================
-
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     const card = e.currentTarget;
     card.classList.add("mobile-active");
 
     gsap.to(card, {
       scale: 1.03,
-      y: -4,
+      zIndex: 50,
       duration: 0.25,
       ease: "power2.out",
       overwrite: "auto",
@@ -237,7 +287,7 @@ export default function EventsSection() {
 
     gsap.to(card, {
       scale: 1,
-      y: 0,
+      zIndex: "",
       duration: 0.4,
       ease: "power3.out",
       overwrite: "auto",
@@ -253,7 +303,7 @@ export default function EventsSection() {
     <section
       ref={sectionRef}
       id="events-section"
-      className="relative min-h-screen scroll-mt-20 px-6 py-20 -mt-px"
+      className="relative min-h-screen scroll-mt-20 px-6 py-20 -mt-px overflow-hidden"
     >
       <div className="relative z-10 mx-auto max-w-6xl">
         {/* ================= HEADING ================= */}
@@ -273,40 +323,45 @@ export default function EventsSection() {
           </p>
         </div>
 
-        {/* ================= 3 CARDS PER ROW GRID ================= */}
+        {/* ================= CARDS CONTAINER ================= */}
         <div
           ref={cardsRef}
           className="
             relative
             mt-12
-            grid
-            grid-cols-1
-            gap-6
-            sm:grid-cols-2
+            h-[400px]
+            md:h-auto
+            flex
+            justify-center
+            md:grid
             md:grid-cols-3
-            lg:grid-cols-3
+            md:gap-6
             [perspective:1200px]
           "
         >
-          {events.map((event) => (
+          {events.map((event, index) => (
             <div
               key={event.title}
+              style={{ zIndex: index + 1 }}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
-              className="
+              className={`
                 event-card
                 group
                 relative
-                aspect-[3/5]
-                w-full
+                aspect-[4/5]
+                md:aspect-[3/5]
+                w-[280px]
+                sm:w-[300px]
+                h-[360px]
                 overflow-hidden
                 rounded-2xl
                 border
                 border-red-500/20
-                bg-black/60
-                shadow-lg
+                bg-black/80
+                shadow-2xl
                 backdrop-blur-sm
                 [transform-style:preserve-3d]
                 [backface-visibility:hidden]
@@ -314,7 +369,7 @@ export default function EventsSection() {
                 duration-300
                 hover:border-red-500/50
                 hover:shadow-[0_15px_35px_rgba(255,0,40,0.25)]
-              "
+              `}
             >
               {/* Background Poster Image */}
               {event.image ? (
@@ -352,57 +407,44 @@ export default function EventsSection() {
                 "
               />
 
-              {/* QuizInc Logo Watermark (Top Left) */}
-              <div className="absolute top-3.5 left-3.5 z-10 h-7 w-7 sm:top-4 sm:left-4 sm:h-8 sm:w-8">
-                <Image
-                  src="/q.png"
-                  alt="QuizInc"
-                  fill
-                  sizes="32px"
-                  className="object-contain drop-shadow-md"
-                />
-              </div>
-
               {/* Card Content (Bottom Aligned) */}
-              <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col items-start p-4 sm:p-5">
-                {/* Event Title */}
-                <h3 className="text-lg font-bold text-white drop-shadow-md sm:text-xl transition-transform duration-300 group-hover:-translate-y-0.5">
-                  {event.title}
-                </h3>
+              <div className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-3 p-4 sm:p-5">
+                <div className="flex flex-col items-start">
+                  {/* Event Title */}
+                  <h3 className="bg-gradient-to-r from-white via-rose-100 to-red-400 bg-clip-text text-lg font-bold text-transparent drop-shadow-md sm:text-xl transition-transform duration-300 group-hover:-translate-y-0.5">
+                    {event.title}
+                  </h3>
 
-                <div className="mt-2 h-[2px] w-8 bg-red-500 transition-all duration-500 group-hover:w-full" />
+                  <div className="mt-2 h-[2px] w-8 bg-red-500 transition-all duration-500 group-hover:w-full" />
+                </div>
 
-                {/* View More Redirect Button */}
+                {/* View More Redirect Arrow */}
                 <Link
                   href={`/events#${event.slug}`}
+                  aria-label={`View details for ${event.title}`}
                   className="
-                    mt-3
                     inline-flex
-                    w-full
+                    h-10
+                    w-10
+                    shrink-0
                     items-center
-                    justify-between
-                    rounded-lg
+                    justify-center
+                    rounded-full
                     border
                     border-red-500/30
                     bg-red-950/40
-                    px-3.5
-                    py-2
-                    text-xs
-                    font-bold
-                    uppercase
-                    tracking-wider
-                    text-white
+                    text-red-400
                     backdrop-blur-md
                     transition-all
                     duration-300
                     hover:border-red-500
                     hover:bg-red-600
+                    hover:text-white
                     hover:shadow-[0_0_15px_rgba(255,0,40,0.4)]
                   "
                 >
-                  <span>View Details</span>
                   <svg
-                    className="h-3.5 w-3.5 text-red-400 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-white"
+                    className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -411,7 +453,7 @@ export default function EventsSection() {
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      d="M14 5l7 7m0 0l-7 7m7-7H3"
+                      d="M7 17L17 7M17 7H7M17 7V17"
                     />
                   </svg>
                 </Link>

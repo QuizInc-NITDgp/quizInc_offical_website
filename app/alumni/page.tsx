@@ -20,7 +20,7 @@ export default async function AlumniPage() {
         <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl drop-shadow-[0_0_35px_rgba(255,30,67,0.5)]">
           The Quizzing <span className="text-red-500">Alumni</span>
         </h1>
-        <p className="mt-4 text-xs font-bold uppercase tracking-[0.3em] text-red-400 drop-shadow-[0_0_15px_rgba(255,30,67,0.6)] sm:text-sm">
+        <p className="mt-4 text-xs font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em] text-red-400 drop-shadow-[0_0_15px_rgba(255,30,67,0.6)] sm:text-sm">
           WHERE THEY ARE NOW
         </p>
 
@@ -40,7 +40,7 @@ export default async function AlumniPage() {
               </div>
 
               {/* Responsive Cards Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-8 md:gap-10 justify-items-center">
+              <div className="grid grid-cols-2 gap-4 sm:gap-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 justify-items-center">
                 {batchAlumni.map((alum) => (
                   <div key={alum.id} className="flex justify-center w-full max-w-[400px]">
                     <AlumniCard

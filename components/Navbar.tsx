@@ -19,7 +19,6 @@ const navLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
   const pathname = usePathname();
 
   useEffect(() => {
@@ -36,26 +35,8 @@ export default function Navbar() {
 
   return (
     <header
-      className="
-        fixed
-        top-0
-        left-0
-        right-0
-        z-50
-        w-full
-
-        pl-4
-        py-4
-
-        sm:pl-5
-
-        lg:pl-8
-        lg:py-3
-
-        xl:pl-10
-      "
+      className="fixed top-0 left-0 right-0 z-50 w-full pl-4 py-4 sm:pl-5 lg:pl-8 lg:py-3 xl:pl-10"
     >
-
       <div
         className={`
           pointer-events-none
@@ -332,20 +313,6 @@ export default function Navbar() {
         {/* Mobile links */}
 
         <div className="mt-14 flex flex-col gap-4">
-          <p
-            className="
-              text-[10px]
-              font-bold
-              uppercase
-              tracking-[0.3em]
-              text-red-500
-
-              drop-shadow-[0_0_8px_rgba(255,30,67,0.6)]
-            "
-          >
-            Navigation
-          </p>
-
           <nav className="flex flex-col gap-2">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
