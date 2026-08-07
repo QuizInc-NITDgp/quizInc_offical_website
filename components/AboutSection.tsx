@@ -2,6 +2,7 @@
 
 import PhotoGlobe from "@/components/PhotoGlobe";
 import ScrollReveal from "./Scrollreveal";
+import { motion } from "framer-motion";
 
 export default function AboutSection() {
   return (
@@ -37,19 +38,65 @@ export default function AboutSection() {
 
             {/* ================= LEFT ================= */}
             <ScrollReveal className="w-full lg:w-[52%] lg:shrink-0">
-              <h2 className="text-left text-4xl font-extrabold tracking-tight text-white md:text-5xl font-baloo">
-                About <span className="text-red-500">QuizInc</span>
-              </h2>
+              {/* Heading with letter-by-letter animation matching the events page style */}
+              <motion.h2
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={{
+                  hidden: {},
+                  visible: { transition: { staggerChildren: 0.02 } },
+                }}
+                className="text-left text-4xl font-extrabold tracking-tight text-white md:text-5xl font-baloo whitespace-nowrap flex flex-wrap items-center gap-x-3 drop-shadow-[0_0_20px_rgba(255,30,67,0.25)]"
+              >
+                <span>
+                  {"About".split("").map((c, i) => (
+                    <motion.span
+                      key={`a-${i}`}
+                      variants={{
+                        hidden: { y: 20, opacity: 0 },
+                        visible: { y: 0, opacity: 1, transition: { duration: 0.4, ease: "easeOut" } },
+                      }}
+                      className="inline-block text-white"
+                    >
+                      {c}
+                    </motion.span>
+                  ))}
+                </span>
+                <span className="text-red-500">
+                  {"QuizInc".split("").map((c, i) => (
+                    <motion.span
+                      key={`q-${i}`}
+                      variants={{
+                        hidden: { y: 20, opacity: 0 },
+                        visible: { y: 0, opacity: 1, transition: { duration: 0.4, ease: "easeOut" } },
+                      }}
+                      className="inline-block"
+                    >
+                      {c}
+                    </motion.span>
+                  ))}
+                </span>
+              </motion.h2>
 
               {/* Dash */}
               <div className="mt-6 h-[2px] w-16 bg-red-500 shadow-[0_0_10px_rgba(255,30,67,0.7)]" />
 
-              {/* Text */}
-              <div className="mt-8">
+              {/* Text with word-by-word or staggered block animation matching the scroll reveal text feel */}
+              <motion.div
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.2, ease: "easeOut" } },
+                }}
+                className="mt-8"
+              >
                 <p className="text-base leading-relaxed text-rose-100/90 md:text-lg font-space font-normal tracking-wide">
                   QuizInc, the quiz club of NIT Durgapur, was founded in 2003 by two undergraduate students Harish Mohan and Anup Nair. It is an open platform fostering curiosity, intellectual growth, and social responsibility. With a legacy spanning over two decades, QuizInc organizes quizzes, treasure hunts, and fandom competitions while collaborating with renowned institutions across India. The club also conducts outreach programs to inspire learning beyond the campus. QuizInc remains committed to empowering students through knowledge, critical thinking, and a shared purpose of curiosity, service, and collaboration.
                 </p>
-              </div>
+              </motion.div>
             </ScrollReveal>
 
             {/* ================= RIGHT ================= */}

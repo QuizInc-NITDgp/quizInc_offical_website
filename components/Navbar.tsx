@@ -45,30 +45,18 @@ export default function Navbar() {
           top-0
           -bottom-5
           -z-10
-
           bg-gradient-to-b
           from-[#0a0002]/95
           via-[#0a0002]/80
           to-transparent
-
           backdrop-blur-md
-
           transition-opacity
           duration-300
-
           ${scrolled ? "opacity-100" : "opacity-0"}
         `}
       />
 
-      {/* ================================================= */}
-      {/* NAVBAR ROW */}
-      {/* ================================================= */}
-
       <div className="flex w-full items-center justify-between">
-        {/* ================================================= */}
-        {/* LOGO */}
-        {/* ================================================= */}
-
         <Link
           href="/"
           className="
@@ -95,10 +83,6 @@ export default function Navbar() {
           />
         </Link>
 
-        {/* ================================================= */}
-        {/* DESKTOP NAVBAR */}
-        {/* ================================================= */}
-
         <div
           className="
             relative
@@ -108,54 +92,35 @@ export default function Navbar() {
             md:block
           "
         >
-          {/* ============================================= */}
-          {/* TRAVELLING RED BORDER BEAM */}
-          {/* ============================================= */}
-
           <div
             className="
               pointer-events-none
               absolute
               -inset-[200%]
-
               animate-[navbarBeam_3s_linear_infinite]
-
               bg-[conic-gradient(from_0deg,transparent_0deg,transparent_320deg,#ff1e43_337deg,#ff758c_344deg,#ffffff_348deg,#ff1e43_354deg,transparent_360deg)]
             "
           />
-
-          {/* ============================================= */}
-          {/* ACTUAL NAVBAR */}
-          {/* ============================================= */}
 
           <nav
             className="
               relative
               m-[1px]
-
               flex
               items-center
-
-              gap-8
-
+              gap-9
               rounded-l-full
-
               bg-gradient-to-r
               from-[#100003]/95
               via-[#100003]/90
               to-[#100003]/75
-
-              pl-12
-              pr-14
-              py-3.5
-
+              pl-14
+              pr-16
+              py-4
               backdrop-blur-md
-
               shadow-[-6px_0_25px_rgba(255,30,67,0.15)]
-
               transition-all
               duration-300
-
               hover:shadow-[-6px_0_30px_rgba(255,30,67,0.22)]
             "
           >
@@ -169,51 +134,38 @@ export default function Navbar() {
                   className={`
                     group
                     relative
-
                     whitespace-nowrap
-
-                    px-2
+                    px-2.5
                     py-1
-
-                    font-baloo
+                    font-space
                     text-base
-                    font-semibold
-
+                    font-medium
+                    tracking-wide
                     drop-shadow-sm
-
                     transition-all
                     duration-300
-
                     hover:scale-105
                     hover:text-red-400
-
                     ${isActive
-                      ? "scale-105 text-red-400"
-                      : "text-white"
+                      ? "scale-105 font-semibold text-red-400"
+                      : "text-white/90"
                     }
                   `}
                 >
                   <span>{link.label}</span>
-
-                  {/* Active / Hover Underline */}
 
                   <span
                     className={`
                       absolute
                       bottom-0
                       left-0
-
                       h-[2px]
-
                       bg-gradient-to-r
                       from-red-500
                       to-rose-400
-
                       shadow-[0_0_8px_#ff1e43]
-
                       transition-all
                       duration-300
-
                       ${isActive
                         ? "w-full"
                         : "w-0 group-hover:w-full"
@@ -226,43 +178,27 @@ export default function Navbar() {
           </nav>
         </div>
 
-        {/* ================================================= */}
-        {/* MOBILE HAMBURGER */}
-        {/* ================================================= */}
-
         <button
           onClick={() => setIsOpen((prev) => !prev)}
           aria-label="Toggle navigation menu"
           className="
             z-50
             mr-8
-
             flex
             shrink-0
             items-center
             justify-center
-
             rounded-lg
-
             border
             border-red-500/40
-
             bg-black/60
-
             p-2.5
-
             text-white
-
             backdrop-blur-md
-
             shadow-[0_0_15px_rgba(255,30,67,0.2)]
-
             transition-all
-
             hover:bg-red-950/40
-
             active:scale-95
-
             lg:hidden
           "
         >
@@ -274,44 +210,29 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* ================================================= */}
-      {/* MOBILE SIDEBAR */}
-      {/* ================================================= */}
-
       <div
         className={`
           fixed
           inset-y-0
           right-0
           z-40
-
           flex
           w-64
           flex-col
           justify-between
-
           border-l
           border-red-500/30
-
           bg-[#0a0002]/95
-
           p-6
-
           backdrop-blur-xl
-
           shadow-[-10px_0_30px_rgba(255,30,67,0.15)]
-
           transition-transform
           duration-300
           ease-in-out
-
           md:hidden
-
           ${isOpen ? "translate-x-0" : "translate-x-full"}
         `}
       >
-        {/* Mobile links */}
-
         <div className="mt-14 flex flex-col gap-4">
           <nav className="flex flex-col gap-2">
             {navLinks.map((link) => {
@@ -325,21 +246,17 @@ export default function Navbar() {
                   className={`
                     border-b
                     border-red-500/10
-
-                    py-2.5
-
-                    font-baloo
+                    py-3
+                    font-space
                     text-base
-                    font-semibold
-
+                    font-medium
+                    tracking-wide
                     transition-all
                     duration-300
-
                     hover:translate-x-1
                     hover:text-red-400
-
                     ${isActive
-                      ? "translate-x-1 font-bold text-red-400"
+                      ? "translate-x-1 font-semibold text-red-400"
                       : "text-white/90"
                     }
                   `}
@@ -351,32 +268,23 @@ export default function Navbar() {
           </nav>
         </div>
 
-        {/* ================================================= */}
-        {/* MOBILE FOOTER */}
-        {/* ================================================= */}
-
         <div
           className="
             border-t
             border-red-500/20
             pt-4
-            text-[11px]
+            text-xs
             text-white/50
           "
         >
-          <p className="font-semibold text-white/80">
+          <p className="font-space font-medium text-white/80">
             QuizInc
           </p>
-
-          <p className="text-red-400/80">
+          <p className="font-space text-red-400/80">
             NIT Durgapur
           </p>
         </div>
       </div>
-
-      {/* ================================================= */}
-      {/* MOBILE DARK OVERLAY */}
-      {/* ================================================= */}
 
       {isOpen && (
         <div
@@ -385,10 +293,8 @@ export default function Navbar() {
             fixed
             inset-0
             z-30
-
             bg-black/70
             backdrop-blur-sm
-
             md:hidden
           "
         />

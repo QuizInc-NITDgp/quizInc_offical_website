@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motion } from "framer-motion";
 
 const events = [
   {
@@ -128,12 +129,6 @@ export default function EventsSection() {
       // MOBILE SCROLL-DRIVEN STACKING ANIMATION (OVERLAPPING CARDS)
       // ============================================================
       mm.add("(max-width: 767px)", () => {
-        // Use yPercent (relative to each card's own rendered height)
-        // instead of a measured pixel value from the container.
-        // Measuring container.offsetHeight at mount can return 0 or
-        // an unreliable number before layout has fully settled,
-        // which silently breaks the whole stack (cards 2+ never
-        // visibly move). yPercent sidesteps that entirely.
         cards.forEach((card, index) => {
           const tilt = index % 2 === 0 ? -4 : 4;
 
@@ -142,11 +137,7 @@ export default function EventsSection() {
             top: 0,
             left: "50%",
             xPercent: -50,
-            // every card, including the first, starts hidden and
-            // only appears once the user scrolls into the section.
             opacity: 0,
-            // start each card fully below its own height, so it
-            // has to travel up and over the previous card.
             yPercent: 130,
             y: 0,
             scale: 1,
@@ -157,9 +148,6 @@ export default function EventsSection() {
           });
         });
 
-        // Force ScrollTrigger to recalculate positions once layout
-        // (including images) has settled, so the pin/scrub math
-        // isn't based on a stale or incomplete measurement.
         requestAnimationFrame(() => ScrollTrigger.refresh());
 
         const tl = gsap.timeline({
@@ -178,8 +166,6 @@ export default function EventsSection() {
           const tilt = index % 2 === 0 ? -4 : 4;
           const position = index * 0.75;
 
-          // Every card — including the first — slides up from
-          // below and settles in with a slight tilt.
           tl.to(
             card,
             {
@@ -196,9 +182,6 @@ export default function EventsSection() {
 
           const prevCard = cards[index - 1];
 
-          // The card being covered recedes slightly — scales down,
-          // shifts back, and dims — to sell the sense that it's now
-          // a layer underneath the incoming card.
           tl.to(
             prevCard,
             {
@@ -307,16 +290,52 @@ export default function EventsSection() {
     >
       <div className="relative z-10 mx-auto max-w-6xl">
         {/* ================= HEADING ================= */}
-        <div className="text-center">
-          <p className="text-xs font-bold uppercase tracking-[0.4em] text-red-400">
+        <div className="text-center flex flex-col items-center">
+          <p className="text-sm font-bold uppercase tracking-[0.4em] text-red-400 font-space">
             What We Do
           </p>
 
-          <h2 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl md:text-5xl">
-            Our <span className="text-red-500">Events</span>
-          </h2>
+          <motion.h2
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={{
+              hidden: {},
+              visible: { transition: { staggerChildren: 0.02 } },
+            }}
+            className="mt-3 text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white drop-shadow-[0_0_20px_rgba(255,30,67,0.25)] font-baloo whitespace-nowrap flex flex-wrap justify-center items-center gap-x-3"
+          >
+            <span>
+              {"Our".split("").map((c, i) => (
+                <motion.span
+                  key={`oh-${i}`}
+                  variants={{
+                    hidden: { y: 20, opacity: 0 },
+                    visible: { y: 0, opacity: 1, transition: { duration: 0.4, ease: "easeOut" } },
+                  }}
+                  className="inline-block text-white"
+                >
+                  {c}
+                </motion.span>
+              ))}
+            </span>
+            <span className="text-red-500">
+              {"Events".split("").map((c, i) => (
+                <motion.span
+                  key={`eh-${i}`}
+                  variants={{
+                    hidden: { y: 20, opacity: 0 },
+                    visible: { y: 0, opacity: 1, transition: { duration: 0.4, ease: "easeOut" } },
+                  }}
+                  className="inline-block"
+                >
+                  {c}
+                </motion.span>
+              ))}
+            </span>
+          </motion.h2>
 
-          <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-rose-100/70 md:text-base">
+          <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-rose-100/70 md:text-lg font-space">
             From intense battles of knowledge to adventurous treasure hunts,
             QuizInc creates experiences where curiosity, competition, and
             community come together.
@@ -411,7 +430,7 @@ export default function EventsSection() {
               <div className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-3 p-4 sm:p-5">
                 <div className="flex flex-col items-start">
                   {/* Event Title */}
-                  <h3 className="bg-gradient-to-r from-white via-rose-100 to-red-400 bg-clip-text text-lg font-bold text-transparent drop-shadow-md sm:text-xl transition-transform duration-300 group-hover:-translate-y-0.5">
+                  <h3 className="bg-gradient-to-r from-white via-rose-100 to-red-400 bg-clip-text text-xl font-bold text-transparent drop-shadow-md sm:text-2xl transition-transform duration-300 group-hover:-translate-y-0.5 font-baloo">
                     {event.title}
                   </h3>
 
@@ -496,9 +515,9 @@ export default function EventsSection() {
               border
               border-red-500/30
               bg-black/60
-              px-6
-              py-3
-              text-xs
+              px-7
+              py-3.5
+              text-sm
               font-bold
               uppercase
               tracking-widest
@@ -509,13 +528,14 @@ export default function EventsSection() {
               hover:border-red-500/60
               hover:bg-red-950/30
               hover:shadow-[0_0_25px_rgba(255,0,40,0.3)]
+              font-space
             "
           >
             <span className="relative z-10 transition-transform duration-300 group-hover:-translate-x-0.5">
               Explore All Events
             </span>
             <svg
-              className="relative z-10 h-3.5 w-3.5 text-red-500 transition-transform duration-300 group-hover:translate-x-0.5"
+              className="relative z-10 h-4 w-4 text-red-500 transition-transform duration-300 group-hover:translate-x-0.5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -533,7 +553,7 @@ export default function EventsSection() {
 
         {/* ================= BOTTOM TEXT ================= */}
         <div className="mt-12 text-center">
-          <p className="text-xs uppercase tracking-[0.3em] text-red-400/70">
+          <p className="text-sm uppercase tracking-[0.3em] text-red-400/70 font-space">
             Curiosity • Competition • Community
           </p>
         </div>
