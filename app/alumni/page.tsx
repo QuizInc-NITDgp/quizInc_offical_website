@@ -2,9 +2,12 @@ import AlumniCard from "@/components/AlumniCard";
 import TunnelBackground from "@/components/TunnelBackground";
 import { fetchMembersAndAlumniDynamic } from "@/lib/member";
 
+export const dynamic = 'force-dynamic';
+
 export default async function AlumniPage() {
+
   const { alumni } = await fetchMembersAndAlumniDynamic();
-  console.log("Fetched Alumni:", alumni);
+  
 
   // Group alumni by graduation year, most recent batch first
   const batches = Array.from(

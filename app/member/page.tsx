@@ -2,6 +2,10 @@ import MemberCard from "@/components/MemberCard";
 import TunnelBackground from "@/components/TunnelBackground";
 import { fetchMembersAndAlumniDynamic } from "@/lib/member";
 
+export const dynamic = 'force-dynamic';
+
+
+
 export default async function MembersPage() {
   const { currentMembers } = await fetchMembersAndAlumniDynamic();
   console.log("Fetched Current Members:", currentMembers);
