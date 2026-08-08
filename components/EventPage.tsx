@@ -23,8 +23,7 @@ export function EventsAnimations({ events }: { events: any[] }) {
   };
 
   return (
-    <div ref={containerRef} className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-8 overflow-hidden">
-      {/* Background Parallax Glow Orbs */}
+<div ref={containerRef} className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-8">      {/* Background Parallax Glow Orbs */}
       <motion.div style={{ y: orbY1 }} className="pointer-events-none absolute -top-20 -left-32 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] rounded-full bg-red-600/10 blur-[90px]" />
       <motion.div style={{ y: orbY2 }} className="pointer-events-none absolute top-1/3 -right-32 w-[350px] sm:w-[600px] h-[350px] sm:h-[600px] rounded-full bg-rose-500/10 blur-[100px]" />
       <motion.div style={{ y: orbY1 }} className="pointer-events-none absolute bottom-0 left-1/4 w-[300px] sm:w-[400px] h-[300px] sm:h-[400px] rounded-full bg-orange-500/10 blur-[80px]" />
