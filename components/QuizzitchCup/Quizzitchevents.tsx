@@ -9,19 +9,22 @@ export default function QuizzitchEvents({ events = [] }: { events?: EventItem[] 
   const [selected, setSelected] = useState<EventItem | null>(null);
 
   return (
-    <div className="relative z-10 w-full py-16 px-4 sm:px-8">
+    <div className="relative z-10 w-full py-8 sm:py-12">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="text-center mb-12 sm:mb-16"
+        className="text-left mb-12 sm:mb-16 px-4 sm:px-6 lg:px-8"
       >
-        <h3 className="text-3xl sm:text-4xl md:text-5xl font-[800] text-white font-baloo tracking-tight drop-shadow-[0_4px_25px_rgba(255,30,67,0.3)]">
-          Events so far in
-        </h3>
-        <h3 className="text-3xl sm:text-4xl md:text-5xl font-[800] text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-rose-500 to-orange-500 font-baloo tracking-tight drop-shadow-[0_0_30px_rgba(255,30,67,0.6)] mt-2">
-          Quizzitch Cup
+        <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest text-red-400 bg-red-500/10 border border-red-500/30 font-space w-max mb-6 shadow-sm">
+          <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+          The Lineup
+        </span>
+
+        {/* Title with White and Red Gradient (No Yellow/Orange) */}
+        <h3 className="text-4xl sm:text-5xl md:text-6xl font-[800] text-white font-baloo tracking-tight mb-2 leading-[1.1]">
+          Events so far in <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-red-200 to-red-500">Quizzitch Cup</span>
         </h3>
       </motion.div>
 
@@ -84,20 +87,20 @@ function MarqueeRow({
   onSelect: (event: EventItem) => void;
   direction: "left" | "right";
 }) {
-  const doubled = [...events, ...events];
+  const doubled = [...events, ...events, ...events];
   const animName = direction === "left" ? "marquee-left" : "marquee-right";
-  const duration = Math.max(events.length * 6, 22);
+  const duration = Math.max(events.length * 6, 28);
 
   return (
     <div className="w-full overflow-hidden group/row py-2">
       <div
-        className="flex gap-8 w-max group-hover/row:[animation-play-state:paused]"
+        className="flex gap-6 sm:gap-8 w-max group-hover/row:[animation-play-state:paused]"
         style={{ animation: `${animName} ${duration}s linear infinite` }}
       >
         {doubled.map((event, i) => (
           <div
             key={`${event.id}-${i}`}
-            className="shrink-0 w-[26vw] max-w-[320px] min-w-[280px] max-lg:w-[45vw] max-sm:w-[80vw]"
+            className="shrink-0 w-[22vw] max-w-[300px] min-w-[240px] max-lg:w-[40vw] max-sm:w-[75vw]"
           >
             <EventCard event={event} index={i % events.length} onClick={() => onSelect(event)} />
           </div>
@@ -108,7 +111,7 @@ function MarqueeRow({
 }
 
 // ---------------------------------------------------------------------------
-// EVENT CARD — Upgraded Border & Breathing Space
+// EVENT CARD (Red/White Conic Border - No Yellow)
 // ---------------------------------------------------------------------------
 
 function EventCard({
@@ -125,21 +128,16 @@ function EventCard({
       onClick={onClick}
       className="group/card relative w-full aspect-[4/5] rounded-3xl overflow-hidden text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 shadow-2xl bg-transparent p-[2px]"
     >
-      {/* Ambient background breathing glow */}
       <motion.div
         animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.06, 1] }}
         transition={{ duration: 4 + index * 0.3, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute -inset-4 -z-20 rounded-[36px] bg-gradient-to-r from-red-600/30 via-rose-600/20 to-orange-600/30 blur-3xl"
+        className="pointer-events-none absolute -inset-4 -z-20 rounded-[36px] bg-gradient-to-r from-red-600/30 via-rose-600/20 to-red-500/30 blur-3xl"
       />
 
-      {/* Stunning animated gradient border frame */}
-      <div className="absolute inset-0 -z-10 rounded-3xl opacity-90 animate-[spin_10s_linear_infinite] bg-[conic-gradient(from_0deg,rgba(255,30,67,1),rgba(255,140,0,0.5),rgba(255,30,67,0.3),rgba(255,30,67,1))]" />
-      
-      {/* Inner high-contrast border outline for crisp depth */}
+      <div className="absolute inset-0 -z-10 rounded-3xl opacity-90 animate-[spin_10s_linear_infinite] bg-[conic-gradient(from_0deg,rgba(255,30,67,1),rgba(255,255,255,0.4),rgba(255,30,67,0.3),rgba(255,30,67,1))]" />
       <div className="absolute inset-[1px] -z-10 rounded-[23px] border border-white/10 bg-zinc-950" />
 
       <div className="relative w-full h-full rounded-[22px] overflow-hidden flex flex-col bg-zinc-950">
-        {/* Poster Container */}
         <div className="relative w-full flex-1 overflow-hidden bg-zinc-900">
           {event.poster ? (
             <motion.img
@@ -157,14 +155,12 @@ function EventCard({
             </div>
           )}
 
-          {/* Mode Badge */}
           <span className="absolute top-3.5 left-3.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-white bg-black/70 border border-white/20 backdrop-blur-md shadow-lg font-space">
             <span className={`w-2 h-2 rounded-full ${event.mode === "online" ? "bg-emerald-400 animate-pulse" : "bg-red-500 animate-pulse"}`} />
             {event.mode === "online" ? "Online" : "Offline"}
           </span>
         </div>
 
-        {/* Card Footer Info Bar with comfortable padding */}
         <div className="p-4 bg-gradient-to-t from-black via-zinc-950 to-zinc-900/90 border-t border-white/10 flex items-center justify-between">
           <h4 className="text-base sm:text-lg font-[800] text-white font-baloo tracking-tight truncate pr-2">
             {event.name}
@@ -179,7 +175,7 @@ function EventCard({
 }
 
 // ---------------------------------------------------------------------------
-// REDUCED-SIZE FULL-SCREEN DETAILS OVERLAY
+// DETAILS OVERLAY
 // ---------------------------------------------------------------------------
 
 function EventDetailsOverlay({
@@ -210,7 +206,6 @@ function EventDetailsOverlay({
             onClick={(e) => e.stopPropagation()}
             className="relative w-full max-w-md max-h-[85vh] overflow-y-auto rounded-3xl border border-red-500/40 bg-zinc-950 shadow-[0_0_60px_rgba(255,30,67,0.3)]"
           >
-            {/* Close button */}
             <button
               onClick={onClose}
               aria-label="Close"
@@ -219,14 +214,9 @@ function EventDetailsOverlay({
               ✕
             </button>
 
-            {/* Poster */}
             {event.poster && (
               <div className="relative w-full aspect-[16/9] overflow-hidden bg-zinc-900">
-                <img
-                  src={event.poster}
-                  alt={event.name}
-                  className="w-full h-full object-cover"
-                />
+                <img src={event.poster} alt={event.name} className="w-full h-full object-cover" />
               </div>
             )}
 

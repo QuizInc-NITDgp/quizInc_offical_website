@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion"; // <-- Add this
+import { motion } from "framer-motion";
 
 function LinkedinIcon({ className }: { className?: string }) {
   return (
@@ -26,7 +26,7 @@ interface MemberProps {
   image?: string;
   linkedin?: string;
   instagram?: string;
-  delay?: number; // <-- Added delay prop
+  delay?: number;
 }
 
 export default function MemberCard({
@@ -35,7 +35,7 @@ export default function MemberCard({
   image = "",
   linkedin,
   instagram,
-  delay = 0, // <-- Default to 0
+  delay = 0,
 }: MemberProps) {
   const [isTouched, setIsTouched] = useState(false);
   const [transformStyle, setTransformStyle] = useState("");
@@ -69,13 +69,13 @@ export default function MemberCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.6, delay: delay * 0.08, ease: "easeOut" }}
-      className="relative w-full h-[360px] sm:h-[450px] md:w-[400px] md:h-[500px] flex items-center justify-center perspective-1000 select-none"
+      className="relative w-full h-[310px] sm:h-[370px] md:w-[330px] md:h-[405px] flex items-center justify-center perspective-1000 select-none"
       onClick={() => setIsTouched(!isTouched)}
     >
       {/* Background Animated Ambient Red Glow */}
       <div 
-        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-[420px] max-h-[520px] bg-red-600/40 rounded-full blur-[60px] sm:blur-[80px] transition-all duration-700 ease-out pointer-events-none z-0 ${
-          isTouched ? "bg-red-500/70 blur-[90px] scale-110" : "animate-pulse"
+        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-[360px] max-h-[425px] bg-red-600/40 rounded-full blur-[50px] sm:blur-[70px] transition-all duration-700 ease-out pointer-events-none z-0 ${
+          isTouched ? "bg-red-500/70 blur-[80px] scale-110" : "animate-pulse"
         }`} 
       />
 
@@ -85,14 +85,14 @@ export default function MemberCard({
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         style={{ transform: transformStyle, transition: "transform 0.15s ease-out, box-shadow 0.5s ease" }}
-        className={`group absolute top-1/2 left-1/2 w-[92%] h-[92%] sm:w-[350px] sm:h-[450px] -translate-x-1/2 -translate-y-1/2 rounded-[16px] sm:rounded-[20px] overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.8),0_0_20px_rgba(239,68,68,0.3)] border border-red-500/30 cursor-pointer bg-[#0a0204] z-10 transition-all duration-500 ${
+        className={`group absolute top-1/2 left-1/2 w-[90%] h-[90%] sm:w-[290px] sm:h-[360px] -translate-x-1/2 -translate-y-1/2 rounded-[16px] sm:rounded-[20px] overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.8),0_0_20px_rgba(239,68,68,0.3)] border border-red-500/30 cursor-pointer bg-[#0a0204] z-10 transition-all duration-500 ${
           isTouched ? "active-touch" : ""
         }`}
       >
         {/* Top Image Container */}
         <div 
-          className={`absolute top-0 left-0 w-full h-full z-10 bg-black transition-transform duration-700 cubic-bezier(0.16, 1, 0.3, 1) group-hover:-translate-y-[110px] ${
-            isTouched ? "-translate-y-[110px]" : ""
+          className={`absolute top-0 left-0 w-full h-full z-10 bg-black transition-transform duration-700 cubic-bezier(0.16, 1, 0.3, 1) group-hover:-translate-y-[90px] ${
+            isTouched ? "-translate-y-[90px]" : ""
           }`}
         >
           {hasImage ? (
@@ -115,14 +115,14 @@ export default function MemberCard({
 
         {/* Initial Overlay Name & Role */}
         <div 
-          className={`absolute bottom-0 left-0 right-0 p-4 sm:p-6 z-15 flex flex-col text-left bg-gradient-to-t from-black via-black/60 to-transparent transition-all duration-500 group-hover:opacity-0 group-hover:translate-y-4 pointer-events-none ${
+          className={`absolute bottom-0 left-0 right-0 p-3.5 sm:p-4 z-15 flex flex-col text-left bg-gradient-to-t from-black via-black/60 to-transparent transition-all duration-500 group-hover:opacity-0 group-hover:translate-y-4 pointer-events-none ${
             isTouched ? "opacity-0 translate-y-4" : ""
           }`}
         >
-          <h3 className="text-xl sm:text-3xl font-black text-white uppercase tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] truncate">
+          <h3 className="text-lg sm:text-2xl font-black text-white uppercase tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] truncate">
             {name}
           </h3>
-          <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.2em] sm:tracking-[0.25em] text-red-400 mt-1 truncate">
+          <p className="text-[9px] sm:text-[11px] font-semibold uppercase tracking-[0.2em] sm:tracking-[0.25em] text-red-400 mt-1 truncate">
             {role}
           </p>
         </div>
@@ -136,11 +136,11 @@ export default function MemberCard({
               rel="noopener noreferrer"
               aria-label="LinkedIn Profile"
               onClick={(e) => e.stopPropagation()}
-              className={`relative flex items-center justify-center w-[46px] h-[46px] sm:w-[54px] sm:h-[54px] bg-white/95 text-[#0077b5] rounded-2xl shadow-lg border border-white/20 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) translate-y-[150px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-100 hover:scale-110 hover:bg-[#0077b5] hover:text-white ${
+              className={`relative flex items-center justify-center w-[38px] h-[38px] sm:w-[44px] sm:h-[44px] bg-white/95 text-[#0077b5] rounded-2xl shadow-lg border border-white/20 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) translate-y-[150px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-100 hover:scale-110 hover:bg-[#0077b5] hover:text-white ${
                 isTouched ? "!translate-y-0 !opacity-100 pointer-events-auto" : ""
               }`}
             >
-              <LinkedinIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+              <LinkedinIcon className="w-4 h-4 sm:w-5 sm:h-5" />
             </a>
           </li>
 
@@ -151,28 +151,28 @@ export default function MemberCard({
               rel="noopener noreferrer"
               aria-label="Instagram Profile"
               onClick={(e) => e.stopPropagation()}
-              className={`relative flex items-center justify-center w-[46px] h-[46px] sm:w-[54px] sm:h-[54px] bg-white/95 text-[#e1306c] rounded-2xl shadow-lg border border-white/20 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) translate-y-[150px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-200 hover:scale-110 hover:text-white ${
+              className={`relative flex items-center justify-center w-[38px] h-[38px] sm:w-[44px] sm:h-[44px] bg-white/95 text-[#e1306c] rounded-2xl shadow-lg border border-white/20 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) translate-y-[150px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-200 hover:scale-110 hover:text-white ${
                 isTouched ? "!translate-y-0 !opacity-100 pointer-events-auto" : ""
               }`}
             >
-              <InstagramIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+              <InstagramIcon className="w-4 h-4 sm:w-5 sm:h-5" />
             </a>
           </li>
         </ul>
 
         {/* Bottom Slide-Up Glassmorphism Detail Panel */}
         <div 
-          className={`absolute -bottom-[120px] left-0 w-full h-[120px] z-30 p-4 bg-black/80 backdrop-blur-xl border-t border-red-500/30 opacity-0 transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1) group-hover:bottom-0 group-hover:opacity-100 flex flex-col justify-center items-center text-center ${
+          className={`absolute -bottom-[95px] left-0 w-full h-[95px] z-30 p-3 bg-black/80 backdrop-blur-xl border-t border-red-500/30 opacity-0 transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1) group-hover:bottom-0 group-hover:opacity-100 flex flex-col justify-center items-center text-center ${
             isTouched ? "!bottom-0 !opacity-100" : ""
           }`}
         >
-          <h2 className="text-lg sm:text-xl font-black text-white uppercase tracking-wide truncate w-full bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
+          <h2 className="text-base sm:text-lg font-black text-white uppercase tracking-wide truncate w-full bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
             {name}
           </h2>
-          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-red-500 mt-1 truncate w-full">
+          <span className="text-[9px] sm:text-[11px] font-bold uppercase tracking-[0.2em] text-red-500 mt-0.5 truncate w-full">
             {role}
           </span>
-          <div className="w-8 h-[2px] bg-red-600 rounded-full mt-2" />
+          <div className="w-6 h-[2px] bg-red-600 rounded-full mt-1" />
         </div>
       </div>
     </motion.div>
