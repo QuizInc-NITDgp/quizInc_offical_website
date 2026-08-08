@@ -10,32 +10,32 @@ import { motion } from "framer-motion";
 const events = [
   {
     title: "Quizzitch Cup",
-    image: "/quizzitch.jpeg",
+    image: "/quizzitch.webp",
     slug: "quizzitch-cup",
   },
   {
     title: "Qriosity",
-    image: "/qriosity.jpeg",
+    image: "/qriosity.webp",
     slug: "qriosity",
   },
   {
     title: "FIFA WC Quiz",
-    image: "/fifawcquiz.jpeg",
+    image: "/fifawcquiz.webp",
     slug: "fifa-wc-quiz",
   },
   {
     title: "Howzatt",
-    image: "/howzzat.jpeg",
+    image: "/howzzat.webp",
     slug: "howzatt",
   },
   {
     title: "Qmanji",
-    image: "/qmanji.jpeg",
+    image: "/qmanji.webp",
     slug: "qmanji",
   },
   {
     title: "Inter College Quiz",
-    image: "/intercollegequiz.jpeg",
+    image: "/intercollegequiz.webp",
     slug: "inter-college-quiz",
   },
 ];

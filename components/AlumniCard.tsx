@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import Image from "next/image";
+import { motion } from "framer-motion"; // <-- Added Framer Motion
 
 function LinkedinIcon({ className }: { className?: string }) {
   return (
@@ -27,6 +28,7 @@ export interface AlumniProps {
   image?: string;
   linkedin?: string;
   instagram?: string;
+  delay?: number; // <-- Added delay prop
 }
 
 export default function AlumniCard({
@@ -37,6 +39,7 @@ export default function AlumniCard({
   image = "",
   linkedin,
   instagram,
+  delay = 0, // <-- Default to 0
 }: AlumniProps) {
   const [isTouched, setIsTouched] = useState(false);
   const [transformStyle, setTransformStyle] = useState("");
@@ -66,7 +69,11 @@ export default function AlumniCard({
   };
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6, delay: delay * 0.08, ease: "easeOut" }}
       className="relative w-full h-[360px] sm:h-[450px] md:w-[400px] md:h-[500px] flex items-center justify-center perspective-1000 select-none touch-manipulation"
       onClick={() => setIsTouched((prev) => !prev)}
     >
@@ -212,6 +219,6 @@ export default function AlumniCard({
           <div className="w-8 h-[2px] bg-red-600 rounded-full mt-2.5 transition-all duration-500 group-hover:w-16" />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

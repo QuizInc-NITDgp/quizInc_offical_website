@@ -18,13 +18,13 @@ export default async function MembersPage() {
       id: "faculty-1",
       name: "Debasis Chakraborty",
       role: "Faculty-in-Charge",
-      image: "/facultyadvisor1.jpg",
+      image: "/facultyadvisor1.webp",
     },
     {
       id: "faculty-2",
       name: "Dr. Parag Kumar Guhathakurta",
       role: "Faculty-in-Charge",
-      image: "/facultyadvisor2.jpg",
+      image: "/facultyadvisor2.webp",
     },
   ];
 
@@ -39,7 +39,7 @@ export default async function MembersPage() {
         </div>
 
         {/* ================= FACULTY ADVISORS SECTION ================= */}
-        <section className="mt-28 md:mt-36">
+       <section className="mt-28 md:mt-36">
           <div className="flex items-center justify-center gap-4 sm:gap-6 mb-12 sm:mb-20">
             <div className="h-[1px] w-16 sm:w-48 bg-gradient-to-r from-transparent to-red-500/60" />
             <h2 className="text-2xl font-extrabold tracking-tight text-white sm:text-4xl md:text-5xl drop-shadow-[0_0_20px_rgba(255,30,67,0.5)] whitespace-nowrap font-baloo">
@@ -48,12 +48,13 @@ export default async function MembersPage() {
             <div className="h-[1px] w-16 sm:w-48 bg-gradient-to-l from-transparent to-red-500/60" />
           </div>
           <div className="grid grid-cols-2 gap-4 sm:gap-14 md:grid-cols-2 justify-items-center max-w-3xl mx-auto">
-            {facultyAdvisors.map((faculty) => (
+            {facultyAdvisors.map((faculty, index) => (
               <MemberCard 
                 key={faculty.id} 
                 name={faculty.name}
                 role={faculty.role}
                 image={faculty.image}
+                delay={index}
               />
             ))}
           </div>
@@ -69,7 +70,7 @@ export default async function MembersPage() {
             <div className="h-[1px] w-16 sm:w-48 bg-gradient-to-l from-transparent to-red-500/60" />
           </div>
           <div className="grid grid-cols-2 gap-4 sm:gap-14 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-items-center">
-            {fourthYearMembers.map((member) => (
+            {fourthYearMembers.map((member, index) => (
               <MemberCard 
                 key={member.id} 
                 name={member.name}
@@ -77,6 +78,7 @@ export default async function MembersPage() {
                 image={member.photo}
                 linkedin={member.linkedin}
                 instagram={member.facebook}
+                delay={index}
               />
             ))}
           </div>
@@ -92,7 +94,7 @@ export default async function MembersPage() {
             <div className="h-[1px] w-16 sm:w-48 bg-gradient-to-l from-transparent to-red-500/60" />
           </div>
           <div className="grid grid-cols-2 gap-4 sm:gap-14 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-items-center">
-            {thirdYearMembers.map((member) => (
+            {thirdYearMembers.map((member, index) => (
               <MemberCard 
                 key={member.id} 
                 name={member.name}
@@ -100,6 +102,7 @@ export default async function MembersPage() {
                 image={member.photo}
                 linkedin={member.linkedin}
                 instagram={member.facebook}
+                delay={index}
               />
             ))}
           </div>
@@ -115,7 +118,7 @@ export default async function MembersPage() {
             <div className="h-[1px] w-16 sm:w-48 bg-gradient-to-l from-transparent to-red-500/60" />
           </div>
           <div className="grid grid-cols-2 gap-4 sm:gap-14 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-items-center">
-            {secondYearMembers.map((member) => (
+            {secondYearMembers.map((member, index) => (
               <MemberCard 
                 key={member.id} 
                 name={member.name}
@@ -123,6 +126,7 @@ export default async function MembersPage() {
                 image={member.photo}
                 linkedin={member.linkedin}
                 instagram={member.facebook}
+                delay={index}
               />
             ))}
           </div>

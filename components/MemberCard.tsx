@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import Image from "next/image";
+import { motion } from "framer-motion"; // <-- Add this
 
 function LinkedinIcon({ className }: { className?: string }) {
   return (
@@ -25,6 +26,7 @@ interface MemberProps {
   image?: string;
   linkedin?: string;
   instagram?: string;
+  delay?: number; // <-- Added delay prop
 }
 
 export default function MemberCard({
@@ -33,6 +35,7 @@ export default function MemberCard({
   image = "",
   linkedin,
   instagram,
+  delay = 0, // <-- Default to 0
 }: MemberProps) {
   const [isTouched, setIsTouched] = useState(false);
   const [transformStyle, setTransformStyle] = useState("");
@@ -61,7 +64,11 @@ export default function MemberCard({
   };
 
   return (
-    <div 
+    <motion.div 
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6, delay: delay * 0.08, ease: "easeOut" }}
       className="relative w-full h-[360px] sm:h-[450px] md:w-[400px] md:h-[500px] flex items-center justify-center perspective-1000 select-none"
       onClick={() => setIsTouched(!isTouched)}
     >
@@ -168,6 +175,6 @@ export default function MemberCard({
           <div className="w-8 h-[2px] bg-red-600 rounded-full mt-2" />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

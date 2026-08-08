@@ -69,7 +69,7 @@ export default function Navbar() {
           "
         >
           <Image
-            src="/logo.jpg"
+            src="/logo.webp"
             alt="QuizInc Logo"
             width={90}
             height={58}
