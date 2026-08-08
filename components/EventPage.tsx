@@ -40,14 +40,7 @@ export function EventsAnimations({ events }: { events: any[] }) {
           className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[700px] h-[200px] sm:h-[300px] rounded-full bg-red-500/15 blur-[70px] sm:blur-[90px] -z-10"
         />
 
-        <motion.span
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="inline-block px-4 sm:px-5 py-2 mb-4 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em] text-red-400 bg-red-950/40 border border-red-500/30 rounded-full shadow-[0_0_15px_rgba(255,30,67,0.15)] backdrop-blur-md font-space"
-        >
-          The Chronicle Archive
-        </motion.span>
+        
 
         {/* Single Line Heading using font-baloo style matching AboutSection */}
         <div className="flex flex-col items-center text-center">
@@ -58,7 +51,7 @@ export function EventsAnimations({ events }: { events: any[] }) {
               hidden: {},
               visible: { transition: { staggerChildren: 0.02 } },
             }}
-            className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white drop-shadow-[0_0_20px_rgba(255,30,67,0.25)] font-baloo whitespace-nowrap flex flex-wrap justify-center items-center gap-x-3"
+            className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-white drop-shadow-[0_0_20px_rgba(255,30,67,0.25)] font-baloo whitespace-nowrap flex flex-wrap justify-center items-center gap-x-3 sm:gap-x-4"
           >
             <span>
               {"The Quizzing".split("").map((c, i) => (

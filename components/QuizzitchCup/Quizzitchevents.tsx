@@ -17,10 +17,7 @@ export default function QuizzitchEvents({ events = [] }: { events?: EventItem[] 
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="text-left mb-12 sm:mb-16 px-4 sm:px-6 lg:px-8"
       >
-        <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest text-red-400 bg-red-500/10 border border-red-500/30 font-space w-max mb-6 shadow-sm">
-          <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-          The Lineup
-        </span>
+        
 
         {/* Title with White and Red Gradient (No Yellow/Orange) */}
         <h3 className="text-4xl sm:text-5xl md:text-6xl font-[800] text-white font-baloo tracking-tight mb-2 leading-[1.1]">
@@ -155,10 +152,7 @@ function EventCard({
             </div>
           )}
 
-          <span className="absolute top-3.5 left-3.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-white bg-black/70 border border-white/20 backdrop-blur-md shadow-lg font-space">
-            <span className={`w-2 h-2 rounded-full ${event.mode === "online" ? "bg-emerald-400 animate-pulse" : "bg-red-500 animate-pulse"}`} />
-            {event.mode === "online" ? "Online" : "Offline"}
-          </span>
+          
         </div>
 
         <div className="p-4 bg-gradient-to-t from-black via-zinc-950 to-zinc-900/90 border-t border-white/10 flex items-center justify-between">
@@ -204,12 +198,12 @@ function EventDetailsOverlay({
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-md max-h-[85vh] overflow-y-auto rounded-3xl border border-red-500/40 bg-zinc-950 shadow-[0_0_60px_rgba(255,30,67,0.3)]"
+            className="relative w-full max-w-sm max-h-[70vh] overflow-y-auto rounded-2xl border border-red-500/40 bg-zinc-950 shadow-[0_0_60px_rgba(255,30,67,0.3)]"
           >
             <button
               onClick={onClose}
               aria-label="Close"
-              className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-black/70 border border-white/20 text-white flex items-center justify-center hover:bg-red-600 transition-colors shadow-md text-xs"
+              className="absolute top-3 right-3 z-20 w-7 h-7 rounded-full bg-black/70 border border-white/20 text-white flex items-center justify-center hover:bg-red-600 transition-colors shadow-md text-xs"
             >
               ✕
             </button>
@@ -220,22 +214,22 @@ function EventDetailsOverlay({
               </div>
             )}
 
-            <div className="p-6">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-red-300 bg-red-500/15 border border-red-500/30 font-space">
-                <span className={`w-2 h-2 rounded-full ${event.mode === "online" ? "bg-emerald-400" : "bg-red-500"}`} />
+            <div className="p-4 sm:p-5">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider text-red-300 bg-red-500/15 border border-red-500/30 font-space">
+                <span className={`w-1.5 h-1.5 rounded-full ${event.mode === "online" ? "bg-emerald-400" : "bg-red-500"}`} />
                 {event.mode === "online" ? "Online Event" : "Offline Event"}
               </span>
 
-              <h3 className="mt-3 text-2xl font-[800] text-white font-baloo tracking-tight">
+              <h3 className="mt-2.5 text-lg font-[800] text-white font-baloo tracking-tight">
                 {event.name}
               </h3>
 
-              <p className="mt-1 text-xs text-red-400 font-bold tracking-wide font-space">
+              <p className="mt-1 text-[11px] text-red-400 font-bold tracking-wide font-space">
                 {formatEventDateRange(event.dateFrom, event.dateTo)}
               </p>
 
               {event.description && (
-                <p className="mt-4 text-sm text-gray-300 leading-relaxed whitespace-pre-line font-baloo">
+                <p className="mt-3 text-xs text-gray-300 leading-relaxed whitespace-pre-line font-baloo">
                   {event.description}
                 </p>
               )}
@@ -245,7 +239,7 @@ function EventDetailsOverlay({
                   href={event.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-6 inline-flex items-center justify-center gap-2 w-full rounded-xl border border-red-500/50 bg-red-500/20 px-4 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-md hover:bg-red-600 transition-all font-space"
+                  className="mt-4 inline-flex items-center justify-center gap-2 w-full rounded-lg border border-red-500/50 bg-red-500/20 px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-white shadow-md hover:bg-red-600 transition-all font-space"
                 >
                   <span>Visit Website</span>
                   <span>→</span>

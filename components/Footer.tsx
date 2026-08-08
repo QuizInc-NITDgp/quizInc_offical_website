@@ -42,6 +42,12 @@ const quickLinks = [
   { label: "Contact us", href: "/contact" },
 ];
 
+const contacts = [
+  { name: "ABHISRUTA GHOSH", phone: "+91 9330709776" },
+  { name: "RAJSHEKHAR DAS", phone: "+91 6009343465" },
+  {name:"NAMAN AGARWAL",phone:"+91 9674834161"}
+];
+
 export default function Footer() {
   return (
    <footer className="relative z-10 w-full border-t border-b border-red-500/25 bg-[#0a0002] px-6 pt-6 pb-6 sm:pt-16 sm:pb-8 md:px-12 lg:px-20">
@@ -60,9 +66,24 @@ export default function Footer() {
               </span>
             </Link>
 
-            <p className="mt-4 max-w-sm text-sm leading-relaxed text-rose-100/60">
-              The official quiz club of NIT Durgapur - fostering curiosity, critical thinking, and community since 2003.
-            </p>
+            
+
+            {/* Contacts Section Added Below */}
+            <div className="mt-6 flex flex-col gap-2">
+              {/* <p className="text-xs font-bold uppercase tracking-[0.2em] text-red-500 drop-shadow-[0_0_8px_rgba(255,30,67,0.6)]">
+                Contact Us
+              </p> */}
+              <div className="flex flex-col gap-1 text-sm text-rose-100/70">
+                {contacts.map((contact, idx) => (
+                  <p key={idx}>
+                    <span className="font-medium text-white">{contact.name}:</span>{" "}
+                    <a href={`tel:${contact.phone.replace(/\s+/g, '')}`} className="transition-colors hover:text-red-400">
+                      {contact.phone}
+                    </a>
+                  </p>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* ================= QUICK LINKS (CENTER) ================= */}

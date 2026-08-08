@@ -42,27 +42,22 @@ export default function PhotoGlobe() {
   const [activePhoto, setActivePhoto] = useState<string | null>(null);
 
   return (
-    <div className="relative flex flex-col items-center justify-center w-full py-4 my-2">
-      {/* Ambient Glow */}
+    <div className="relative flex flex-col items-center justify-center w-full py-24 my-12 ">
+    
       <div
         className="
           pointer-events-none
           absolute
-          h-[220px]
-          w-[220px]
+          h-[320px]
+          w-[320px]
           rounded-full
           bg-red-600/20
-          blur-[60px]
+          blur-[80px]
         "
       />
 
-      {/*
-        Q-Shape Container — sized to contain the FULL coordinate range
-        (y goes up to 125) using a fixed 0–132 scale, so the shape stays
-        centered instead of overflowing. Pixel size kept compact so the
-        widget doesn't blow up the parent card's height.
-      */}
-      <div className="relative h-[360px] w-[220px] sm:h-[390px] sm:w-[240px] flex items-center justify-center">
+      
+      <div className="relative h-[460px] w-[280px] sm:h-[510px] sm:w-[320px] flex items-center justify-center">
         <div className="absolute inset-0">
           {qShapeCoordinates.map(([x, y], index) => {
             const photo = photos[index % photos.length];
@@ -76,15 +71,15 @@ export default function PhotoGlobe() {
                 onClick={() => setActivePhoto(photo)}
                 className={`
                   absolute
-                  h-[30px]
-                  w-[30px]
-                  sm:h-[32px]
-                  sm:w-[32px]
+                  h-[36px]
+                  w-[36px]
+                  sm:h-[42px]
+                  sm:w-[42px]
                   -translate-x-1/2
                   -translate-y-1/2
                   cursor-pointer
                   overflow-hidden
-                  rounded-lg
+                  rounded-xl
                   border-2
                   bg-black/90
                   transition-all
@@ -93,7 +88,7 @@ export default function PhotoGlobe() {
                   ${
                     activePhoto
                       ? "opacity-15 scale-75 border-red-500/20 blur-[1px]"
-                      : "border-red-500/70 shadow-[0_0_10px_rgba(255,30,67,0.6)] hover:z-50 hover:scale-[2.6] hover:border-red-300 hover:shadow-[0_0_30px_rgba(255,30,67,0.95)] hover:brightness-110"
+                      : "border-red-500/70 shadow-[0_0_12px_rgba(255,30,67,0.6)] hover:z-50 hover:scale-[2.4] hover:border-red-300 hover:shadow-[0_0_35px_rgba(255,30,67,0.95)] hover:brightness-110"
                   }
                 `}
                 style={{
@@ -105,7 +100,7 @@ export default function PhotoGlobe() {
                   src={photo}
                   alt={`QuizInc memory ${index + 1}`}
                   fill
-                  sizes="100px"
+                  sizes="120px"
                   quality={100}
                   className="object-cover"
                 />
@@ -115,14 +110,13 @@ export default function PhotoGlobe() {
         </div>
       </div>
 
-      {/* Centered Active Image Overlay with fully transparent background */}
       {activePhoto && (
         <div
           className="absolute inset-0 z-50 flex items-center justify-center bg-transparent transition-all duration-300"
           onClick={() => setActivePhoto(null)}
         >
           <div
-            className="relative h-[180px] w-[180px] overflow-hidden rounded-2xl border-2 border-red-300 bg-black shadow-[0_0_60px_rgba(255,30,67,0.95)] brightness-110 transition-transform duration-500 scale-100"
+            className="relative h-[220px] w-[220px] overflow-hidden rounded-2xl border-2 border-red-300 bg-black shadow-[0_0_60px_rgba(255,30,67,0.95)] brightness-110 transition-transform duration-500 scale-100"
             onClick={(e) => {
               e.stopPropagation();
               setActivePhoto(null);
@@ -132,7 +126,7 @@ export default function PhotoGlobe() {
               src={activePhoto}
               alt="Selected memory"
               fill
-              sizes="300px"
+              sizes="350px"
               quality={100}
               className="object-cover cursor-pointer"
             />
