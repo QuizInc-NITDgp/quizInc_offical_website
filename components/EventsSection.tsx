@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
@@ -18,7 +18,221 @@ const events = [
     image: "/intercollegequiz.webp",
     slug: "inter-college-quiz",
   },
-];
+] as const;
+
+// Kept outside the component so it isn't reallocated on every render/effect run.
+const getTilt = (index: number) => (index % 2 === 0 ? -4 : 4);
+
+type Event = (typeof events)[number];
+
+interface EventCardProps {
+  event: Event;
+  index: number;
+  isActive: boolean;
+  onActivate: (index: number) => void;
+  onTouchStart: (e: React.TouchEvent<HTMLDivElement>) => void;
+  onTouchEnd: (e: React.TouchEvent<HTMLDivElement>) => void;
+}
+
+// Memoized so hovering one card doesn't force React to re-diff the other five.
+const EventCard = memo(function EventCard({
+  event,
+  index,
+  isActive,
+  onActivate,
+  onTouchStart,
+  onTouchEnd,
+}: EventCardProps) {
+  return (
+    <div
+      onMouseEnter={() => onActivate(index)}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+      className={`
+        event-card
+        group
+        relative
+        overflow-hidden
+        rounded-[2.5rem]
+        border
+        border-red-500/20
+        bg-black/90
+        shadow-2xl
+        backdrop-blur-md
+        transition-all
+        duration-500
+        ease-out
+        cursor-pointer
+        will-change-transform
+        /* Mobile styles */
+        absolute
+        w-[280px]
+        sm:w-[300px]
+        h-[360px]
+        /* Desktop Accordion Styles - Flex grow spread */
+        md:relative
+        md:h-[560px]
+        ${
+          isActive
+            ? "md:w-[420px] md:border-red-500/60 md:shadow-[0_0_35px_rgba(255,0,40,0.35)] md:flex-shrink-0"
+            : "md:w-[76px] md:border-white/10 md:bg-black/60 md:hover:border-red-500/30 md:flex-shrink-0"
+        }
+      `}
+    >
+      {/* Background Poster Image */}
+      {event.image ? (
+        <Image
+          src={event.image}
+          alt={event.title}
+          fill
+          sizes="(max-width: 768px) 100vw, 420px"
+          className={`
+            object-cover
+            object-center
+            transition-transform
+            duration-700
+            ease-out
+            ${isActive ? "md:scale-105" : "md:scale-100 md:brightness-50"}
+          `}
+        />
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-b from-red-950/40 via-black/80 to-black" />
+      )}
+
+      {/* Dark Gradient Overlay for Readability */}
+      <div
+        className={`
+          absolute
+          inset-0
+          bg-gradient-to-t
+          from-black/95
+          via-black/40
+          to-transparent
+          transition-opacity
+          duration-300
+          ${isActive ? "opacity-90" : "opacity-80 md:opacity-95"}
+        `}
+      />
+
+      {/* ================= DESKTOP INACTIVE COLLAPSED VIEW ================= */}
+      <div
+        className={`
+          absolute
+          inset-0
+          hidden
+          md:flex
+          flex-col
+          items-center
+          justify-between
+          py-8
+          transition-opacity
+          duration-300
+          ${isActive ? "pointer-events-none opacity-0" : "opacity-100"}
+        `}
+      >
+        <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 text-xs font-semibold text-white/80 font-space">
+          {String(index + 1).padStart(2, "0")}
+        </div>
+
+        <div className="my-auto rotate-[-90deg] whitespace-nowrap">
+          <span className="text-sm font-bold uppercase tracking-widest text-white/90 font-space">
+            {event.title}
+          </span>
+        </div>
+
+        <div className="h-2 w-2 rounded-full bg-red-500/60 shadow-[0_0_8px_rgba(255,0,40,0.8)]" />
+      </div>
+
+      {/* ================= ACTIVE / MOBILE EXPANDED VIEW ================= */}
+      <div
+        className={`
+          absolute
+          inset-0
+          flex
+          flex-col
+          justify-between
+          p-6
+          transition-opacity
+          duration-300
+          ${isActive ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none md:hidden"}
+        `}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full border border-red-500/40 bg-black/40 text-xs font-semibold text-red-400 backdrop-blur-md font-space">
+            {String(index + 1).padStart(2, "0")}
+          </div>
+        </div>
+
+        <div className="flex items-end justify-between gap-3">
+          <div className="flex flex-col items-start">
+            <h3 className="bg-gradient-to-r from-white via-rose-100 to-red-400 bg-clip-text text-2xl font-bold text-transparent drop-shadow-md sm:text-3xl font-baloo">
+              {event.title}
+            </h3>
+            <div className="mt-2 h-[2px] w-8 bg-red-500 transition-all duration-500 group-hover:w-full" />
+          </div>
+
+          <Link
+            href={`/events#${event.slug}`}
+            aria-label={`View details for ${event.title}`}
+            className="
+              inline-flex
+              h-11
+              w-11
+              shrink-0
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-red-500/30
+              bg-red-950/40
+              text-red-400
+              backdrop-blur-md
+              transition-all
+              duration-300
+              hover:border-red-500
+              hover:bg-red-600
+              hover:text-white
+              hover:shadow-[0_0_15px_rgba(255,0,40,0.4)]
+            "
+          >
+            <svg
+              className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2.5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M7 17L17 7M17 7H7M17 7V17"
+              />
+            </svg>
+          </Link>
+        </div>
+      </div>
+
+      {/* Internal Red Glow on Hover */}
+      <div
+        className="
+          pointer-events-none
+          absolute
+          -bottom-20
+          left-1/2
+          h-36
+          w-36
+          -translate-x-1/2
+          rounded-full
+          bg-red-500/0
+          blur-[50px]
+          transition-all
+          duration-500
+          group-hover:bg-red-500/20
+        "
+      />
+    </div>
+  );
+});
 
 export default function EventsSection() {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -35,7 +249,8 @@ export default function EventsSection() {
       if (!container || !section) return;
 
       const cards = gsap.utils.toArray<HTMLElement>(".event-card");
-      if (cards.length === 0) return;
+      const cardCount = cards.length;
+      if (cardCount === 0) return;
 
       const mm = gsap.matchMedia();
 
@@ -46,8 +261,6 @@ export default function EventsSection() {
 
       mm.add("(max-width: 767px)", () => {
         cards.forEach((card, index) => {
-          const tilt = index % 2 === 0 ? -4 : 4;
-
           gsap.set(card, {
             position: "absolute",
             top: 0,
@@ -57,7 +270,7 @@ export default function EventsSection() {
             yPercent: 130,
             y: 0,
             scale: 1,
-            rotation: tilt,
+            rotation: getTilt(index),
             zIndex: index + 1,
             filter: "brightness(1)",
             force3D: true,
@@ -79,7 +292,7 @@ export default function EventsSection() {
           scrollTrigger: {
             trigger: section,
             start: "top top+=80",
-            end: `+=${cards.length * 220}`,
+            end: `+=${cardCount * 220}`,
             pin: section,
             pinSpacing: true,
             scrub: 0.5,
@@ -89,7 +302,6 @@ export default function EventsSection() {
         });
 
         cards.forEach((card, index) => {
-          const tilt = index % 2 === 0 ? -4 : 4;
           const position = index * 0.75;
 
           tl.to(
@@ -97,7 +309,7 @@ export default function EventsSection() {
             {
               yPercent: 0,
               opacity: 1,
-              rotation: tilt,
+              rotation: getTilt(index),
               ease: "power2.out",
               duration: 1,
             },
@@ -130,7 +342,7 @@ export default function EventsSection() {
             ease: "power2.out",
             duration: 0.6,
           },
-          cards.length * 0.75 + 0.4
+          cardCount * 0.75 + 0.4
         );
 
         return () => {
@@ -146,7 +358,7 @@ export default function EventsSection() {
     };
   }, []);
 
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+  const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
     if (window.innerWidth >= 768) return;
     const card = e.currentTarget;
     card.classList.add("mobile-active");
@@ -159,9 +371,9 @@ export default function EventsSection() {
       overwrite: "auto",
       force3D: true,
     });
-  };
+  }, []);
 
-  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+  const handleTouchEnd = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
     if (window.innerWidth >= 768) return;
     const card = e.currentTarget;
 
@@ -177,7 +389,11 @@ export default function EventsSection() {
     setTimeout(() => {
       card.classList.remove("mobile-active");
     }, 400);
-  };
+  }, []);
+
+  const handleActivate = useCallback((index: number) => {
+    setActiveIndex(index);
+  }, []);
 
   return (
     <section
@@ -253,199 +469,17 @@ export default function EventsSection() {
             md:gap-3
           "
         >
-          {events.map((event, index) => {
-            const isActive = activeIndex === index;
-
-            return (
-              <div
-                key={event.title}
-                onMouseEnter={() => setActiveIndex(index)}
-                onTouchStart={handleTouchStart}
-                onTouchEnd={handleTouchEnd}
-                className={`
-                  event-card
-                  group
-                  relative
-                  overflow-hidden
-                  rounded-[2.5rem]
-                  border
-                  border-red-500/20
-                  bg-black/90
-                  shadow-2xl
-                  backdrop-blur-md
-                  transition-all
-                  duration-500
-                  ease-out
-                  cursor-pointer
-                  /* Mobile styles */
-                  absolute
-                  w-[280px]
-                  sm:w-[300px]
-                  h-[360px]
-                  /* Desktop Accordion Styles - Flex grow spread */
-                  md:relative
-                  md:h-[560px]
-                  ${
-                    isActive
-                      ? "md:w-[420px] md:border-red-500/60 md:shadow-[0_0_35px_rgba(255,0,40,0.35)] md:flex-shrink-0"
-                      : "md:w-[76px] md:border-white/10 md:bg-black/60 md:hover:border-red-500/30 md:flex-shrink-0"
-                  }
-                `}
-              >
-                {/* Background Poster Image */}
-                {event.image ? (
-                  <Image
-                    src={event.image}
-                    alt={event.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 420px"
-                    className={`
-                      object-cover
-                      object-center
-                      transition-transform
-                      duration-700
-                      ease-out
-                      ${isActive ? "md:scale-105" : "md:scale-100 md:brightness-50"}
-                    `}
-                  />
-                ) : (
-                  <div className="absolute inset-0 bg-gradient-to-b from-red-950/40 via-black/80 to-black" />
-                )}
-
-                {/* Dark Gradient Overlay for Readability */}
-                <div
-                  className={`
-                    absolute
-                    inset-0
-                    bg-gradient-to-t
-                    from-black/95
-                    via-black/40
-                    to-transparent
-                    transition-opacity
-                    duration-300
-                    ${isActive ? "opacity-90" : "opacity-80 md:opacity-95"}
-                  `}
-                />
-
-                {/* ================= DESKTOP INACTIVE COLLAPSED VIEW ================= */}
-                <div
-                  className={`
-                    absolute
-                    inset-0
-                    hidden
-                    md:flex
-                    flex-col
-                    items-center
-                    justify-between
-                    py-8
-                    transition-opacity
-                    duration-300
-                    ${isActive ? "pointer-events-none opacity-0" : "opacity-100"}
-                  `}
-                >
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 text-xs font-semibold text-white/80 font-space">
-                    {String(index + 1).padStart(2, "0")}
-                  </div>
-
-                  <div className="my-auto rotate-[-90deg] whitespace-nowrap">
-                    <span className="text-sm font-bold uppercase tracking-widest text-white/90 font-space">
-                      {event.title}
-                    </span>
-                  </div>
-
-                  <div className="h-2 w-2 rounded-full bg-red-500/60 shadow-[0_0_8px_rgba(255,0,40,0.8)]" />
-                </div>
-
-                {/* ================= ACTIVE / MOBILE EXPANDED VIEW ================= */}
-                <div
-                  className={`
-                    absolute
-                    inset-0
-                    flex
-                    flex-col
-                    justify-between
-                    p-6
-                    transition-opacity
-                    duration-300
-                    ${isActive ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none md:hidden"}
-                  `}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full border border-red-500/40 bg-black/40 text-xs font-semibold text-red-400 backdrop-blur-md font-space">
-                      {String(index + 1).padStart(2, "0")}
-                    </div>
-                  </div>
-
-                  <div className="flex items-end justify-between gap-3">
-                    <div className="flex flex-col items-start">
-                      <h3 className="bg-gradient-to-r from-white via-rose-100 to-red-400 bg-clip-text text-2xl font-bold text-transparent drop-shadow-md sm:text-3xl font-baloo">
-                        {event.title}
-                      </h3>
-                      <div className="mt-2 h-[2px] w-8 bg-red-500 transition-all duration-500 group-hover:w-full" />
-                    </div>
-
-                    <Link
-                      href={`/events#${event.slug}`}
-                      aria-label={`View details for ${event.title}`}
-                      className="
-                        inline-flex
-                        h-11
-                        w-11
-                        shrink-0
-                        items-center
-                        justify-center
-                        rounded-full
-                        border
-                        border-red-500/30
-                        bg-red-950/40
-                        text-red-400
-                        backdrop-blur-md
-                        transition-all
-                        duration-300
-                        hover:border-red-500
-                        hover:bg-red-600
-                        hover:text-white
-                        hover:shadow-[0_0_15px_rgba(255,0,40,0.4)]
-                      "
-                    >
-                      <svg
-                        className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M7 17L17 7M17 7H7M17 7V17"
-                        />
-                      </svg>
-                    </Link>
-                  </div>
-                </div>
-
-                {/* Internal Red Glow on Hover */}
-                <div
-                  className="
-                    pointer-events-none
-                    absolute
-                    -bottom-20
-                    left-1/2
-                    h-36
-                    w-36
-                    -translate-x-1/2
-                    rounded-full
-                    bg-red-500/0
-                    blur-[50px]
-                    transition-all
-                    duration-500
-                    group-hover:bg-red-500/20
-                  "
-                />
-              </div>
-            );
-          })}
+          {events.map((event, index) => (
+            <EventCard
+              key={event.title}
+              event={event}
+              index={index}
+              isActive={activeIndex === index}
+              onActivate={handleActivate}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            />
+          ))}
         </div>
 
         {/* ================= MORE EVENTS BUTTON + BOTTOM TEXT (reveals after scroll animation) ================= */}
@@ -498,12 +532,6 @@ export default function EventsSection() {
               </svg>
               <div className="absolute inset-0 bg-gradient-to-r from-red-600/10 to-rose-600/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             </Link>
-          </div>
-
-          <div className="mt-12 text-center">
-            <p className="text-sm uppercase tracking-[0.3em] text-red-400/70 font-space">
-              Curiosity • Competition • Community
-            </p>
           </div>
         </div>
       </div>

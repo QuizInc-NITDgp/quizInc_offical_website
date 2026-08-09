@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
+import { usePageTransition } from "./PagetransitionProvider";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -13,13 +14,13 @@ const navLinks = [
   { label: "Team", href: "/member" },
   { label: "Events", href: "/events" },
   { label: "Gallery", href: "/gallery" },
-  { label: "Contact us", href: "/contact" },
 ];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const { startTransition } = usePageTransition();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,11 +28,19 @@ export default function Navbar() {
     };
 
     window.addEventListener("scroll", handleScroll);
-
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  // Explicitly intercept link clicks to trigger the GSAP transition animation
+  const handleNavLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (pathname === href) return; // Ignore if clicking current page
+
+    e.preventDefault(); // Stop default navigation momentarily
+    setIsOpen(false);   // Close mobile menu if open
+    startTransition(href); // Play cover -> router.push -> reveal sequence
+  };
 
   return (
     <header
@@ -59,6 +68,7 @@ export default function Navbar() {
       <div className="flex w-full items-center justify-between">
         <Link
           href="/"
+          onClick={(e) => handleNavLinkClick(e, "/")}
           className="
             z-50
             flex
@@ -131,6 +141,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
+                  onClick={(e) => handleNavLinkClick(e, link.href)}
                   className={`
                     group
                     relative
@@ -242,7 +253,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  onClick={() => setIsOpen(false)}
+                  onClick={(e) => handleNavLinkClick(e, link.href)}
                   className={`
                     border-b
                     border-red-500/10

@@ -13,6 +13,36 @@ interface QuestionMark {
   rotSpeed: number;
 }
 
+const SPRITE_BUCKETS = 24;
+const SPRITE_MAX_SIZE = 260;
+
+function buildSprites() {
+  const sprites: { canvas: HTMLCanvasElement; fontSize: number }[] = [];
+  for (let i = 0; i < SPRITE_BUCKETS; i++) {
+    const t = i / (SPRITE_BUCKETS - 1);
+    const fontSize = 12 + t * (SPRITE_MAX_SIZE - 12);
+
+    const pad = fontSize * 0.9;
+    const size = Math.ceil(fontSize + pad * 2);
+
+    const off = document.createElement("canvas");
+    off.width = size;
+    off.height = size;
+    const octx = off.getContext("2d")!;
+
+    octx.shadowColor = "#ff1e43";
+    octx.shadowBlur = fontSize * 0.7;
+    octx.font = `900 ${fontSize}px sans-serif`;
+    octx.fillStyle = "rgba(255, 30, 67, 1)";
+    octx.textAlign = "center";
+    octx.textBaseline = "middle";
+    octx.fillText("?", size / 2, size / 2);
+
+    sprites.push({ canvas: off, fontSize });
+  }
+  return sprites;
+}
+
 export default function TunnelBackground() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -20,119 +50,161 @@ export default function TunnelBackground() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
-    let animationFrameId: number;
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
 
-    const handleResize = () => {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let animationFrameId: number;
+    let cssWidth = 0;
+    let cssHeight = 0;
+
+    const sprites = buildSprites();
+
+    const resizeCanvas = () => {
       if (!canvas || !canvas.parentElement) return;
-      canvas.width = canvas.parentElement.clientWidth;
-      canvas.height = canvas.parentElement.clientHeight;
+      cssWidth = canvas.parentElement.clientWidth;
+      cssHeight = canvas.parentElement.clientHeight;
+      canvas.width = cssWidth * dpr;
+      canvas.height = cssHeight * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
-    handleResize();
+    resizeCanvas();
+
+    let resizeTimeout: ReturnType<typeof setTimeout> | null = null;
+    const handleResize = () => {
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(resizeCanvas, 150);
+    };
     window.addEventListener("resize", handleResize);
 
-    // Mobile-aware particle count: fewer on small screens to protect perf,
-    // significantly more on desktop for a denser tunnel effect.
-    const isMobileScreen = (canvas.width || 1200) < 640;
+    const isMobileScreen = cssWidth < 640;
     const particleCount = isMobileScreen ? 320 : 600;
-
     const particles: QuestionMark[] = [];
 
-    const createParticle = (customZ?: number): QuestionMark => {
-      const w = canvas.width || 1200;
-      const h = canvas.height || 800;
-
-      // Mobile check (Tailwind 'sm' breakpoint: < 640px)
+    const resetParticle = (p: QuestionMark, customZ?: number) => {
+      const w = cssWidth || 1200;
+      const h = cssHeight || 800;
       const isMobile = w < 640;
 
-      // Smaller base size on mobile, exact original base size on desktop
       const minSize = isMobile ? 12 : 25;
       const sizeRange = isMobile ? 25 : 45;
 
-      return {
-        x: (Math.random() - 0.5) * w * 2.5,
-        y: (Math.random() - 0.5) * h * 2.5,
-        z: customZ ?? Math.random() * w,
-        size: Math.random() * sizeRange + minSize,
-        // REDUCED SPEED: Range lowered from (7 - 21) down to (1.5 - 4.5)
-        speed: Math.random() * 3 + 1.5,
-        opacity: Math.random() * 0.85 + 0.15,
-        rotation: Math.random() * Math.PI * 2,
-        // REDUCED ROTATION SPEED for gentler spinning
-        rotSpeed: (Math.random() - 0.5) * 0.015,
-      };
+      p.x = (Math.random() - 0.5) * w * 2.5;
+      p.y = (Math.random() - 0.5) * h * 2.5;
+      p.z = customZ ?? Math.random() * w;
+      p.size = Math.random() * sizeRange + minSize;
+      p.speed = Math.random() * 7 + 4;
+      p.opacity = Math.random() * 0.85 + 0.15;
+      p.rotation = Math.random() * Math.PI * 2;
+      p.rotSpeed = (Math.random() - 0.5) * 0.03;
     };
 
     for (let i = 0; i < particleCount; i++) {
-      particles.push(createParticle());
+      const p: QuestionMark = {
+        x: 0, y: 0, z: 0, size: 0, speed: 0, opacity: 0, rotation: 0, rotSpeed: 0,
+      };
+      resetParticle(p);
+      particles.push(p);
     }
 
-    const animate = () => {
-      const width = canvas.width;
-      const height = canvas.height;
-      const centerX = width / 2;
-      const centerY = height / 2;
+    const spriteForSize = (fontSize: number) => {
+      const t = Math.min(1, Math.max(0, (fontSize - 12) / (SPRITE_MAX_SIZE - 12)));
+      const idx = Math.round(t * (SPRITE_BUCKETS - 1));
+      return sprites[idx];
+    };
 
-      ctx.clearRect(0, 0, width, height);
+    const drawFrame = () => {
+      ctx.clearRect(0, 0, cssWidth, cssHeight);
 
-      particles.forEach((p) => {
-        p.z -= p.speed;
-        p.rotation += p.rotSpeed;
+      const centerX = cssWidth / 2;
+      const centerY = cssHeight / 2;
 
-        if (p.z <= 1) {
-          Object.assign(p, createParticle(width));
-        }
-
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
         const k = 450 / p.z;
         const px = p.x * k + centerX;
         const py = p.y * k + centerY;
 
-        if (px >= -100 && px <= width + 100 && py >= -100 && py <= height + 100) {
-          const fontSize = Math.max(12, p.size * k);
-          const alpha = Math.min(1, (1 - p.z / width) * p.opacity);
+        if (px < -100 || px > cssWidth + 100 || py < -100 || py > cssHeight + 100) continue;
 
-          ctx.save();
-          ctx.translate(px, py);
-          ctx.rotate(p.rotation);
+        const fontSize = Math.max(12, p.size * k);
+        const alpha = Math.min(1, (1 - p.z / cssWidth) * p.opacity);
+        if (alpha <= 0) continue;
 
-          ctx.shadowColor = "#ff1e43";
-          ctx.shadowBlur = fontSize * 0.7;
+        const sprite = spriteForSize(fontSize);
+        const scale = fontSize / sprite.fontSize;
+        const drawWidth = sprite.canvas.width * scale;
+        const drawHeight = sprite.canvas.height * scale;
 
-          ctx.font = `900 ${fontSize}px sans-serif`;
-          ctx.fillStyle = `rgba(255, 30, 67, ${alpha})`;
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillText("?", 0, 0);
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.translate(px, py);
+        ctx.rotate(p.rotation);
+        ctx.drawImage(
+          sprite.canvas,
+          -drawWidth / 2,
+          -drawHeight / 2,
+          drawWidth,
+          drawHeight
+        );
+        ctx.restore();
+      }
+    };
 
-          ctx.restore();
-        }
-      });
+    const animate = () => {
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.z -= p.speed;
+        p.rotation += p.rotSpeed;
+        if (p.z <= 1) resetParticle(p, cssWidth);
+      }
 
+      drawFrame();
       animationFrameId = requestAnimationFrame(animate);
     };
 
-    animate();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting && !prefersReducedMotion) {
+          cancelAnimationFrame(animationFrameId);
+          animate();
+        } else {
+          cancelAnimationFrame(animationFrameId);
+        }
+      },
+      { threshold: 0 }
+    );
+    observer.observe(canvas);
+
+    if (prefersReducedMotion) {
+      drawFrame();
+    } else {
+      animate();
+    }
 
     return () => {
       window.removeEventListener("resize", handleResize);
+      if (resizeTimeout) clearTimeout(resizeTimeout);
       cancelAnimationFrame(animationFrameId);
+      observer.disconnect();
     };
   }, []);
 
   return (
     <div className="absolute inset-0 -z-10 h-full w-full overflow-hidden bg-[#0a0002]">
-      {/* 1. Deep Dark Core Gradient */}
-      <div 
+      <div
         className="absolute inset-0 h-full w-full"
         style={{
-          background: "radial-gradient(circle at 50% 50%, #520511 0%, #1a0005 55%, #050001 100%)"
+          background:
+            "radial-gradient(circle at 50% 50%, #520511 0%, #1a0005 55%, #050001 100%)",
         }}
       />
-
-      {/* 2. Soft Red & Dark Aurora Waves Layer */}
       <svg
         className="absolute inset-0 h-full w-full pointer-events-none"
         xmlns="http://www.w3.org/2000/svg"
@@ -144,8 +216,6 @@ export default function TunnelBackground() {
             <feGaussianBlur stdDeviation="70" />
           </filter>
         </defs>
-
-        {/* DARK AURORA / SMOKEY WAVES */}
         <path
           d="M -200,400 Q 200,100 700,500 T 1500,200"
           fill="none"
@@ -162,8 +232,6 @@ export default function TunnelBackground() {
           filter="url(#auroraGlow)"
           className="opacity-80"
         />
-
-        {/* GLOWING RED AURORA RIBBONS */}
         <path
           d="M -200,200 Q 300,700 800,200 T 1400,300"
           fill="none"
@@ -181,8 +249,6 @@ export default function TunnelBackground() {
           className="animate-pulse opacity-50 mix-blend-screen"
         />
       </svg>
-
-      {/* 3. Smooth Flying Question Marks Canvas */}
       <canvas
         ref={canvasRef}
         className="absolute inset-0 z-10 h-full w-full pointer-events-none"
