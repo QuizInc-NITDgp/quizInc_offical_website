@@ -32,7 +32,7 @@ export function usePageTransition() {
 const NAV_SAFETY_TIMEOUT_MS = 2500;
 
 // ---------------------------------------------------------------------------
-// Shard geometry
+// Shard geometry — the old page cracks into these 12 jagged glass pieces.
 // ---------------------------------------------------------------------------
 interface ShardDef {
   clipPath: string;
@@ -41,10 +41,10 @@ interface ShardDef {
   z: number;
 }
 
-const VOID = "rgba(8, 4, 5, 0.95)"; // Opaque void base
-const GLASS_RED = "rgba(160, 20, 30, 0.92)"; // Much more opaque red fill
-const GLASS_RED_DEEP = "rgba(75, 10, 15, 0.96)"; // Dense deep red fill
-const GLASS_RED_HOT = "rgba(190, 35, 45, 0.94)"; // Bright dense red fill
+const VOID = "rgba(8, 4, 5, 0.95)";
+const GLASS_RED = "rgba(160, 20, 30, 0.92)";
+const GLASS_RED_DEEP = "rgba(75, 10, 15, 0.96)";
+const GLASS_RED_HOT = "rgba(190, 35, 45, 0.94)";
 const BORDER_RED = "1px solid rgba(255, 90, 100, 0.35)";
 const BORDER_DIM = "1px solid rgba(255, 255, 255, 0.1)";
 const BG_GLOW =
@@ -103,13 +103,14 @@ const QUESTION_MARKS: MarkDef[] = [
   { top: "66%", left: "78%", size: "clamp(1.5rem, 3.5vw, 2.5rem)", rotate: -12, faint: true },
 ];
 
-function randomVector(spread = 110) {
+// Random offscreen vector so the break direction is different every time.
+function randomVector(spread = 130) {
   const angle = Math.random() * Math.PI * 2;
   const dist = spread + Math.random() * spread;
   return {
     x: Math.cos(angle) * dist,
     y: Math.sin(angle) * dist,
-    rotate: (Math.random() - 0.5) * 400,
+    rotate: (Math.random() - 0.5) * 480,
   };
 }
 
@@ -126,22 +127,98 @@ export function PageTransitionProvider({
 
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const backdropRef = useRef<HTMLDivElement | null>(null);
-  const flashRef = useRef<HTMLDivElement | null>(null);
   const shardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const markRefs = useRef<(HTMLDivElement | null)[]>([]);
   const isCoveredStateRef = useRef(false);
   const safetyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const idleTlRef = useRef<gsap.core.Timeline | null>(null);
 
-  // ---- Snappy, Completely Opaque Formation to Immediate Break ----
-  const playTransitionSequence = useCallback((onCompleteNavigation: () => void) => {
+  // Keep the fully-broken screen visibly alive with a slow pulse while
+  // waiting on navigation to actually finish, so a slow route load never
+  // reads as a frozen frame.
+  const startIdlePulse = useCallback(() => {
+    const marks = markRefs.current.filter(Boolean) as HTMLDivElement[];
+    idleTlRef.current?.kill();
+    idleTlRef.current = gsap
+      .timeline({ repeat: -1, yoyo: true })
+      .to(backdropRef.current, { opacity: 0.82, duration: 0.9, ease: "sine.inOut" }, 0)
+      .to(marks, { scale: 1.05, duration: 1.1, ease: "sine.inOut", stagger: 0.01 }, 0);
+  }, []);
+
+  const stopIdlePulse = useCallback(() => {
+    idleTlRef.current?.kill();
+    idleTlRef.current = null;
+  }, []);
+
+  // ---- Break: the page cracks — shards fly in from random directions
+  // and slam together, sealing the old page under broken glass ----
+  const playBreak = useCallback(() => {
+    return new Promise<void>((resolve) => {
+      const shards = shardRefs.current.filter(Boolean) as HTMLDivElement[];
+      const marks = markRefs.current.filter(Boolean) as HTMLDivElement[];
+      if (shards.length === 0) {
+        resolve();
+        return;
+      }
+
+      if (overlayRef.current) overlayRef.current.style.pointerEvents = "auto";
+
+      const tl = gsap.timeline({ onComplete: resolve });
+
+      tl.to(backdropRef.current, { opacity: 1, duration: 0.08, ease: "power1.out" }, 0);
+
+      shards.forEach((el, i) => {
+        const { x, y, rotate } = randomVector();
+        gsap.set(el, { xPercent: x, yPercent: y, rotate, opacity: 0, scale: 1.12 });
+        tl.to(
+          el,
+          {
+            xPercent: 0,
+            yPercent: 0,
+            rotate: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.16,
+            ease: "power3.out",
+          },
+          i * 0.006 // near-simultaneous — reads as a single crack, not a queue
+        );
+      });
+
+      // A hard, brief shake right as the crack completes
+      tl.to(
+        overlayRef.current,
+        {
+          keyframes: [
+            { x: -6, y: 3 },
+            { x: 5, y: -4 },
+            { x: 0, y: 0 },
+          ],
+          duration: 0.1,
+          ease: "power2.out",
+        },
+        "-=0.08"
+      );
+
+      marks.forEach((el) => {
+        gsap.set(el, { opacity: 0, scale: 0.4, rotate: (Math.random() - 0.5) * 60 });
+        tl.to(
+          el,
+          { opacity: 1, scale: 1, rotate: 0, duration: 0.08, ease: "back.out(3)" },
+          0.01
+        );
+      });
+    });
+  }, []);
+
+  // ---- Form: the shards blast apart along fresh random vectors,
+  // letting the new page show through the widening cracks ----
+  const playForm = useCallback(() => {
+    stopIdlePulse();
+
     const shards = shardRefs.current.filter(Boolean) as HTMLDivElement[];
     const marks = markRefs.current.filter(Boolean) as HTMLDivElement[];
-    if (shards.length === 0) {
-      onCompleteNavigation();
-      return;
-    }
-
-    if (overlayRef.current) overlayRef.current.style.pointerEvents = "auto";
+    if (shards.length === 0) return;
 
     const tl = gsap.timeline({
       onComplete: () => {
@@ -149,53 +226,7 @@ export function PageTransitionProvider({
       },
     });
 
-    // Solid full background fade-in immediately
-    tl.to(backdropRef.current, { opacity: 1, duration: 0.06, ease: "power1.out" }, 0);
-
-    shards.forEach((el, i) => {
-      const { x, y, rotate } = randomVector();
-      gsap.set(el, { xPercent: x, yPercent: y, rotate, opacity: 0, scale: 1.1 });
-      tl.to(
-        el,
-        {
-          xPercent: 0,
-          yPercent: 0,
-          rotate: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.1,
-          ease: "power2.out",
-        },
-        i * 0.002
-      );
-    });
-
-    marks.forEach((el, i) => {
-      gsap.set(el, { opacity: 0, scale: 0.5, rotate: (Math.random() - 0.5) * 40 });
-      tl.to(
-        el,
-        {
-          opacity: 1,
-          scale: 1,
-          rotate: 0,
-          duration: 0.05,
-          ease: "power1.out",
-        },
-        0.01 + i * 0.001
-      );
-    });
-
-    // Sharp impact flash
-    tl.to(flashRef.current, { opacity: 0.95, duration: 0.02, ease: "power1.in" }, "-=0.02")
-      .to(flashRef.current, { opacity: 0, duration: 0.08, ease: "power2.out" });
-
-    // Trigger router navigation instantly when fully opaque and filled
-    tl.add(() => {
-      onCompleteNavigation();
-    });
-
-    // Immediate shatter away
-    tl.to(backdropRef.current, { opacity: 0, duration: 0.14, ease: "power1.in" }, "+=0.01");
+    tl.to(backdropRef.current, { opacity: 0, duration: 0.16, ease: "power1.in" }, 0.01);
 
     marks.forEach((el, i) => {
       tl.to(
@@ -203,16 +234,16 @@ export function PageTransitionProvider({
         {
           opacity: 0,
           scale: 0.4,
-          rotate: (Math.random() - 0.5) * 60,
+          rotate: (Math.random() - 0.5) * 90,
           duration: 0.1,
           ease: "power2.in",
         },
-        "<" + i * 0.002
+        i * 0.004
       );
     });
 
     shards.forEach((el, i) => {
-      const { x, y, rotate } = randomVector(140);
+      const { x, y, rotate } = randomVector(160);
       tl.to(
         el,
         {
@@ -221,41 +252,43 @@ export function PageTransitionProvider({
           rotate,
           opacity: 0,
           scale: 1.05,
-          duration: 0.15,
-          ease: "power2.in",
+          duration: 0.18,
+          ease: "power3.in",
         },
-        "<" + i * 0.002
+        0.005 + i * 0.004
       );
     });
-  }, []);
+  }, [stopIdlePulse]);
 
   const startTransition = useCallback(
-    (href: string) => {
+    async (href: string) => {
       if (isCoveredStateRef.current) return;
       isCoveredStateRef.current = true;
 
-      playTransitionSequence(() => {
-        router.push(href);
-      });
+      await playBreak();
+      startIdlePulse();
+      router.push(href);
 
       safetyTimeoutRef.current = setTimeout(() => {
         if (isCoveredStateRef.current) {
           isCoveredStateRef.current = false;
-          if (overlayRef.current) overlayRef.current.style.pointerEvents = "none";
+          playForm();
         }
       }, NAV_SAFETY_TIMEOUT_MS);
     },
-    [router, playTransitionSequence]
+    [router, playBreak, playForm, startIdlePulse]
   );
 
+  // Once the route has actually changed, let the new page form.
   useEffect(() => {
     if (isCoveredStateRef.current) {
       if (safetyTimeoutRef.current) clearTimeout(safetyTimeoutRef.current);
       isCoveredStateRef.current = false;
-      if (overlayRef.current) overlayRef.current.style.pointerEvents = "none";
+      playForm();
     }
-  }, [pathname]);
+  }, [pathname, playForm]);
 
+  // Intercept same-origin link clicks to drive the transition.
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (e.defaultPrevented) return;
@@ -314,8 +347,6 @@ export function PageTransitionProvider({
                 clipPath: shard.clipPath,
                 background: shard.bg,
                 border: shard.border,
-                backdropFilter: "none",
-                WebkitBackdropFilter: "none",
                 zIndex: shard.z,
                 opacity: 0,
                 boxShadow:
@@ -351,18 +382,6 @@ export function PageTransitionProvider({
               ?
             </div>
           ))}
-
-          <div
-            ref={flashRef}
-            className="absolute inset-0"
-            style={{
-              opacity: 0,
-              zIndex: 20,
-              mixBlendMode: "screen",
-              background:
-                "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.95) 0%, rgba(200,40,50,0.6) 45%, rgba(20,2,4,0) 100%)",
-            }}
-          />
         </div>
       )}
     </PageTransitionContext.Provider>
