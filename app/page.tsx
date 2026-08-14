@@ -4,6 +4,7 @@ import AboutSection from "@/components/AboutSection";
 import ScrollReveal from "@/components/Scrollreveal";
 import TypewriterText from "@/components/TypewriterText";
 import { motion } from "framer-motion";
+import MovingBanner from "@/components/Banner";
 
 export default function Home() {
   return (

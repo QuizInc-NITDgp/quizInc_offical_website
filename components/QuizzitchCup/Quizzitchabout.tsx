@@ -1,19 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 const image = "/qc2.webp";
 
 export default function QuizzitchAbout() {
   return (
     <div className="relative z-10 w-full py-8 sm:py-12">
-      <div className="w-full p-6 sm:p-10 lg:p-16 relative overflow-hidden">
+      <div className="relative w-full overflow-hidden p-6 sm:p-10 lg:p-16">
         
-        {/* Ambient background glows */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-red-600/10 blur-[120px] pointer-events-none rounded-full" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-rose-600/10 blur-[100px] pointer-events-none rounded-full" />
-
-        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+        <div className="relative z-10 grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-16">
           
           {/* About Section on Left */}
           <motion.div
@@ -21,20 +18,22 @@ export default function QuizzitchAbout() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="lg:col-span-7 flex flex-col justify-center text-left"
+            className="flex flex-col justify-center text-left lg:col-span-7"
           >
             <div>
-              {/* Heading */}
-              <h3 className="text-4xl sm:text-5xl md:text-6xl font-[800] text-white font-baloo tracking-tight mb-8 leading-[1.1]">
-                About <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-red-200 to-red-500">Quizzitch Cup</span>
+              {/* Heading with White to Pink to Red Gradient */}
+              <h3 className="mb-8 font-baloo text-4xl font-[800] leading-[1.1] tracking-tight text-white sm:text-5xl md:text-6xl">
+                About{" "}
+                <span className="inline-block bg-gradient-to-r from-white via-rose-300 to-red-600 bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(225,29,72,0.4)]">
+                  Quizzitch Cup
+                </span>
               </h3>
               
-              {/* Description styled with increased font size (text-base -> text-lg -> text-xl) */}
-              <div className="flex flex-col gap-6 font-sans text-base sm:text-lg lg:text-xl font-normal text-white/90 leading-[1.65] tracking-tight">
+              {/* Description */}
+              <div className="flex flex-col gap-6 font-sans text-base font-normal leading-[1.65] tracking-tight text-white/90 sm:text-lg lg:text-xl">
                 <p>
                   Quizzitch Cup stands as ultimate battlefield for minds, featuring multiple battle rounds designed to test knowledge. It brings together sharpest competitors across intense intellectual combat. Whether you are seasoned quizzer or enthusiastic newcomer, this flagship arena tests speed, strategy, and sheer wisdom to claim ultimate glory.
                 </p>
-                
                 
                 <p>
                   Navigate through high-stakes elimination rounds, decode cryptic visual clues, and outsmart rival houses in a race against the clock where every single second counts towards immortality.
@@ -53,12 +52,15 @@ export default function QuizzitchAbout() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-            className="lg:col-span-5 relative w-full max-w-[580px] mx-auto aspect-[4/4] lg:h-[620px] flex items-center justify-center scale-110 lg:scale-125"
+            className="relative mx-auto flex aspect-square w-full max-w-[580px] items-center justify-center scale-110 lg:col-span-5 lg:h-[620px] lg:scale-125"
           >
-            <img
+            <Image
               src={image}
               alt="Quizzitch Cup Logo"
-              className="w-full h-full object-contain drop-shadow-[0_0_50px_rgba(255,30,67,0.3)]"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              priority
+              className="object-contain drop-shadow-[0_0_50px_rgba(255,30,67,0.3)]"
             />
           </motion.div>
 

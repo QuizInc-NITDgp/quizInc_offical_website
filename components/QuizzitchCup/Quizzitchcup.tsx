@@ -19,28 +19,26 @@ export default function QuizzitchCup({ events }: { events: EventItem[] }) {
   const orbY2 = useTransform(scrollYProgress, [0, 1], [0, 160]);
 
   return (
-    // Removed horizontal padding (px-...) so it touches left-to-right full screen
-    <section ref={sectionRef} className="relative w-full mx-auto py-20 sm:py-28 overflow-hidden">
+    <section ref={sectionRef} className="relative mx-auto w-full overflow-hidden py-20 sm:py-28">
       
-      <motion.div style={{ y: orbY1 }} className="pointer-events-none absolute -top-10 -left-20 w-[280px] sm:w-[480px] h-[280px] sm:h-[480px] rounded-full bg-red-600/10 blur-[90px]" />
-      <motion.div style={{ y: orbY2 }} className="pointer-events-none absolute bottom-0 -right-20 w-[320px] sm:w-[520px] h-[320px] sm:h-[520px] rounded-full bg-rose-500/10 blur-[100px]" />
+      <motion.div style={{ y: orbY1 }} className="pointer-events-none absolute -top-10 -left-20 h-[280px] w-[280px] rounded-full bg-red-600/10 blur-[90px] sm:h-[480px] sm:w-[480px]" />
+      <motion.div style={{ y: orbY2 }} className="pointer-events-none absolute bottom-0 -right-20 h-[320px] w-[320px] rounded-full bg-rose-500/10 blur-[100px] sm:h-[520px] sm:w-[520px]" />
 
-      {/* Wrapping inner content with a standardized horizontal padding wrapper if they don't have their own */}
       <div className="w-full">
         <QuizzitchHeading />
 
         {/* About Section */}
-        <div className="mt-16 sm:mt-2 w-full">
+        <div className="mt-16 w-full sm:mt-2">
           <QuizzitchAbout />
         </div>
 
-        {/* Events Section (Marquee naturally goes edge-to-edge) */}
-        <div className="mt-20 sm:mt-28 w-full">
+        {/* Events Section */}
+        <div className="mt-20 w-full sm:mt-28">
           <QuizzitchEvents events={events} />
         </div>
 
         {/* Sponsors Section */}
-        <div className="mt-24 sm:mt-32 w-full">
+        <div className="mt-24 w-full sm:mt-32">
           <QuizzitchSponsors />
         </div>
       </div>

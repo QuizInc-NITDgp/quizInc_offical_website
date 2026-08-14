@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import TunnelBackground from "@/components/TunnelBackground";
+import CustomCursor from "@/components/CustomCursor";
 import "./globals.css";
 
 import Footer from "@/components/Footer";
@@ -31,6 +32,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${blackOpsOne.variable} ${spaceGrotesk.variable} ${bungee.variable} font-sans relative min-h-screen bg-[#0a0002]`}>
+        {/* Custom Red & White Glowing Cursor */}
+        <CustomCursor />
+
         <PageTransitionProvider>
           <div className="fixed inset-0 pointer-events-none -z-20">
             <TunnelBackground />

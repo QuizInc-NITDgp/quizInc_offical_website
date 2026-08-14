@@ -62,21 +62,21 @@ export default function Navbar() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 w-full pl-2 sm:pl-3 lg:pl-4 py-4 lg:py-3">
-      {/* Background overlay on scroll */}
+    <header className="fixed top-0 left-0 right-0 z-50 w-full pl-2 sm:pl-3 lg:pl-4 py-2 lg:py-2">
+      {/* Background overlay on scroll - Tightened height */}
       <div
         className={`
           pointer-events-none
           absolute
           inset-x-0
           top-0
-          -bottom-0
+          h-full
           -z-10
           bg-gradient-to-b
           from-[#0a0002]/95
           via-[#0a0002]/80
           to-transparent
-          backdrop-blur-md
+          backdrop-blur-sm
           transition-opacity
           duration-300
           ${scrolled ? "opacity-100" : "opacity-0"}
@@ -105,7 +105,7 @@ export default function Navbar() {
             priority
             className="
               h-auto
-              w-[85px]
+              w-[70px] sm:w-[85px]
               object-contain
             "
           />
@@ -137,7 +137,7 @@ export default function Navbar() {
               to-[#100003]/75
               pl-14
               pr-16
-              py-4
+              py-3
               backdrop-blur-md
               transition-all
               duration-300
@@ -204,8 +204,8 @@ export default function Navbar() {
                 aria-label="Previous page"
                 className="
                   flex
-                  h-10
-                  w-10
+                  h-9
+                  w-9
                   items-center
                   justify-center
                   rounded-full
@@ -213,13 +213,13 @@ export default function Navbar() {
                   border-red-500/30
                   bg-black/80
                   text-white
-                  backdrop-blur-md
+                  backdrop-blur-sm
                   transition-all
                   hover:bg-red-950/40
                   active:scale-95
                 "
               >
-                <ChevronLeft className="h-5 w-5 text-rose-100" />
+                <ChevronLeft className="h-4 w-4 text-rose-100" />
               </button>
 
               <button
@@ -227,8 +227,8 @@ export default function Navbar() {
                 aria-label="Next page"
                 className="
                   flex
-                  h-10
-                  w-10
+                  h-9
+                  w-9
                   items-center
                   justify-center
                   rounded-full
@@ -236,13 +236,13 @@ export default function Navbar() {
                   border-red-500/30
                   bg-black/80
                   text-white
-                  backdrop-blur-md
+                  backdrop-blur-sm
                   transition-all
                   hover:bg-red-950/40
                   active:scale-95
                 "
               >
-                <ChevronRight className="h-5 w-5 text-rose-100" />
+                <ChevronRight className="h-4 w-4 text-rose-100" />
               </button>
             </div>
           )}
@@ -253,8 +253,8 @@ export default function Navbar() {
             aria-label="Toggle navigation menu"
             className="
               flex
-              h-11
-              w-11
+              h-10
+              w-10
               shrink-0
               items-center
               justify-center
@@ -262,17 +262,17 @@ export default function Navbar() {
               border
               border-red-500/40
               bg-black/80
-              p-2.5
-              backdrop-blur-md
+              p-2
+              backdrop-blur-sm
               transition-all
               hover:bg-red-950/40
               active:scale-95
             "
           >
-            <div className="relative flex h-5 w-6 flex-col justify-between">
+            <div className="relative flex h-4 w-5 flex-col justify-between">
               <span
                 className={`
-                  h-[3px]
+                  h-[2.5px]
                   w-full
                   rounded-full
                   bg-white
@@ -281,14 +281,14 @@ export default function Navbar() {
                   ease-in-out
                   ${
                     isOpen
-                      ? "translate-y-[8px] rotate-[135deg] bg-red-400"
+                      ? "translate-y-[7px] rotate-[135deg] bg-red-400"
                       : ""
                   }
                 `}
               />
               <span
                 className={`
-                  h-[3px]
+                  h-[2.5px]
                   w-full
                   rounded-full
                   bg-white
@@ -300,7 +300,7 @@ export default function Navbar() {
               />
               <span
                 className={`
-                  h-[3px]
+                  h-[2.5px]
                   w-full
                   rounded-full
                   bg-white
@@ -309,7 +309,7 @@ export default function Navbar() {
                   ease-in-out
                   ${
                     isOpen
-                      ? "-translate-y-[8px] -rotate-[135deg] bg-red-400"
+                      ? "-translate-y-[7px] -rotate-[135deg] bg-red-400"
                       : ""
                   }
                 `}
@@ -329,8 +329,8 @@ export default function Navbar() {
           flex-col
           items-center
           justify-center
-          bg-[#0a0002]/98
-          backdrop-blur-2xl
+          bg-[#0a0002]/90
+          backdrop-blur-sm
           transition-all
           duration-500
           ease-out
@@ -342,7 +342,7 @@ export default function Navbar() {
           }
         `}
       >
-        <nav className="w-full px-8 text-center">
+        <nav className="w-full max-w-sm px-6 text-center">
           <ul className="flex flex-col gap-6">
             {navLinks.map((link, index) => {
               const isActive = pathname === link.href;
@@ -370,7 +370,7 @@ export default function Navbar() {
                     className={`
                       inline-block
                       font-space
-                      text-3xl
+                      text-2xl
                       font-bold
                       uppercase
                       tracking-widest
@@ -389,13 +389,7 @@ export default function Navbar() {
           </ul>
         </nav>
 
-        {/* Footer info at the bottom of full-screen menu */}
-        <div className="absolute bottom-10 text-center font-space">
-          <p className="text-sm font-semibold tracking-wider text-white/80">
-            QuizInc
-          </p>
-          <p className="text-xs text-red-400/80">NIT Durgapur</p>
-        </div>
+        
       </div>
     </header>
   );
