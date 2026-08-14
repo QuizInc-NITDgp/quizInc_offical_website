@@ -98,12 +98,12 @@ export default function TunnelBackground() {
       p.y = (Math.random() - 0.5) * h * 2.5;
       p.z = customZ ?? Math.random() * w;
       p.size = Math.random() * sizeRange + minSize;
-      
-      // BALANCED SPEED: Smooth motion without being too fast or too sluggish
-      p.speed = Math.random() * 3 + 2.5; 
+
+      // REDUCED SPEED: Lower base and random range for a slower, smoother tunnel effect
+      p.speed = Math.random() * 1.5 + 0.8; 
       p.opacity = Math.random() * 0.85 + 0.15;
       p.rotation = Math.random() * Math.PI * 2;
-      p.rotSpeed = (Math.random() - 0.5) * 0.02; 
+      p.rotSpeed = (Math.random() - 0.5) * 0.01; // Slightly reduced rotation speed to match
     };
 
     for (let i = 0; i < particleCount; i++) {
