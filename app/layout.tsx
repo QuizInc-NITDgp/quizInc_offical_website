@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import TunnelBackground from "@/components/TunnelBackground";
 import CustomCursor from "@/components/CustomCursor";
@@ -7,6 +8,14 @@ import Footer from "@/components/Footer";
 import { PageTransitionProvider } from "@/components/PagetransitionProvider";
 
 import { Black_Ops_One, Space_Grotesk, Bungee } from "next/font/google";
+
+// Set your tab title and logo here:
+export const metadata: Metadata = {
+  title: "QuizInc", // Changes "localhost:3000" in the browser tab
+  icons: {
+    icon: "/logo.webp",   // Replace default globe icon (place logo.png in your /public folder)
+  },
+};
 
 // Space Grotesk for the description/body text
 const spaceGrotesk = Space_Grotesk({

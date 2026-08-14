@@ -99,11 +99,11 @@ export default function TunnelBackground() {
       p.z = customZ ?? Math.random() * w;
       p.size = Math.random() * sizeRange + minSize;
 
-      // REDUCED SPEED: Lower base and random range for a slower, smoother tunnel effect
-      p.speed = Math.random() * 1.5 + 0.8; 
+      // SPEED INCREMENTED SLIGHTLY (1.8 to 3.4)
+  p.speed = Math.random() * 2.0 + 2.5;
       p.opacity = Math.random() * 0.85 + 0.15;
       p.rotation = Math.random() * Math.PI * 2;
-      p.rotSpeed = (Math.random() - 0.5) * 0.01; // Slightly reduced rotation speed to match
+      p.rotSpeed = (Math.random() - 0.5) * 0.018; 
     };
 
     for (let i = 0; i < particleCount; i++) {
