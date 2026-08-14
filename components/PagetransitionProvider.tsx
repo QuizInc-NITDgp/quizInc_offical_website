@@ -31,11 +31,6 @@ export function usePageTransition() {
 
 const NAV_SAFETY_TIMEOUT_MS = 2500;
 
-// Grid configuration for the pixel transition
-const GRID_ROWS = 8;
-const GRID_COLS = 12;
-const TOTAL_PIXELS = GRID_ROWS * GRID_COLS;
-
 // Matched Palette: Sampled from QuizInc background gradient & glowing elements
 const PIXEL_COLORS = [
   "rgb(10, 0, 2)",     // Darkest background corner (#0a0002)
@@ -56,7 +51,28 @@ export function PageTransitionProvider({
   const pathname = usePathname();
 
   const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => setIsMounted(true), []);
+  const [gridDimensions, setGridDimensions] = useState({ rows: 8, cols: 12 });
+
+  // Handle responsive grid sizing
+  useEffect(() => {
+    setIsMounted(true);
+
+    const updateGrid = () => {
+      if (window.innerWidth < 768) {
+        // Mobile layout: smaller pixel boxes by using more rows & balanced columns
+        setGridDimensions({ rows: 16, cols: 10 });
+      } else {
+        // Desktop layout
+        setGridDimensions({ rows: 8, cols: 12 });
+      }
+    };
+
+    updateGrid();
+    window.addEventListener("resize", updateGrid);
+    return () => window.removeEventListener("resize", updateGrid);
+  }, []);
+
+  const totalPixels = gridDimensions.rows * gridDimensions.cols;
 
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const pixelRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -66,11 +82,11 @@ export function PageTransitionProvider({
 
   // Pre-generate static color assignment and grid positions for pixels
   const pixelGrid = useMemo(() => {
-    return Array.from({ length: TOTAL_PIXELS }).map(() => {
+    return Array.from({ length: totalPixels }).map(() => {
       const bg = PIXEL_COLORS[Math.floor(Math.random() * PIXEL_COLORS.length)];
       return { bg };
     });
-  }, []);
+  }, [totalPixels]);
 
   // Keeps the pixels pulsing faintly while waiting on slow route changes
   const startIdlePulse = useCallback(() => {
@@ -108,19 +124,19 @@ export function PageTransitionProvider({
       gsap.set(pixels, { scale: 0, opacity: 0 });
 
       gsap.to(pixels, {
-        scale: 1.02, // Slight overlap to prevent sub-pixel gaps
+        scale: 1.05, // Extra overlap margin to eliminate grid line gaps on high-DPI mobile screens
         opacity: 1,
         duration: 0.35,
         ease: "power2.out",
         stagger: {
-          grid: [GRID_ROWS, GRID_COLS],
+          grid: [gridDimensions.rows, gridDimensions.cols],
           from: "random",
           amount: 0.25,
         },
         onComplete: resolve,
       });
     });
-  }, []);
+  }, [gridDimensions]);
 
   // ---- Reveal: Pixels dissolve and shrink away to show the new page ----
   const playReveal = useCallback(() => {
@@ -135,7 +151,7 @@ export function PageTransitionProvider({
       duration: 0.35,
       ease: "power2.in",
       stagger: {
-        grid: [GRID_ROWS, GRID_COLS],
+        grid: [gridDimensions.rows, gridDimensions.cols],
         from: "center",
         amount: 0.25,
       },
@@ -143,7 +159,7 @@ export function PageTransitionProvider({
         if (overlayRef.current) overlayRef.current.style.pointerEvents = "none";
       },
     });
-  }, [stopIdlePulse]);
+  }, [stopIdlePulse, gridDimensions]);
 
   const startTransition = useCallback(
     async (href: string) => {
@@ -215,8 +231,8 @@ export function PageTransitionProvider({
           aria-hidden="true"
           className="pointer-events-none fixed inset-0 z-[999] grid overflow-hidden"
           style={{
-            gridTemplateRows: `repeat(${GRID_ROWS}, 1fr)`,
-            gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)`,
+            gridTemplateRows: `repeat(${gridDimensions.rows}, 1fr)`,
+            gridTemplateColumns: `repeat(${gridDimensions.cols}, 1fr)`,
           }}
         >
           {pixelGrid.map((pixel, i) => (

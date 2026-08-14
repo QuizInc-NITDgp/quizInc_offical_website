@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { usePageTransition } from "./PagetransitionProvider";
 
 const navLinks = [
@@ -33,19 +33,37 @@ export default function Navbar() {
     };
   }, []);
 
-  // Explicitly intercept link clicks to trigger the GSAP transition animation
-  const handleNavLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    if (pathname === href) return; // Ignore if clicking current page
+  // Intercept link clicks to trigger existing custom page transition
+  const handleNavLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) => {
+    if (pathname === href) return;
 
-    e.preventDefault(); // Stop default navigation momentarily
-    setIsOpen(false);   // Close mobile menu if open
-    startTransition(href); // Play cover -> router.push -> reveal sequence
+    e.preventDefault();
+    setIsOpen(false);
+    startTransition(href);
+  };
+
+  // Next / Prev navigation handlers for mobile controls
+  const handleNavigateStep = (direction: "prev" | "next") => {
+    const currentIndex = navLinks.findIndex((link) => link.href === pathname);
+    let targetIndex = 0;
+
+    if (direction === "next") {
+      targetIndex = (currentIndex + 1) % navLinks.length;
+    } else {
+      targetIndex = (currentIndex - 1 + navLinks.length) % navLinks.length;
+    }
+
+    const targetHref = navLinks[targetIndex].href;
+    setIsOpen(false);
+    startTransition(targetHref);
   };
 
   return (
-    <header
-      className="fixed top-0 left-0 right-0 z-50 w-full pl-2 sm:pl-3 lg:pl-4 py-4 lg:py-3"
-    >
+    <header className="fixed top-0 left-0 right-0 z-50 w-full pl-2 sm:pl-3 lg:pl-4 py-4 lg:py-3">
+      {/* Background overlay on scroll */}
       <div
         className={`
           pointer-events-none
@@ -66,6 +84,7 @@ export default function Navbar() {
       />
 
       <div className="flex w-full items-center justify-between">
+        {/* Brand Logo */}
         <Link
           href="/"
           onClick={(e) => handleNavLinkClick(e, "/")}
@@ -92,6 +111,7 @@ export default function Navbar() {
           />
         </Link>
 
+        {/* Desktop Navigation */}
         <div
           className="
             relative
@@ -145,9 +165,10 @@ export default function Navbar() {
                     duration-300
                     hover:scale-105
                     hover:text-red-400
-                    ${isActive
-                      ? "scale-105 font-semibold text-red-400"
-                      : "text-white/90"
+                    ${
+                      isActive
+                        ? "scale-105 font-semibold text-red-400"
+                        : "text-white/90"
                     }
                   `}
                 >
@@ -164,10 +185,7 @@ export default function Navbar() {
                       to-rose-400
                       transition-all
                       duration-300
-                      ${isActive
-                        ? "w-full"
-                        : "w-0 group-hover:w-full"
-                      }
+                      ${isActive ? "w-full" : "w-0 group-hover:w-full"}
                     `}
                   />
                 </Link>
@@ -176,125 +194,209 @@ export default function Navbar() {
           </nav>
         </div>
 
-        <button
-          onClick={() => setIsOpen((prev) => !prev)}
-          aria-label="Toggle navigation menu"
-          className="
-            z-50
-            mr-8
-            flex
-            shrink-0
-            items-center
-            justify-center
-            rounded-lg
-            border
-            border-red-500/40
-            bg-black/60
-            p-2.5
-            text-white
-            backdrop-blur-md
-            transition-all
-            hover:bg-red-950/40
-            active:scale-95
-            lg:hidden
-          "
-        >
-          {isOpen ? (
-            <X className="h-6 w-6 text-red-400" />
-          ) : (
-            <Menu className="h-6 w-6 text-rose-100" />
+        {/* Mobile Control Section (Buttons Navigation + Menu Trigger) */}
+        <div className="z-50 mr-4 flex items-center gap-3 md:hidden">
+          {/* Quick Prev / Next Controls */}
+          {!isOpen && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => handleNavigateStep("prev")}
+                aria-label="Previous page"
+                className="
+                  flex
+                  h-10
+                  w-10
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-red-500/30
+                  bg-black/80
+                  text-white
+                  backdrop-blur-md
+                  transition-all
+                  hover:bg-red-950/40
+                  active:scale-95
+                "
+              >
+                <ChevronLeft className="h-5 w-5 text-rose-100" />
+              </button>
+
+              <button
+                onClick={() => handleNavigateStep("next")}
+                aria-label="Next page"
+                className="
+                  flex
+                  h-10
+                  w-10
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-red-500/30
+                  bg-black/80
+                  text-white
+                  backdrop-blur-md
+                  transition-all
+                  hover:bg-red-950/40
+                  active:scale-95
+                "
+              >
+                <ChevronRight className="h-5 w-5 text-rose-100" />
+              </button>
+            </div>
           )}
-        </button>
+
+          {/* Hamburger / Close Animated Button Wrapper */}
+          <button
+            onClick={() => setIsOpen((prev) => !prev)}
+            aria-label="Toggle navigation menu"
+            className="
+              flex
+              h-11
+              w-11
+              shrink-0
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-red-500/40
+              bg-black/80
+              p-2.5
+              backdrop-blur-md
+              transition-all
+              hover:bg-red-950/40
+              active:scale-95
+            "
+          >
+            <div className="relative flex h-5 w-6 flex-col justify-between">
+              <span
+                className={`
+                  h-[3px]
+                  w-full
+                  rounded-full
+                  bg-white
+                  transition-all
+                  duration-300
+                  ease-in-out
+                  ${
+                    isOpen
+                      ? "translate-y-[8px] rotate-[135deg] bg-red-400"
+                      : ""
+                  }
+                `}
+              />
+              <span
+                className={`
+                  h-[3px]
+                  w-full
+                  rounded-full
+                  bg-white
+                  transition-all
+                  duration-300
+                  ease-in-out
+                  ${isOpen ? "scale-x-0 opacity-0" : "opacity-100"}
+                `}
+              />
+              <span
+                className={`
+                  h-[3px]
+                  w-full
+                  rounded-full
+                  bg-white
+                  transition-all
+                  duration-300
+                  ease-in-out
+                  ${
+                    isOpen
+                      ? "-translate-y-[8px] -rotate-[135deg] bg-red-400"
+                      : ""
+                  }
+                `}
+              />
+            </div>
+          </button>
+        </div>
       </div>
 
+      {/* Full-Screen Animated Mobile Menu Overlay */}
       <div
         className={`
           fixed
-          inset-y-0
-          right-0
+          inset-0
           z-40
           flex
-          w-64
           flex-col
-          justify-between
-          border-l
-          border-red-500/30
-          bg-[#0a0002]/95
-          p-6
-          backdrop-blur-xl
-          transition-transform
-          duration-300
-          ease-in-out
+          items-center
+          justify-center
+          bg-[#0a0002]/98
+          backdrop-blur-2xl
+          transition-all
+          duration-500
+          ease-out
           md:hidden
-          ${isOpen ? "translate-x-0" : "translate-x-full"}
+          ${
+            isOpen
+              ? "pointer-events-auto opacity-100 scale-100"
+              : "pointer-events-none opacity-0 scale-95"
+          }
         `}
       >
-        <div className="mt-14 flex flex-col gap-4">
-          <nav className="flex flex-col gap-2">
-            {navLinks.map((link) => {
+        <nav className="w-full px-8 text-center">
+          <ul className="flex flex-col gap-6">
+            {navLinks.map((link, index) => {
               const isActive = pathname === link.href;
 
               return (
-                <Link
+                <li
                   key={link.href}
-                  href={link.href}
-                  onClick={(e) => handleNavLinkClick(e, link.href)}
                   className={`
-                    border-b
-                    border-red-500/10
-                    py-3
-                    font-space
-                    text-base
-                    font-medium
-                    tracking-wide
+                    transform
                     transition-all
-                    duration-300
-                    hover:translate-x-1
-                    hover:text-red-400
-                    ${isActive
-                      ? "translate-x-1 font-semibold text-red-400"
-                      : "text-white/90"
+                    duration-500
+                    ${
+                      isOpen
+                        ? "translate-x-0 opacity-100"
+                        : "-translate-x-full opacity-0"
                     }
                   `}
+                  style={{
+                    transitionDelay: isOpen ? `${index * 80 + 100}ms` : "0ms",
+                  }}
                 >
-                  {link.label}
-                </Link>
+                  <Link
+                    href={link.href}
+                    onClick={(e) => handleNavLinkClick(e, link.href)}
+                    className={`
+                      inline-block
+                      font-space
+                      text-3xl
+                      font-bold
+                      uppercase
+                      tracking-widest
+                      transition-all
+                      duration-300
+                      hover:scale-110
+                      hover:text-red-400
+                      ${isActive ? "text-red-500 scale-105" : "text-white/90"}
+                    `}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
               );
             })}
-          </nav>
-        </div>
+          </ul>
+        </nav>
 
-        <div
-          className="
-            border-t
-            border-red-500/20
-            pt-4
-            text-xs
-            text-white/50
-          "
-        >
-          <p className="font-space font-medium text-white/80">
+        {/* Footer info at the bottom of full-screen menu */}
+        <div className="absolute bottom-10 text-center font-space">
+          <p className="text-sm font-semibold tracking-wider text-white/80">
             QuizInc
           </p>
-          <p className="font-space text-red-400/80">
-            NIT Durgapur
-          </p>
+          <p className="text-xs text-red-400/80">NIT Durgapur</p>
         </div>
       </div>
-
-      {isOpen && (
-        <div
-          onClick={() => setIsOpen(false)}
-          className="
-            fixed
-            inset-0
-            z-30
-            bg-black/70
-            backdrop-blur-sm
-            md:hidden
-          "
-        />
-      )}
     </header>
   );
 }

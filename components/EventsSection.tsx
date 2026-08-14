@@ -197,6 +197,7 @@ const EventCard = memo(function EventCard({
 
 export default function EventsSection() {
   const sectionRef = useRef<HTMLElement | null>(null);
+  const pinnedContentRef = useRef<HTMLDivElement | null>(null);
   const cardsRef = useRef<HTMLDivElement | null>(null);
   const exploreRef = useRef<HTMLDivElement | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -205,9 +206,9 @@ export default function EventsSection() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      const container = cardsRef.current;
       const section = sectionRef.current;
-      if (!container || !section) return;
+      const pinnedContent = pinnedContentRef.current;
+      if (!section || !pinnedContent) return;
 
       const cards = gsap.utils.toArray<HTMLElement>(".event-card");
       const cardCount = cards.length;
@@ -221,22 +222,22 @@ export default function EventsSection() {
       });
 
       mm.add("(max-width: 767px)", () => {
-        // Hide explore button initially
+        gsap.set(cards, { clearProps: "all" });
+
         gsap.set(exploreRef.current, {
           opacity: 0,
-          y: 30,
-          force3D: true,
+          y: 20,
         });
 
+        // Set initial positions offscreen below viewport
         cards.forEach((card, index) => {
           gsap.set(card, {
             position: "absolute",
             top: 0,
             left: "50%",
             xPercent: -50,
+            y: index === 0 ? 0 : 800,
             opacity: index === 0 ? 1 : 0,
-            yPercent: index === 0 ? 0 : 140,
-            y: 0,
             scale: 1,
             rotation: getTilt(index),
             zIndex: index + 1,
@@ -245,57 +246,45 @@ export default function EventsSection() {
           });
         });
 
-        requestAnimationFrame(() => ScrollTrigger.refresh());
+        const tl = gsap.timeline();
 
-        // Increased scroll distance (+cardCount * 350) to freeze the page longer until all cards stack up
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: section,
-            start: "top top",
-            end: `+=${cardCount * 350}`,
-            pin: true,
-            pinSpacing: true,
-            scrub: 0.6,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-          },
-        });
-
-        // Sequence card entry and stack behavior
+        // Animate cards sequentially into the stack
         cards.forEach((card, index) => {
           if (index === 0) return;
 
-          const stepTime = index * 1.2;
+          const step = index - 1;
 
-          // 1. Animate previous card back and scale down
-          const prevCard = cards[index - 1];
-          tl.to(
-            prevCard,
-            {
-              scale: 0.92 - index * 0.02,
-              y: -18,
-              filter: "brightness(0.65)",
-              ease: "power1.inOut",
-              duration: 1,
-            },
-            stepTime
-          );
+          // Push down previous stacked cards in z-depth
+          for (let i = 0; i < index; i++) {
+            const depth = index - i;
+            tl.to(
+              cards[i],
+              {
+                scale: 1 - depth * 0.04,
+                y: -depth * 12,
+                filter: `brightness(${Math.max(0.35, 1 - depth * 0.18)})`,
+                ease: "power1.inOut",
+                duration: 1,
+              },
+              step * 1.5
+            );
+          }
 
-          // 2. Animate current card up into place
+          // Bring new card into view from bottom
           tl.to(
             card,
             {
-              yPercent: 0,
+              y: 0,
               opacity: 1,
               rotation: getTilt(index),
               ease: "power2.out",
-              duration: 1,
+              duration: 1.2,
             },
-            stepTime
+            step * 1.5
           );
         });
 
-        // Reveal Explore button once the last card is fully stacked
+        // Show Explore Button at the end
         tl.to(
           exploreRef.current,
           {
@@ -304,20 +293,28 @@ export default function EventsSection() {
             ease: "power2.out",
             duration: 0.8,
           },
-          "+=0.4"
+          "+=0.2"
         );
 
-        return () => {
-          gsap.set(cards, { clearProps: "all" });
-          gsap.set(exploreRef.current, { clearProps: "all" });
-        };
+        // Pin the pinnedContent wrapper across the section scroll track
+        ScrollTrigger.create({
+          trigger: section,
+          pin: pinnedContent,
+          start: "top top",
+          end: () => `+=${cardCount * 500}`,
+          scrub: 0.5,
+          animation: tl,
+          pinSpacing: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        });
       });
+
+      // Force GSAP to recalculate pin bounds after layout updates
+      ScrollTrigger.refresh();
     }, sectionRef);
 
-    return () => {
-      ctx.revert();
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-    };
+    return () => ctx.revert();
   }, []);
 
   const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
@@ -361,9 +358,12 @@ export default function EventsSection() {
     <section
       ref={sectionRef}
       id="events-section"
-      className="relative min-h-screen scroll-mt-20 px-4 sm:px-6 py-12 sm:py-20 -mt-px overflow-hidden"
+      className="relative w-full"
     >
-      <div className="relative z-10 mx-auto max-w-[1400px]">
+      <div
+        ref={pinnedContentRef}
+        className="relative z-10 mx-auto max-w-[1400px] min-h-screen flex flex-col justify-center px-4 sm:px-6 py-12 sm:py-20"
+      >
         {/* HEADING */}
         <div className="text-center flex flex-col items-center">
           <p className="text-sm font-bold uppercase tracking-[0.4em] text-red-400 font-space">

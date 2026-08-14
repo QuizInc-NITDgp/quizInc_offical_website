@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 
 export default function Home() {
   return (
-    <main className="relative overflow-hidden w-full">
+    <main className="relative w-full">
       {/* ================= HERO ================= */}
       <section className="relative flex min-h-[75vh] lg:min-h-screen flex-col items-center justify-center overflow-hidden px-6 text-center w-full">
         <div className="relative z-10 flex max-w-6xl w-full flex-col items-center pb-4 lg:pb-0">
@@ -57,13 +57,34 @@ export default function Home() {
           </div>
 
           {/* SLOW TYPEWRITER DISPLAY */}
-          <div className="mt-8 flex items-center justify-center">
-            <TypewriterText
-              text="THE OFFICIAL QUIZ CLUB OF NIT DURGAPUR"
-              speed={0.06}
-              delay={0.6}
-              className="text-sm font-extrabold uppercase tracking-[0.25em] text-red-400 sm:text-xl md:text-2xl font-space drop-shadow-[0_0_15px_rgba(255,30,67,0.6)]"
-            />
+          <div className="mt-8 flex flex-col items-center justify-center">
+            
+            {/* Desktop View: Single continuous line */}
+            <div className="hidden sm:block">
+              <TypewriterText
+                text="THE OFFICIAL KNOWLEDGE CLUB OF NIT DURGAPUR"
+                speed={0.06}
+                delay={0.6}
+                className="text-sm font-extrabold uppercase tracking-[0.25em] text-red-400 sm:text-xl md:text-2xl font-space drop-shadow-[0_0_15px_rgba(255,30,67,0.6)]"
+              />
+            </div>
+
+            {/* Mobile View: Stacked lines */}
+            <div className="flex flex-col items-center justify-center sm:hidden">
+              <TypewriterText
+                text="THE OFFICIAL KNOWLEDGE CLUB OF"
+                speed={0.06}
+                delay={0.6}
+                className="text-[0.75rem] font-extrabold uppercase tracking-[0.25em] text-red-400 font-space drop-shadow-[0_0_15px_rgba(255,30,67,0.6)] text-center leading-relaxed"
+              />
+              <TypewriterText
+                text="NIT DURGAPUR"
+                speed={0.06}
+                delay={2.4} /* 0.6s initial delay + ~1.8s for the first line to type out */
+                className="text-[0.75rem] font-extrabold uppercase tracking-[0.25em] text-red-400 font-space drop-shadow-[0_0_15px_rgba(255,30,67,0.6)] text-center mt-1"
+              />
+            </div>
+
           </div>
         </div>
       </section>
@@ -75,12 +96,10 @@ export default function Home() {
         </div>
       </ScrollReveal>
 
-      {/* ================= EVENTS SECTION ================= */}
-      <ScrollReveal className="w-full">
-        <div className="w-full mx-auto py-16 sm:py-24">
-          <EventsSection />
-        </div>
-      </ScrollReveal>
+      {/* ================= EVENTS SECTION (DO NOT WRAP IN SCROLLREVEAL) ================= */}
+      <div className="w-full mx-auto py-16 sm:py-24">
+        <EventsSection />
+      </div>
     </main>
   );
 }
