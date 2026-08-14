@@ -39,7 +39,7 @@ const quickLinks = [
   { label: "Quizittch Cup", href: "/Qc" },
   { label: "Events", href: "/events" },
   { label: "Gallery", href: "/gallery" },
-  { label: "Contact us", href: "/contact" },
+  { label: "Team", href: "/member" },
 ];
 
 const contacts = [

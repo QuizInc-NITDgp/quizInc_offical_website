@@ -1,31 +1,68 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { motion } from "framer-motion";
 
-const clubText = 
-"Founded in 2003 by undergraduate students Harish Mohan and Anup Nair, QuizInc is the official quiz club of NIT Durgapur. For over two decades, the club has created a platform where curiosity, knowledge and competition come together. Through quizzes, treasure hunts, fandom competitions, collaborations and outreach initiatives, QuizInc continues to encourage critical thinking and learning beyond the classroom."
+interface TypewriterTextProps {
+  text: string;
+  speed?: number; // Delay per character in seconds
+  delay?: number; // Initial start delay in seconds
+  className?: string;
+}
 
-export default function TypewriterText() {
-  const [index, setIndex] = useState(0);
+export default function TypewriterText({
+  text,
+  speed = 0.06,
+  delay = 0.6,
+  className = "",
+}: TypewriterTextProps) {
+  const [isFinished, setIsFinished] = useState(false);
+  const letters = Array.from(text);
 
-  useEffect(() => {
-    if (index >= clubText.length) return;
+  const containerVariants = {
+    hidden: { opacity: 1 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: speed,
+        delayChildren: delay,
+      },
+    },
+  };
 
-    const timer = setTimeout(() => {
-      // Add multiple characters at once
-      setIndex((prev) => Math.min(prev + 10, clubText.length));
-    }, 8);
+  const letterVariants = {
+    hidden: { display: "none" },
+    visible: { display: "inline-block" },
+  };
 
-    return () => clearTimeout(timer);
-  }, [index]);
+  return (
+    <div className={`inline-flex items-center ${className}`}>
+      <motion.span
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        onAnimationComplete={() => setIsFinished(true)}
+      >
+        {letters.map((char, index) => (
+          <motion.span key={index} variants={letterVariants}>
+            {char === " " ? "\u00A0" : char}
+          </motion.span>
+        ))}
+      </motion.span>
 
-    return (
-      <div className="mt-8 w-full max-w-2xl min-h-[120px]">
-        <p className="text-left text-sm font-medium leading-relaxed tracking-wide text-rose-100/80 sm:text-base md:text-lg">
-          {clubText.slice(0, index)}
-
-          <span className="ml-1 inline-block h-5 w-[2px] animate-pulse bg-red-400 align-middle" />
-        </p>
-      </div>
-    );
+      {/* Animated Blinking Cursor - Only rendered while typing */}
+      {!isFinished && (
+        <motion.span
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 0] }}
+          transition={{
+            repeat: Infinity,
+            duration: 0.8,
+            ease: "easeInOut",
+          }}
+          className="ml-1 inline-block h-[0.9em] w-[2px] bg-red-500 shadow-[0_0_8px_rgba(255,30,67,0.8)]"
+        />
+      )}
+    </div>
+  );
 }

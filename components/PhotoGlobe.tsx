@@ -42,8 +42,7 @@ export default function PhotoGlobe() {
   const [activePhoto, setActivePhoto] = useState<string | null>(null);
 
   return (
-    <div className="relative flex flex-col items-center justify-center w-full py-24 my-12 ">
-    
+    <div className="relative flex flex-col items-center justify-center w-full py-24 my-12">
       <div
         className="
           pointer-events-none
@@ -56,7 +55,6 @@ export default function PhotoGlobe() {
         "
       />
 
-      
       <div className="relative h-[460px] w-[280px] sm:h-[510px] sm:w-[320px] flex items-center justify-center">
         <div className="absolute inset-0">
           {qShapeCoordinates.map(([x, y], index) => {
@@ -88,7 +86,8 @@ export default function PhotoGlobe() {
                   ${
                     activePhoto
                       ? "opacity-15 scale-75 border-red-500/20 blur-[1px]"
-                      : "border-red-500/70 shadow-[0_0_12px_rgba(255,30,67,0.6)] hover:z-50 hover:scale-[2.4] hover:border-red-300 hover:shadow-[0_0_35px_rgba(255,30,67,0.95)] hover:brightness-110"
+                      /* Increased hover scale from scale-[2.4] to scale-[3.6] */
+                      : "border-red-500/70 shadow-[0_0_12px_rgba(255,30,67,0.6)] hover:z-50 hover:scale-[3.6] hover:border-red-300 hover:shadow-[0_0_35px_rgba(255,30,67,0.95)] hover:brightness-110"
                   }
                 `}
                 style={{
@@ -100,7 +99,7 @@ export default function PhotoGlobe() {
                   src={photo}
                   alt={`QuizInc memory ${index + 1}`}
                   fill
-                  sizes="120px"
+                  sizes="200px"
                   quality={100}
                   className="object-cover"
                 />
@@ -115,8 +114,9 @@ export default function PhotoGlobe() {
           className="absolute inset-0 z-50 flex items-center justify-center bg-transparent transition-all duration-300"
           onClick={() => setActivePhoto(null)}
         >
+          {/* Increased clicked image modal size from 220px to 320px (380px on sm screen) */}
           <div
-            className="relative h-[220px] w-[220px] overflow-hidden rounded-2xl border-2 border-red-300 bg-black shadow-[0_0_60px_rgba(255,30,67,0.95)] brightness-110 transition-transform duration-500 scale-100"
+            className="relative h-[320px] w-[320px] sm:h-[380px] sm:w-[380px] overflow-hidden rounded-3xl border-2 border-red-300 bg-black shadow-[0_0_70px_rgba(255,30,67,0.95)] brightness-110 transition-transform duration-500 scale-100"
             onClick={(e) => {
               e.stopPropagation();
               setActivePhoto(null);
@@ -126,7 +126,7 @@ export default function PhotoGlobe() {
               src={activePhoto}
               alt="Selected memory"
               fill
-              sizes="350px"
+              sizes="400px"
               quality={100}
               className="object-cover cursor-pointer"
             />

@@ -63,13 +63,13 @@ export default function PhotoGlobe() {
         />
       </div>
 
-      <header className="absolute top-20 sm:top-24 left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center w-full px-4 flex justify-center">
+      {/* <header className="absolute top-20 sm:top-24 left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center w-full px-4 flex justify-center">
         <div className="inline-block px-6 py-2.5 rounded-full bg-black/60 border border-red-500/30 backdrop-blur-xl shadow-[0_0_25px_rgba(239,68,68,0.2)]">
           <h1 className="text-xl sm:text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-rose-100 to-red-400 tracking-tight font-baloo">
             QuizInc Universe
           </h1>
         </div>
-      </header>
+      </header> */}
 
       <button
         onClick={() => handleRotate("left")}

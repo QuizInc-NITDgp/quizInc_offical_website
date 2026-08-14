@@ -44,7 +44,7 @@ export default function Navbar() {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 w-full pl-4 py-4 sm:pl-5 lg:pl-8 lg:py-3 xl:pl-10"
+      className="fixed top-0 left-0 right-0 z-50 w-full pl-2 sm:pl-3 lg:pl-4 py-4 lg:py-3"
     >
       <div
         className={`
@@ -52,7 +52,7 @@ export default function Navbar() {
           absolute
           inset-x-0
           top-0
-          -bottom-5
+          -bottom-0
           -z-10
           bg-gradient-to-b
           from-[#0a0002]/95
@@ -88,7 +88,6 @@ export default function Navbar() {
               h-auto
               w-[85px]
               object-contain
-              drop-shadow-[0_0_12px_rgba(255,30,67,0.3)]
             "
           />
         </Link>
@@ -102,24 +101,16 @@ export default function Navbar() {
             md:block
           "
         >
-          <div
-            className="
-              pointer-events-none
-              absolute
-              -inset-[200%]
-              animate-[navbarBeam_3s_linear_infinite]
-              bg-[conic-gradient(from_0deg,transparent_0deg,transparent_320deg,#ff1e43_337deg,#ff758c_344deg,#ffffff_348deg,#ff1e43_354deg,transparent_360deg)]
-            "
-          />
-
           <nav
             className="
               relative
-              m-[1px]
               flex
               items-center
               gap-9
               rounded-l-full
+              border-l
+              border-y
+              border-white/10
               bg-gradient-to-r
               from-[#100003]/95
               via-[#100003]/90
@@ -128,10 +119,8 @@ export default function Navbar() {
               pr-16
               py-4
               backdrop-blur-md
-              shadow-[-6px_0_25px_rgba(255,30,67,0.15)]
               transition-all
               duration-300
-              hover:shadow-[-6px_0_30px_rgba(255,30,67,0.22)]
             "
           >
             {navLinks.map((link) => {
@@ -152,7 +141,6 @@ export default function Navbar() {
                     text-base
                     font-medium
                     tracking-wide
-                    drop-shadow-sm
                     transition-all
                     duration-300
                     hover:scale-105
@@ -174,7 +162,6 @@ export default function Navbar() {
                       bg-gradient-to-r
                       from-red-500
                       to-rose-400
-                      shadow-[0_0_8px_#ff1e43]
                       transition-all
                       duration-300
                       ${isActive
@@ -206,7 +193,6 @@ export default function Navbar() {
             p-2.5
             text-white
             backdrop-blur-md
-            shadow-[0_0_15px_rgba(255,30,67,0.2)]
             transition-all
             hover:bg-red-950/40
             active:scale-95
@@ -236,7 +222,6 @@ export default function Navbar() {
           bg-[#0a0002]/95
           p-6
           backdrop-blur-xl
-          shadow-[-10px_0_30px_rgba(255,30,67,0.15)]
           transition-transform
           duration-300
           ease-in-out

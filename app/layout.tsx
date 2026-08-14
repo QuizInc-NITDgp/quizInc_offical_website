@@ -5,17 +5,19 @@ import "./globals.css";
 import Footer from "@/components/Footer";
 import { PageTransitionProvider } from "@/components/PagetransitionProvider";
 
-import { Baloo_2, Bungee, Space_Grotesk } from "next/font/google";
+import { Black_Ops_One, Space_Grotesk, Bungee } from "next/font/google";
 
+// Space Grotesk for the description/body text
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["400", "500", "600"],
   variable: "--font-space",
 });
 
-const baloo = Baloo_2({
+// Black Ops One assigned back to --font-baloo so existing Tailwind classes pick it up automatically!
+const blackOpsOne = Black_Ops_One({
   subsets: ["latin"],
-  weight: ["600", "700", "800"], // add 800
+  weight: ["400"],
   variable: "--font-baloo",
 });
 
@@ -28,17 +30,14 @@ const bungee = Bungee({
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${baloo.variable} ${bungee.variable} font-sans relative min-h-screen bg-[#0a0002]`}>
+      <body className={`${blackOpsOne.variable} ${spaceGrotesk.variable} ${bungee.variable} font-sans relative min-h-screen bg-[#0a0002]`}>
         <PageTransitionProvider>
-          {/* Persistent Full-Page Tunnel Canvas */}
           <div className="fixed inset-0 pointer-events-none -z-20">
             <TunnelBackground />
           </div>
 
-          {/* Global Navigation */}
           <Navbar />
 
-          {/* Main Route Content */}
           {children}
 
           <Footer />

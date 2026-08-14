@@ -18,9 +18,10 @@ const events = [
     image: "/intercollegequiz.webp",
     slug: "inter-college-quiz",
   },
+  { title: "OF 24 Frames And 22 Yards", image: "/Of24.webp", slug: "qmanji" },
+  { title: "BMEP Quiz", image: "/BMEP.webp", slug: "qmanji" },
 ] as const;
 
-// Kept outside the component so it isn't reallocated on every render/effect run.
 const getTilt = (index: number) => (index % 2 === 0 ? -4 : 4);
 
 type Event = (typeof events)[number];
@@ -34,7 +35,6 @@ interface EventCardProps {
   onTouchEnd: (e: React.TouchEvent<HTMLDivElement>) => void;
 }
 
-// Memoized so hovering one card doesn't force React to re-diff the other five.
 const EventCard = memo(function EventCard({
   event,
   index,
@@ -68,14 +68,14 @@ const EventCard = memo(function EventCard({
         absolute
         w-[280px]
         sm:w-[300px]
-        h-[360px]
-        /* Desktop Accordion Styles - Flex grow spread */
+        h-[310px]
+        /* Desktop Accordion Styles */
         md:relative
-        md:h-[560px]
+        md:h-[480px]
         ${
           isActive
-            ? "md:w-[420px] md:border-red-500/60 md:shadow-[0_0_35px_rgba(255,0,40,0.35)] md:flex-shrink-0"
-            : "md:w-[76px] md:border-white/10 md:bg-black/60 md:hover:border-red-500/30 md:flex-shrink-0"
+            ? "md:w-[360px] md:border-red-500/60 md:shadow-[0_0_35px_rgba(255,0,40,0.35)] md:flex-shrink-0"
+            : "md:w-[100px] md:border-white/10 md:bg-black/60 md:hover:border-red-500/30 md:flex-shrink-0"
         }
       `}
     >
@@ -85,7 +85,7 @@ const EventCard = memo(function EventCard({
           src={event.image}
           alt={event.title}
           fill
-          sizes="(max-width: 768px) 100vw, 420px"
+          sizes="(max-width: 768px) 100vw, 360px"
           className={`
             object-cover
             object-center
@@ -114,7 +114,7 @@ const EventCard = memo(function EventCard({
         `}
       />
 
-      {/* ================= DESKTOP INACTIVE COLLAPSED VIEW ================= */}
+      {/* DESKTOP INACTIVE COLLAPSED VIEW */}
       <div
         className={`
           absolute
@@ -143,7 +143,7 @@ const EventCard = memo(function EventCard({
         <div className="h-2 w-2 rounded-full bg-red-500/60 shadow-[0_0_8px_rgba(255,0,40,0.8)]" />
       </div>
 
-      {/* ================= ACTIVE / MOBILE EXPANDED VIEW ================= */}
+      {/* ACTIVE / MOBILE EXPANDED VIEW */}
       <div
         className={`
           absolute
@@ -170,45 +170,6 @@ const EventCard = memo(function EventCard({
             </h3>
             <div className="mt-2 h-[2px] w-8 bg-red-500 transition-all duration-500 group-hover:w-full" />
           </div>
-
-          <Link
-            href={`/events#${event.slug}`}
-            aria-label={`View details for ${event.title}`}
-            className="
-              inline-flex
-              h-11
-              w-11
-              shrink-0
-              items-center
-              justify-center
-              rounded-full
-              border
-              border-red-500/30
-              bg-red-950/40
-              text-red-400
-              backdrop-blur-md
-              transition-all
-              duration-300
-              hover:border-red-500
-              hover:bg-red-600
-              hover:text-white
-              hover:shadow-[0_0_15px_rgba(255,0,40,0.4)]
-            "
-          >
-            <svg
-              className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="2.5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M7 17L17 7M17 7H7M17 7V17"
-              />
-            </svg>
-          </Link>
         </div>
       </div>
 
@@ -260,14 +221,21 @@ export default function EventsSection() {
       });
 
       mm.add("(max-width: 767px)", () => {
+        // Hide explore button initially
+        gsap.set(exploreRef.current, {
+          opacity: 0,
+          y: 30,
+          force3D: true,
+        });
+
         cards.forEach((card, index) => {
           gsap.set(card, {
             position: "absolute",
             top: 0,
             left: "50%",
             xPercent: -50,
-            opacity: 0,
-            yPercent: 130,
+            opacity: index === 0 ? 1 : 0,
+            yPercent: index === 0 ? 0 : 140,
             y: 0,
             scale: 1,
             rotation: getTilt(index),
@@ -279,31 +247,41 @@ export default function EventsSection() {
 
         requestAnimationFrame(() => ScrollTrigger.refresh());
 
-        // Hide the button/tagline until the card stack finishes
-        gsap.set(exploreRef.current, {
-          opacity: 0,
-          y: 40,
-          force3D: true,
-        });
-
-        // Pin the WHOLE SECTION (heading + cards) so the heading freezes
-        // in place while the cards animate/stack underneath it.
+        // Increased scroll distance (+cardCount * 350) to freeze the page longer until all cards stack up
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: section,
-            start: "top top+=80",
-            end: `+=${cardCount * 220}`,
-            pin: section,
+            start: "top top",
+            end: `+=${cardCount * 350}`,
+            pin: true,
             pinSpacing: true,
-            scrub: 0.5,
+            scrub: 0.6,
             anticipatePin: 1,
             invalidateOnRefresh: true,
           },
         });
 
+        // Sequence card entry and stack behavior
         cards.forEach((card, index) => {
-          const position = index * 0.75;
+          if (index === 0) return;
 
+          const stepTime = index * 1.2;
+
+          // 1. Animate previous card back and scale down
+          const prevCard = cards[index - 1];
+          tl.to(
+            prevCard,
+            {
+              scale: 0.92 - index * 0.02,
+              y: -18,
+              filter: "brightness(0.65)",
+              ease: "power1.inOut",
+              duration: 1,
+            },
+            stepTime
+          );
+
+          // 2. Animate current card up into place
           tl.to(
             card,
             {
@@ -313,36 +291,20 @@ export default function EventsSection() {
               ease: "power2.out",
               duration: 1,
             },
-            position
-          );
-
-          if (index === 0) return;
-
-          const prevCard = cards[index - 1];
-
-          tl.to(
-            prevCard,
-            {
-              scale: 0.94,
-              y: -16,
-              filter: "brightness(0.7)",
-              ease: "power2.out",
-              duration: 1,
-            },
-            position
+            stepTime
           );
         });
 
-        // Reveal the button + tagline right after the last card settles
+        // Reveal Explore button once the last card is fully stacked
         tl.to(
           exploreRef.current,
           {
             opacity: 1,
             y: 0,
             ease: "power2.out",
-            duration: 0.6,
+            duration: 0.8,
           },
-          cardCount * 0.75 + 0.4
+          "+=0.4"
         );
 
         return () => {
@@ -399,10 +361,10 @@ export default function EventsSection() {
     <section
       ref={sectionRef}
       id="events-section"
-      className="relative min-h-screen scroll-mt-20 px-4 sm:px-6 py-20 -mt-px overflow-hidden"
+      className="relative min-h-screen scroll-mt-20 px-4 sm:px-6 py-12 sm:py-20 -mt-px overflow-hidden"
     >
       <div className="relative z-10 mx-auto max-w-[1400px]">
-        {/* ================= HEADING ================= */}
+        {/* HEADING */}
         <div className="text-center flex flex-col items-center">
           <p className="text-sm font-bold uppercase tracking-[0.4em] text-red-400 font-space">
             What We Do
@@ -449,24 +411,23 @@ export default function EventsSection() {
           </motion.h2>
         </div>
 
-        {/* ================= CARDS CONTAINER (SPREAD ACCORDION & MOBILE STACK) ================= */}
+        {/* CARDS CONTAINER */}
         <div
           ref={cardsRef}
           className="
             relative
-            mt-12
-            h-[400px]
-            md:h-[600px]
+            mt-10
+            sm:mt-16
+            h-[340px]
+            md:h-[500px]
             flex
             justify-center
             md:flex-row
             md:items-center
-            md:justify-between
+            md:justify-center
             md:w-full
-            md:px-4
-            lg:px-12
-            gap-2
-            md:gap-3
+            gap-3
+            md:gap-3.5
           "
         >
           {events.map((event, index) => (
@@ -482,9 +443,9 @@ export default function EventsSection() {
           ))}
         </div>
 
-        {/* ================= MORE EVENTS BUTTON + BOTTOM TEXT (reveals after scroll animation) ================= */}
+        {/* EXPLORE BUTTON */}
         <div ref={exploreRef}>
-          <div className="mt-14 flex justify-center">
+          <div className="mt-8 sm:mt-12 flex justify-center">
             <Link
               href="/events"
               className="

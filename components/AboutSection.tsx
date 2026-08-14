@@ -15,6 +15,7 @@ export default function AboutSection() {
         <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
 
           <ScrollReveal className="lg:col-span-7 flex flex-col justify-center text-left">
+            {/* Heading updated to match "Our Events" exact font size and style across screen sizes */}
             <motion.h2
               initial="hidden"
               whileInView="visible"
@@ -23,7 +24,7 @@ export default function AboutSection() {
                 hidden: {},
                 visible: { transition: { staggerChildren: 0.02 } },
               }}
-              className="text-5xl sm:text-6xl md:text-7xl font-[800] text-white font-baloo tracking-tight mb-6 leading-[1.1]"
+              className="mt-3 text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white drop-shadow-[0_0_20px_rgba(255,30,67,0.25)] font-baloo whitespace-nowrap flex flex-wrap items-center gap-x-3 mb-8 leading-[1.1]"
             >
               <span>
                 {"About".split("").map((c, i) => (
@@ -55,6 +56,7 @@ export default function AboutSection() {
               </span>
             </motion.h2>
 
+            {/* Description paragraphs use font-space (Space Grotesk) */}
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -65,13 +67,13 @@ export default function AboutSection() {
               }}
               className="flex flex-col gap-6"
             >
-              <p className="text-xl sm:text-2xl text-gray-200 leading-relaxed font-baloo">
+              <p className="text-base sm:text-lg md:text-2xl text-gray-200 leading-relaxed font-space font-normal">
                 QuizInc, the quiz club of NIT Durgapur, was founded in 2003 by two undergraduate students Harish Mohan and Anup Nair. It is an open platform fostering curiosity, intellectual growth, and social responsibility.
               </p>
-              <p className="text-xl sm:text-2xl text-gray-200 leading-relaxed font-baloo">
+              <p className="text-base sm:text-lg md:text-2xl text-gray-200 leading-relaxed font-space font-normal">
                 With a legacy spanning over two decades, QuizInc organizes quizzes, treasure hunts, and fandom competitions while collaborating with renowned institutions across India. The club also conducts outreach programs to inspire learning beyond the campus.
               </p>
-              <p className="text-xl sm:text-2xl text-gray-200 leading-relaxed font-baloo">
+              <p className="text-base sm:text-lg md:text-2xl text-gray-200 leading-relaxed font-space font-normal">
                 QuizInc remains committed to empowering students through knowledge, critical thinking, and a shared purpose of curiosity, service, and collaboration.
               </p>
             </motion.div>

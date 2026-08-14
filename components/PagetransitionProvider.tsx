@@ -31,88 +31,21 @@ export function usePageTransition() {
 
 const NAV_SAFETY_TIMEOUT_MS = 2500;
 
-// ---------------------------------------------------------------------------
-// Shard geometry — the old page cracks into these 12 jagged glass pieces.
-// ---------------------------------------------------------------------------
-interface ShardDef {
-  clipPath: string;
-  bg: string;
-  border: string;
-  z: number;
-}
+// Grid configuration for the pixel transition
+const GRID_ROWS = 8;
+const GRID_COLS = 12;
+const TOTAL_PIXELS = GRID_ROWS * GRID_COLS;
 
-const VOID = "rgba(8, 4, 5, 0.95)";
-const GLASS_RED = "rgba(160, 20, 30, 0.92)";
-const GLASS_RED_DEEP = "rgba(75, 10, 15, 0.96)";
-const GLASS_RED_HOT = "rgba(190, 35, 45, 0.94)";
-const BORDER_RED = "1px solid rgba(255, 90, 100, 0.35)";
-const BORDER_DIM = "1px solid rgba(255, 255, 255, 0.1)";
-const BG_GLOW =
-  "radial-gradient(120% 90% at 50% 35%, rgba(100,8,15,1) 0%, rgba(35,2,5,1) 45%, rgba(5,1,2,1) 80%)";
-const MARK_RED = "#e2515c";
-
-const SHARDS: ShardDef[] = [
-  { clipPath: "polygon(0% 0%, 38% 0%, 22% 30%, 0% 22%)", bg: GLASS_RED_HOT, border: BORDER_RED, z: 10 },
-  { clipPath: "polygon(38% 0%, 68% 0%, 55% 24%, 22% 30%)", bg: VOID, border: BORDER_DIM, z: 9 },
-  { clipPath: "polygon(68% 0%, 100% 0%, 100% 26%, 55% 24%)", bg: GLASS_RED_DEEP, border: BORDER_RED, z: 10 },
-  { clipPath: "polygon(0% 22%, 22% 30%, 30% 55%, 0% 50%)", bg: VOID, border: BORDER_DIM, z: 8 },
-  { clipPath: "polygon(22% 30%, 55% 24%, 62% 52%, 30% 55%)", bg: GLASS_RED_HOT, border: BORDER_RED, z: 12 },
-  { clipPath: "polygon(55% 24%, 100% 26%, 100% 58%, 62% 52%)", bg: VOID, border: BORDER_DIM, z: 9 },
-  { clipPath: "polygon(0% 50%, 30% 55%, 26% 80%, 0% 78%)", bg: GLASS_RED_DEEP, border: BORDER_RED, z: 8 },
-  { clipPath: "polygon(30% 55%, 62% 52%, 60% 82%, 26% 80%)", bg: VOID, border: BORDER_DIM, z: 11 },
-  { clipPath: "polygon(62% 52%, 100% 58%, 100% 84%, 60% 82%)", bg: GLASS_RED, border: BORDER_RED, z: 9 },
-  { clipPath: "polygon(0% 78%, 26% 80%, 20% 100%, 0% 100%)", bg: VOID, border: BORDER_DIM, z: 8 },
-  { clipPath: "polygon(26% 80%, 60% 82%, 52% 100%, 20% 100%)", bg: GLASS_RED_DEEP, border: BORDER_RED, z: 10 },
-  { clipPath: "polygon(60% 82%, 100% 84%, 100% 100%, 52% 100%)", bg: VOID, border: BORDER_DIM, z: 9 },
+// Matched Palette: Sampled from QuizInc background gradient & glowing elements
+const PIXEL_COLORS = [
+  "rgb(10, 0, 2)",     // Darkest background corner (#0a0002)
+  "rgb(26, 0, 5)",     // Deep void red (#1a0005)
+  "rgb(50, 4, 12)",    // Ambient dark crimson (#32040c)
+  "rgb(82, 5, 17)",    // Mid-radial glow crimson (#520511)
+  "rgb(140, 10, 30)",   // Deep ruby highlight
+  "rgb(204, 0, 41)",   // Vibrant aurora red (#cc0029)
+  "rgb(255, 30, 67)",  // Neon QuizInc logo/glow accent (#ff1e43)
 ];
-
-interface MarkDef {
-  top: string;
-  left: string;
-  size: string;
-  rotate: number;
-  faint?: boolean;
-}
-
-const QUESTION_MARKS: MarkDef[] = [
-  { top: "14%", left: "18%", size: "clamp(3rem, 9vw, 7rem)", rotate: -12 },
-  { top: "62%", left: "8%", size: "clamp(2rem, 5vw, 4rem)", rotate: 8, faint: true },
-  { top: "22%", left: "72%", size: "clamp(2.5rem, 6vw, 5rem)", rotate: 15, faint: true },
-  { top: "50%", left: "48%", size: "clamp(5rem, 14vw, 11rem)", rotate: -6 },
-  { top: "78%", left: "68%", size: "clamp(2rem, 5vw, 4rem)", rotate: -18, faint: true },
-  { top: "8%", left: "50%", size: "clamp(1.75rem, 4vw, 3rem)", rotate: 20, faint: true },
-  { top: "6%", left: "82%", size: "clamp(2.25rem, 5.5vw, 4.5rem)", rotate: -20, faint: true },
-  { top: "34%", left: "6%", size: "clamp(1.5rem, 3.5vw, 2.75rem)", rotate: 10, faint: true },
-  { top: "40%", left: "88%", size: "clamp(2.5rem, 6vw, 5rem)", rotate: 22 },
-  { top: "70%", left: "30%", size: "clamp(1.75rem, 4vw, 3.25rem)", rotate: -25, faint: true },
-  { top: "88%", left: "16%", size: "clamp(2rem, 5vw, 4rem)", rotate: 14, faint: true },
-  { top: "90%", left: "48%", size: "clamp(1.5rem, 3.5vw, 2.5rem)", rotate: -8, faint: true },
-  { top: "92%", left: "84%", size: "clamp(2.25rem, 5.5vw, 4.5rem)", rotate: 18 },
-  { top: "56%", left: "92%", size: "clamp(1.75rem, 4vw, 3rem)", rotate: -14, faint: true },
-  { top: "4%", left: "34%", size: "clamp(1.5rem, 3.5vw, 2.5rem)", rotate: 26, faint: true },
-  { top: "28%", left: "38%", size: "clamp(1.5rem, 3.5vw, 2.75rem)", rotate: -30, faint: true },
-  { top: "18%", left: "94%", size: "clamp(1.5rem, 3.5vw, 2.5rem)", rotate: 12, faint: true },
-  { top: "46%", left: "20%", size: "clamp(1.5rem, 3.5vw, 2.5rem)", rotate: -16, faint: true },
-  { top: "60%", left: "58%", size: "clamp(1.75rem, 4vw, 3rem)", rotate: 9, faint: true },
-  { top: "74%", left: "44%", size: "clamp(1.5rem, 3.5vw, 2.5rem)", rotate: -22, faint: true },
-  { top: "82%", left: "94%", size: "clamp(1.75rem, 4vw, 3rem)", rotate: 16, faint: true },
-  { top: "2%", left: "10%", size: "clamp(1.25rem, 3vw, 2.25rem)", rotate: -10, faint: true },
-  { top: "96%", left: "62%", size: "clamp(1.5rem, 3.5vw, 2.5rem)", rotate: 20, faint: true },
-  { top: "12%", left: "62%", size: "clamp(1.5rem, 3.5vw, 2.5rem)", rotate: -18, faint: true },
-  { top: "36%", left: "56%", size: "clamp(1.25rem, 3vw, 2.25rem)", rotate: 24, faint: true },
-  { top: "66%", left: "78%", size: "clamp(1.5rem, 3.5vw, 2.5rem)", rotate: -12, faint: true },
-];
-
-// Random offscreen vector so the break direction is different every time.
-function randomVector(spread = 130) {
-  const angle = Math.random() * Math.PI * 2;
-  const dist = spread + Math.random() * spread;
-  return {
-    x: Math.cos(angle) * dist,
-    y: Math.sin(angle) * dist,
-    rotate: (Math.random() - 0.5) * 480,
-  };
-}
 
 export function PageTransitionProvider({
   children,
@@ -126,23 +59,34 @@ export function PageTransitionProvider({
   useEffect(() => setIsMounted(true), []);
 
   const overlayRef = useRef<HTMLDivElement | null>(null);
-  const backdropRef = useRef<HTMLDivElement | null>(null);
-  const shardRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const markRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const pixelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const isCoveredStateRef = useRef(false);
   const safetyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const idleTlRef = useRef<gsap.core.Timeline | null>(null);
 
-  // Keep the fully-broken screen visibly alive with a slow pulse while
-  // waiting on navigation to actually finish, so a slow route load never
-  // reads as a frozen frame.
+  // Pre-generate static color assignment and grid positions for pixels
+  const pixelGrid = useMemo(() => {
+    return Array.from({ length: TOTAL_PIXELS }).map(() => {
+      const bg = PIXEL_COLORS[Math.floor(Math.random() * PIXEL_COLORS.length)];
+      return { bg };
+    });
+  }, []);
+
+  // Keeps the pixels pulsing faintly while waiting on slow route changes
   const startIdlePulse = useCallback(() => {
-    const marks = markRefs.current.filter(Boolean) as HTMLDivElement[];
+    const pixels = pixelRefs.current.filter(Boolean) as HTMLDivElement[];
     idleTlRef.current?.kill();
     idleTlRef.current = gsap
       .timeline({ repeat: -1, yoyo: true })
-      .to(backdropRef.current, { opacity: 0.82, duration: 0.9, ease: "sine.inOut" }, 0)
-      .to(marks, { scale: 1.05, duration: 1.1, ease: "sine.inOut", stagger: 0.01 }, 0);
+      .to(pixels, {
+        opacity: 0.85,
+        duration: 0.6,
+        stagger: {
+          amount: 0.4,
+          from: "random",
+        },
+        ease: "sine.inOut",
+      });
   }, []);
 
   const stopIdlePulse = useCallback(() => {
@@ -150,113 +94,54 @@ export function PageTransitionProvider({
     idleTlRef.current = null;
   }, []);
 
-  // ---- Break: the page cracks — shards fly in from random directions
-  // and slam together, sealing the old page under broken glass ----
-  const playBreak = useCallback(() => {
+  // ---- Cover: Pixels scale in with a grid-stagger wave ----
+  const playCover = useCallback(() => {
     return new Promise<void>((resolve) => {
-      const shards = shardRefs.current.filter(Boolean) as HTMLDivElement[];
-      const marks = markRefs.current.filter(Boolean) as HTMLDivElement[];
-      if (shards.length === 0) {
+      const pixels = pixelRefs.current.filter(Boolean) as HTMLDivElement[];
+      if (pixels.length === 0) {
         resolve();
         return;
       }
 
       if (overlayRef.current) overlayRef.current.style.pointerEvents = "auto";
 
-      const tl = gsap.timeline({ onComplete: resolve });
+      gsap.set(pixels, { scale: 0, opacity: 0 });
 
-      tl.to(backdropRef.current, { opacity: 1, duration: 0.08, ease: "power1.out" }, 0);
-
-      shards.forEach((el, i) => {
-        const { x, y, rotate } = randomVector();
-        gsap.set(el, { xPercent: x, yPercent: y, rotate, opacity: 0, scale: 1.12 });
-        tl.to(
-          el,
-          {
-            xPercent: 0,
-            yPercent: 0,
-            rotate: 0,
-            opacity: 1,
-            scale: 1,
-            duration: 0.16,
-            ease: "power3.out",
-          },
-          i * 0.006 // near-simultaneous — reads as a single crack, not a queue
-        );
-      });
-
-      // A hard, brief shake right as the crack completes
-      tl.to(
-        overlayRef.current,
-        {
-          keyframes: [
-            { x: -6, y: 3 },
-            { x: 5, y: -4 },
-            { x: 0, y: 0 },
-          ],
-          duration: 0.1,
-          ease: "power2.out",
+      gsap.to(pixels, {
+        scale: 1.02, // Slight overlap to prevent sub-pixel gaps
+        opacity: 1,
+        duration: 0.35,
+        ease: "power2.out",
+        stagger: {
+          grid: [GRID_ROWS, GRID_COLS],
+          from: "random",
+          amount: 0.25,
         },
-        "-=0.08"
-      );
-
-      marks.forEach((el) => {
-        gsap.set(el, { opacity: 0, scale: 0.4, rotate: (Math.random() - 0.5) * 60 });
-        tl.to(
-          el,
-          { opacity: 1, scale: 1, rotate: 0, duration: 0.08, ease: "back.out(3)" },
-          0.01
-        );
+        onComplete: resolve,
       });
     });
   }, []);
 
-  // ---- Form: the shards blast apart along fresh random vectors,
-  // letting the new page show through the widening cracks ----
-  const playForm = useCallback(() => {
+  // ---- Reveal: Pixels dissolve and shrink away to show the new page ----
+  const playReveal = useCallback(() => {
     stopIdlePulse();
 
-    const shards = shardRefs.current.filter(Boolean) as HTMLDivElement[];
-    const marks = markRefs.current.filter(Boolean) as HTMLDivElement[];
-    if (shards.length === 0) return;
+    const pixels = pixelRefs.current.filter(Boolean) as HTMLDivElement[];
+    if (pixels.length === 0) return;
 
-    const tl = gsap.timeline({
+    gsap.to(pixels, {
+      scale: 0,
+      opacity: 0,
+      duration: 0.35,
+      ease: "power2.in",
+      stagger: {
+        grid: [GRID_ROWS, GRID_COLS],
+        from: "center",
+        amount: 0.25,
+      },
       onComplete: () => {
         if (overlayRef.current) overlayRef.current.style.pointerEvents = "none";
       },
-    });
-
-    tl.to(backdropRef.current, { opacity: 0, duration: 0.16, ease: "power1.in" }, 0.01);
-
-    marks.forEach((el, i) => {
-      tl.to(
-        el,
-        {
-          opacity: 0,
-          scale: 0.4,
-          rotate: (Math.random() - 0.5) * 90,
-          duration: 0.1,
-          ease: "power2.in",
-        },
-        i * 0.004
-      );
-    });
-
-    shards.forEach((el, i) => {
-      const { x, y, rotate } = randomVector(160);
-      tl.to(
-        el,
-        {
-          xPercent: x,
-          yPercent: y,
-          rotate,
-          opacity: 0,
-          scale: 1.05,
-          duration: 0.18,
-          ease: "power3.in",
-        },
-        0.005 + i * 0.004
-      );
     });
   }, [stopIdlePulse]);
 
@@ -265,30 +150,30 @@ export function PageTransitionProvider({
       if (isCoveredStateRef.current) return;
       isCoveredStateRef.current = true;
 
-      await playBreak();
+      await playCover();
       startIdlePulse();
       router.push(href);
 
       safetyTimeoutRef.current = setTimeout(() => {
         if (isCoveredStateRef.current) {
           isCoveredStateRef.current = false;
-          playForm();
+          playReveal();
         }
       }, NAV_SAFETY_TIMEOUT_MS);
     },
-    [router, playBreak, playForm, startIdlePulse]
+    [router, playCover, playReveal, startIdlePulse]
   );
 
-  // Once the route has actually changed, let the new page form.
+  // Once the route changes, complete the transition
   useEffect(() => {
     if (isCoveredStateRef.current) {
       if (safetyTimeoutRef.current) clearTimeout(safetyTimeoutRef.current);
       isCoveredStateRef.current = false;
-      playForm();
+      playReveal();
     }
-  }, [pathname, playForm]);
+  }, [pathname, playReveal]);
 
-  // Intercept same-origin link clicks to drive the transition.
+  // Intercept standard link clicks
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (e.defaultPrevented) return;
@@ -328,59 +213,25 @@ export function PageTransitionProvider({
         <div
           ref={overlayRef}
           aria-hidden="true"
-          className="pointer-events-none fixed inset-0 z-[999] overflow-hidden"
+          className="pointer-events-none fixed inset-0 z-[999] grid overflow-hidden"
+          style={{
+            gridTemplateRows: `repeat(${GRID_ROWS}, 1fr)`,
+            gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)`,
+          }}
         >
-          <div
-            ref={backdropRef}
-            className="absolute inset-0"
-            style={{ background: BG_GLOW, opacity: 0, zIndex: 5 }}
-          />
-
-          {SHARDS.map((shard, i) => (
+          {pixelGrid.map((pixel, i) => (
             <div
               key={i}
               ref={(el) => {
-                shardRefs.current[i] = el;
+                pixelRefs.current[i] = el;
               }}
-              className="absolute inset-0 will-change-transform"
+              className="will-change-transform"
               style={{
-                clipPath: shard.clipPath,
-                background: shard.bg,
-                border: shard.border,
-                zIndex: shard.z,
+                backgroundColor: pixel.bg,
                 opacity: 0,
-                boxShadow:
-                  "inset 0 0 20px rgba(255,255,255,0.05), 0 0 30px rgba(160,10,20,0.5)",
+                transform: "scale(0)",
               }}
             />
-          ))}
-
-          {QUESTION_MARKS.map((mark, i) => (
-            <div
-              key={i}
-              ref={(el) => {
-                markRefs.current[i] = el;
-              }}
-              aria-hidden="true"
-              className="absolute font-black select-none will-change-transform"
-              style={{
-                top: mark.top,
-                left: mark.left,
-                fontSize: mark.size,
-                lineHeight: 1,
-                transform: `rotate(${mark.rotate}deg)`,
-                color: mark.faint ? "rgba(255,255,255,0.15)" : MARK_RED,
-                textShadow: mark.faint
-                  ? "none"
-                  : "0 0 20px rgba(210,48,56,0.85), 0 0 48px rgba(160,10,20,0.6)",
-                zIndex: 15,
-                opacity: 0,
-                fontFamily:
-                  "ui-sans-serif, system-ui, 'Arial Black', sans-serif",
-              }}
-            >
-              ?
-            </div>
           ))}
         </div>
       )}

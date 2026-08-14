@@ -1,26 +1,20 @@
 "use client";
-
-import TunnelBackground from "@/components/TunnelBackground";
 import EventsSection from "@/components/EventsSection";
 import AboutSection from "@/components/AboutSection";
-import MovingBanner from "@/components/Banner";
 import ScrollReveal from "@/components/Scrollreveal";
+import TypewriterText from "@/components/TypewriterText";
 import { motion } from "framer-motion";
 
 export default function Home() {
   return (
     <main className="relative overflow-hidden w-full">
-
-
       {/* ================= HERO ================= */}
       <section className="relative flex min-h-[75vh] lg:min-h-screen flex-col items-center justify-center overflow-hidden px-6 text-center w-full">
-
         <div className="relative z-10 flex max-w-6xl w-full flex-col items-center pb-4 lg:pb-0">
-
           {/* Glowing Ambient Backdrop Aura */}
           <div className="absolute -inset-10 -z-10 rounded-full bg-gradient-to-r from-red-600/25 via-rose-500/15 to-red-500/20 blur-3xl animate-pulse" />
 
-          {/* Heading with letter-by-letter stagger animation matching events/about and preserving original hero font size classes */}
+          {/* Heading with letter-by-letter stagger animation */}
           <div className="flex flex-col items-center text-center w-full">
             <motion.div
               initial="hidden"
@@ -62,26 +56,31 @@ export default function Home() {
             </motion.div>
           </div>
 
-          <p className="mt-6 text-sm font-extrabold uppercase tracking-[0.3em] text-red-400 drop-shadow-[0_0_15px_rgba(255,30,67,0.6)] sm:text-xl md:text-2xl animate-fade-in-up font-space">
-            THE OFFICIAL QUIZ CLUB OF NIT DURGAPUR
-          </p>
-
-
-
+          {/* SLOW TYPEWRITER DISPLAY */}
+          <div className="mt-8 flex items-center justify-center">
+            <TypewriterText
+              text="THE OFFICIAL QUIZ CLUB OF NIT DURGAPUR"
+              speed={0.06}
+              delay={0.6}
+              className="text-sm font-extrabold uppercase tracking-[0.25em] text-red-400 sm:text-xl md:text-2xl font-space drop-shadow-[0_0_15px_rgba(255,30,67,0.6)]"
+            />
+          </div>
         </div>
-
       </section>
-      <MovingBanner />
+
+      {/* ================= ABOUT SECTION ================= */}
       <ScrollReveal className="w-full">
-        <div className="w-full w-full mx-auto px-4 sm:px-8 lg:px-12">
+        <div className="w-full mx-auto px-4 sm:px-8 lg:px-12 py-16 sm:py-24">
           <AboutSection />
         </div>
       </ScrollReveal>
 
-
-
-      <EventsSection />
-
+      {/* ================= EVENTS SECTION ================= */}
+      <ScrollReveal className="w-full">
+        <div className="w-full mx-auto py-16 sm:py-24">
+          <EventsSection />
+        </div>
+      </ScrollReveal>
     </main>
   );
 }
