@@ -45,6 +45,9 @@ export default function MemberCard({
   const hasImage = Boolean(image && image.trim().length > 0) && !isGooglePhoto;
   const hasSocials = Boolean(linkedin || instagram);
 
+  // Check if the name is long to conditionally reduce font size
+  const isLongName = name.trim().length > 16;
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
@@ -114,23 +117,27 @@ export default function MemberCard({
           <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none transform -translate-x-full group-hover:translate-x-full duration-1000" />
         </div>
 
-        {/* Initial Overlay Name & Role (Wrapping long names & roles) */}
+        {/* Initial Overlay Name & Role */}
         <div
           className={`absolute bottom-0 left-0 right-0 p-3.5 sm:p-4 z-15 flex flex-col text-left bg-gradient-to-t from-black via-black/70 to-transparent transition-all duration-500 group-hover:opacity-0 group-hover:translate-y-4 pointer-events-none ${
             isTouched ? "opacity-0 translate-y-4" : ""
           }`}
         >
-          <h3 className="font-sans text-base sm:text-xl font-black text-white uppercase tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] break-words w-full leading-tight">
+          <h3
+            className={`font-sans font-black text-white uppercase tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] break-words w-full leading-tight ${
+              isLongName ? "text-[11px] sm:text-base" : "text-xs sm:text-xl"
+            }`}
+          >
             {name}
           </h3>
-          <p className="font-sans text-[9px] sm:text-[11px] font-semibold uppercase tracking-[0.2em] sm:tracking-[0.25em] text-red-400 mt-1 break-words w-full leading-snug">
+          <p className="font-sans text-[8px] sm:text-[11px] font-semibold uppercase tracking-[0.18em] sm:tracking-[0.25em] text-red-400 mt-0.5 sm:mt-1 break-words w-full leading-snug">
             {role}
           </p>
         </div>
 
-        {/* Social Floating Icons (Positioned above the bottom detail panel, left-aligned) */}
+        {/* Social Floating Icons (Centered Horizontally and Vertically) */}
         {hasSocials && (
-          <ul className="absolute bottom-[118px] left-4 z-30 flex gap-3 pointer-events-none group-hover:pointer-events-auto">
+          <ul className="absolute top-[calc(50%-55px)] left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex gap-3 pointer-events-none group-hover:pointer-events-auto">
             {linkedin && (
               <li className="list-none">
                 <a
@@ -139,7 +146,7 @@ export default function MemberCard({
                   rel="noopener noreferrer"
                   aria-label="LinkedIn Profile"
                   onClick={(e) => e.stopPropagation()}
-                  className={`relative flex items-center justify-center w-[34px] h-[34px] sm:w-[38px] sm:h-[38px] bg-white/95 text-[#0077b5] rounded-xl shadow-lg border border-white/20 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) translate-y-[80px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-100 hover:scale-110 hover:bg-[#0077b5] hover:text-white ${
+                  className={`relative flex items-center justify-center w-[34px] h-[34px] sm:w-[38px] sm:h-[38px] bg-white/95 text-[#0077b5] rounded-xl shadow-lg border border-white/20 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-100 hover:scale-110 hover:bg-[#0077b5] hover:text-white ${
                     isTouched ? "!translate-y-0 !opacity-100 pointer-events-auto" : ""
                   }`}
                 >
@@ -156,7 +163,7 @@ export default function MemberCard({
                   rel="noopener noreferrer"
                   aria-label="Instagram Profile"
                   onClick={(e) => e.stopPropagation()}
-                  className={`relative flex items-center justify-center w-[34px] h-[34px] sm:w-[38px] sm:h-[38px] bg-white/95 text-[#e1306c] rounded-xl shadow-lg border border-white/20 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) translate-y-[80px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-200 hover:scale-110 hover:text-white ${
+                  className={`relative flex items-center justify-center w-[34px] h-[34px] sm:w-[38px] sm:h-[38px] bg-white/95 text-[#e1306c] rounded-xl shadow-lg border border-white/20 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-200 hover:scale-110 hover:text-white ${
                     isTouched ? "!translate-y-0 !opacity-100 pointer-events-auto" : ""
                   }`}
                 >
@@ -167,20 +174,23 @@ export default function MemberCard({
           </ul>
         )}
 
-        {/* Bottom Slide-Up Glassmorphism Detail Panel (Wrapped text for long names & roles) */}
+        {/* Bottom Slide-Up Glassmorphism Detail Panel */}
         <div
           className={`absolute -bottom-[110px] left-0 w-full min-h-[110px] z-30 p-3.5 bg-black/85 backdrop-blur-xl border-t border-red-500/30 opacity-0 transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1) group-hover:bottom-0 group-hover:opacity-100 flex flex-col justify-center items-center text-center ${
             isTouched ? "!bottom-0 !opacity-100" : ""
           }`}
         >
-          <h2 className="font-sans text-sm sm:text-base font-black text-white uppercase tracking-wide break-words w-full leading-snug bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
+          <h2
+            className={`font-sans font-black text-white uppercase tracking-wide break-words w-full leading-snug bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent ${
+              isLongName ? "text-[11px] sm:text-sm" : "text-xs sm:text-base"
+            }`}
+          >
             {name}
           </h2>
-          {/* Increased size here to text-xs sm:text-[13px] */}
-          <span className="font-sans text-xs sm:text-[13px] font-bold uppercase tracking-[0.2em] text-red-500 mt-1 break-words w-full leading-snug">
+          <span className="font-sans text-[10px] sm:text-[13px] font-bold uppercase tracking-[0.18em] sm:tracking-[0.2em] text-red-500 mt-0.5 sm:mt-1 break-words w-full leading-snug">
             {role}
           </span>
-          <div className="w-6 h-[2px] bg-red-600 rounded-full mt-1.5 shrink-0" />
+          <div className="w-6 h-[2px] bg-red-600 rounded-full mt-1 sm:mt-1.5 shrink-0" />
         </div>
       </div>
     </motion.div>

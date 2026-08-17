@@ -23,9 +23,9 @@ export default function QuizzitchAbout() {
             <div>
               {/* Heading with White to Pink to Red Gradient */}
               <h3 className="mb-8 font-baloo text-4xl font-[800] leading-[1.1] tracking-tight text-white sm:text-5xl md:text-6xl">
-                About{" "}
+                Ab
                 <span className="inline-block bg-gradient-to-r from-white via-rose-300 to-red-600 bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(225,29,72,0.4)]">
-                  Quizzitch Cup
+                 out 
                 </span>
               </h3>
               

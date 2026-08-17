@@ -25,7 +25,10 @@ export default function QuizzitchCup({ events }: { events: EventItem[] }) {
       <motion.div style={{ y: orbY2 }} className="pointer-events-none absolute bottom-0 -right-20 h-[320px] w-[320px] rounded-full bg-rose-500/10 blur-[100px] sm:h-[520px] sm:w-[520px]" />
 
       <div className="w-full">
-        <QuizzitchHeading />
+        {/* Header Section matching Members Page top spacing */}
+        <div className="text-center flex flex-col items-center pt-8 sm:pt-12">
+          <QuizzitchHeading />
+        </div>
 
         {/* About Section */}
         <div className="mt-16 w-full sm:mt-2">
