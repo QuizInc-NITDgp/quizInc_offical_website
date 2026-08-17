@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 
 function FacebookIcon({ className }: { className?: string }) {
   return (
@@ -35,7 +34,6 @@ const socialLinks = [
 
 const quickLinks = [
   { label: "Home", href: "/" },
-  { label: "Alumni", href: "/alumni" },
   { label: "Quizittch Cup", href: "/Qc" },
   { label: "Events", href: "/events" },
   { label: "Gallery", href: "/gallery" },
@@ -45,34 +43,30 @@ const quickLinks = [
 const contacts = [
   { name: "ABHISRUTA GHOSH", phone: "+91 9330709776" },
   { name: "RAJSHEKHAR DAS", phone: "+91 6009343465" },
-  {name:"NAMAN AGARWAL",phone:"+91 9674834161"}
+  { name: "NAMAN AGARWAL", phone: "+91 9674834161" },
 ];
 
 export default function Footer() {
   return (
-   <footer className="relative z-10 w-full border-t border-b border-red-500/25 bg-[#0a0002] px-6 pt-6 pb-6 sm:pt-16 sm:pb-8 md:px-12 lg:px-20">
+    <footer className="relative z-10 w-full border-t border-b border-red-500/25 bg-[#0a0002] px-6 pt-6 pb-6 sm:pt-16 sm:pb-8 md:px-12 lg:px-20">
       {/* Ambient glow */}
       <div className="pointer-events-none absolute left-1/2 top-0 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-600/15 blur-[100px]" />
 
       <div className="relative w-full">
-        {/* Main Content Row — full width, edge-to-edge: brand left, links center, socials right */}
+        {/* Main Content Row — full width, edge-to-edge */}
         <div className="flex w-full flex-col lg:flex-row lg:items-start lg:justify-between gap-12 lg:gap-8 items-center text-center lg:text-left">
 
-          {/* ================= BRAND (LEFT) ================= */}
-          <div className="flex flex-1 flex-col items-center lg:items-start">
+          {/* ================= BRAND & CONTACTS ================= */}
+          {/* Mobile Order: 2 (Comes below Quick Links on mobile) | Desktop Order: 1 (Left column) */}
+          <div className="order-2 lg:order-1 flex flex-1 flex-col items-center lg:items-start">
             <Link href="/" className="flex items-center gap-2 transition-transform duration-300 hover:scale-105">
               <span className="font-serif text-2xl font-bold text-white">
                 Quiz<span className="text-red-500">Inc</span>
               </span>
             </Link>
 
-            
-
-            {/* Contacts Section Added Below */}
+            {/* Contacts Section */}
             <div className="mt-6 flex flex-col gap-2">
-              {/* <p className="text-xs font-bold uppercase tracking-[0.2em] text-red-500 drop-shadow-[0_0_8px_rgba(255,30,67,0.6)]">
-                Contact Us
-              </p> */}
               <div className="flex flex-col gap-1 text-sm text-rose-100/70">
                 {contacts.map((contact, idx) => (
                   <p key={idx}>
@@ -86,8 +80,9 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* ================= QUICK LINKS (CENTER) ================= */}
-          <div className="flex flex-1 flex-col items-center">
+          {/* ================= QUICK LINKS ================= */}
+          {/* Mobile Order: 1 (Comes first on mobile) | Desktop Order: 2 (Center column) */}
+          <div className="order-1 lg:order-2 flex flex-1 flex-col items-center">
             <p className="text-xs font-bold uppercase tracking-[0.3em] text-red-500 drop-shadow-[0_0_8px_rgba(255,30,67,0.6)]">
               Quick Links
             </p>
@@ -105,8 +100,9 @@ export default function Footer() {
             </nav>
           </div>
 
-          {/* ================= SOCIAL ICONS (RIGHT) ================= */}
-          <div className="flex flex-1 flex-col items-center lg:items-end">
+          {/* ================= SOCIAL ICONS ================= */}
+          {/* Mobile Order: 3 (Comes last on mobile) | Desktop Order: 3 (Right column) */}
+          <div className="order-3 lg:order-3 flex flex-1 flex-col items-center lg:items-end">
             <p className="text-xs font-bold uppercase tracking-[0.3em] text-red-500 drop-shadow-[0_0_8px_rgba(255,30,67,0.6)]">
               Follow Us
             </p>
@@ -148,7 +144,6 @@ export default function Footer() {
           </div>
 
         </div>
-
       </div>
     </footer>
   );

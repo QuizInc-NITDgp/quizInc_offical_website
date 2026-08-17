@@ -52,7 +52,7 @@ export default function QuizzitchAbout() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-            className="relative mx-auto flex aspect-square w-full max-w-[580px] items-center justify-center scale-110 lg:col-span-5 lg:h-[620px] lg:scale-125"
+            className="relative mx-auto flex aspect-square w-full max-w-[580px] items-center justify-center scale-100 p-4 sm:scale-110 sm:p-0 lg:col-span-5 lg:h-[620px] lg:scale-125"
           >
             <Image
               src={image}

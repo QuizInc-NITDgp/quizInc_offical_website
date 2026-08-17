@@ -154,13 +154,10 @@ function EventCard({
           )}
         </div>
 
-        <div className="p-2 sm:p-4 bg-gradient-to-t from-black via-zinc-950 to-zinc-900/90 border-t border-white/10 flex items-center justify-between">
-          <h4 className="text-xs sm:text-lg font-[800] text-white font-baloo tracking-tight truncate pr-1">
+        <div className="p-2 sm:p-4 bg-gradient-to-t from-black via-zinc-950 to-zinc-900/90 border-t border-white/10 flex items-center">
+          <h4 className="text-xs sm:text-lg font-[800] font-baloo tracking-tight truncate w-full bg-gradient-to-r from-white via-rose-200 to-red-500 bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(225,29,72,0.3)]">
             {event.name}
           </h4>
-          <span className="text-[10px] sm:text-xs font-sans font-bold uppercase tracking-tight text-red-400 bg-red-500/10 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-md border border-red-500/30 shrink-0 group-hover/card:bg-red-500 group-hover/card:text-white transition-colors">
-            View
-          </span>
         </div>
       </div>
     </button>
@@ -219,7 +216,7 @@ function EventDetailsOverlay({
                 {event.mode === "online" ? "Online Event" : "Offline Event"}
               </span>
 
-              <h3 className="mt-2.5 text-lg font-[800] text-white font-baloo tracking-tight">
+              <h3 className="mt-2.5 text-lg font-[800] font-baloo tracking-tight bg-gradient-to-r from-white via-rose-200 to-red-500 bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(225,29,72,0.3)]">
                 {event.name}
               </h3>
 
