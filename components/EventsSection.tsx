@@ -31,8 +31,6 @@ interface EventCardProps {
   index: number;
   isActive: boolean;
   onActivate: (index: number) => void;
-  onTouchStart: (e: React.TouchEvent<HTMLDivElement>) => void;
-  onTouchEnd: (e: React.TouchEvent<HTMLDivElement>) => void;
 }
 
 const EventCard = memo(function EventCard({
@@ -40,14 +38,15 @@ const EventCard = memo(function EventCard({
   index,
   isActive,
   onActivate,
-  onTouchStart,
-  onTouchEnd,
 }: EventCardProps) {
   return (
     <div
-      onMouseEnter={() => onActivate(index)}
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
+      /* Only trigger activate on devices with true hover support (Desktop) */
+      onMouseEnter={() => {
+        if (window.matchMedia("(hover: hover)").matches) {
+          onActivate(index);
+        }
+      }}
       className={`
         event-card
         group
@@ -99,7 +98,7 @@ const EventCard = memo(function EventCard({
         <div className="absolute inset-0 bg-gradient-to-b from-red-950/40 via-black/80 to-black" />
       )}
 
-      {/* Dark Gradient Overlay for Readability */}
+      {/* Dark Gradient Overlay */}
       <div
         className={`
           absolute
@@ -145,7 +144,7 @@ const EventCard = memo(function EventCard({
 
       {/* ACTIVE / MOBILE EXPANDED VIEW */}
       <div
-        className={`
+        className="
           absolute
           inset-0
           flex
@@ -154,8 +153,15 @@ const EventCard = memo(function EventCard({
           p-6
           transition-opacity
           duration-300
-          ${isActive ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none md:hidden"}
-        `}
+          opacity-100
+          pointer-events-auto
+          md:opacity-0
+          md:pointer-events-none
+          /* Controlled solely by isActive state on desktop */
+          md:data-[active=true]:opacity-100
+          md:data-[active=true]:pointer-events-auto
+        "
+        data-active={isActive}
       >
         <div className="flex items-center justify-between">
           <div className="flex h-9 w-9 items-center justify-center rounded-full border border-red-500/40 bg-black/40 text-xs font-semibold text-red-400 backdrop-blur-md font-space">
@@ -229,7 +235,6 @@ export default function EventsSection() {
           y: 20,
         });
 
-        // Set initial positions offscreen below viewport
         cards.forEach((card, index) => {
           gsap.set(card, {
             position: "absolute",
@@ -248,13 +253,11 @@ export default function EventsSection() {
 
         const tl = gsap.timeline();
 
-        // Animate cards sequentially into the stack
         cards.forEach((card, index) => {
           if (index === 0) return;
 
           const step = index - 1;
 
-          // Push down previous stacked cards in z-depth
           for (let i = 0; i < index; i++) {
             const depth = index - i;
             tl.to(
@@ -270,7 +273,6 @@ export default function EventsSection() {
             );
           }
 
-          // Bring new card into view from bottom
           tl.to(
             card,
             {
@@ -284,7 +286,6 @@ export default function EventsSection() {
           );
         });
 
-        // Show Explore Button at the end
         tl.to(
           exploreRef.current,
           {
@@ -296,7 +297,6 @@ export default function EventsSection() {
           "+=0.2"
         );
 
-        // Pin the pinnedContent wrapper across the section scroll track
         ScrollTrigger.create({
           trigger: section,
           pin: pinnedContent,
@@ -310,44 +310,10 @@ export default function EventsSection() {
         });
       });
 
-      // Force GSAP to recalculate pin bounds after layout updates
       ScrollTrigger.refresh();
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
-
-  const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
-    if (window.innerWidth >= 768) return;
-    const card = e.currentTarget;
-    card.classList.add("mobile-active");
-
-    gsap.to(card, {
-      scale: 1.03,
-      zIndex: 50,
-      duration: 0.25,
-      ease: "power2.out",
-      overwrite: "auto",
-      force3D: true,
-    });
-  }, []);
-
-  const handleTouchEnd = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
-    if (window.innerWidth >= 768) return;
-    const card = e.currentTarget;
-
-    gsap.to(card, {
-      scale: 1,
-      zIndex: "",
-      duration: 0.4,
-      ease: "power3.out",
-      overwrite: "auto",
-      force3D: true,
-    });
-
-    setTimeout(() => {
-      card.classList.remove("mobile-active");
-    }, 400);
   }, []);
 
   const handleActivate = useCallback((index: number) => {
@@ -355,11 +321,7 @@ export default function EventsSection() {
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      id="events-section"
-      className="relative w-full"
-    >
+    <section ref={sectionRef} id="events-section" className="relative w-full">
       <div
         ref={pinnedContentRef}
         className="relative z-10 mx-auto max-w-[1400px] min-h-screen flex flex-col justify-center px-4 sm:px-6 py-12 sm:py-20"
@@ -386,7 +348,11 @@ export default function EventsSection() {
                   key={`oh-${i}`}
                   variants={{
                     hidden: { y: 20, opacity: 0 },
-                    visible: { y: 0, opacity: 1, transition: { duration: 0.4, ease: "easeOut" } },
+                    visible: {
+                      y: 0,
+                      opacity: 1,
+                      transition: { duration: 0.4, ease: "easeOut" },
+                    },
                   }}
                   className="inline-block text-white"
                 >
@@ -400,7 +366,11 @@ export default function EventsSection() {
                   key={`eh-${i}`}
                   variants={{
                     hidden: { y: 20, opacity: 0 },
-                    visible: { y: 0, opacity: 1, transition: { duration: 0.4, ease: "easeOut" } },
+                    visible: {
+                      y: 0,
+                      opacity: 1,
+                      transition: { duration: 0.4, ease: "easeOut" },
+                    },
                   }}
                   className="inline-block"
                 >
@@ -437,8 +407,6 @@ export default function EventsSection() {
               index={index}
               isActive={activeIndex === index}
               onActivate={handleActivate}
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
             />
           ))}
         </div>

@@ -10,7 +10,6 @@ import { usePageTransition } from "./PagetransitionProvider";
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "Quizittch Cup", href: "/qc" },
-  { label: "Alumnis", href: "/alumni" },
   { label: "Team", href: "/member" },
   { label: "Events", href: "/events" },
   { label: "Gallery", href: "/gallery" },
@@ -196,56 +195,7 @@ export default function Navbar() {
 
         {/* Mobile Control Section (Buttons Navigation + Menu Trigger) */}
         <div className="z-50 mr-4 flex items-center gap-3 md:hidden">
-          {/* Quick Prev / Next Controls */}
-          {!isOpen && (
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => handleNavigateStep("prev")}
-                aria-label="Previous page"
-                className="
-                  flex
-                  h-9
-                  w-9
-                  items-center
-                  justify-center
-                  rounded-full
-                  border
-                  border-red-500/30
-                  bg-black/80
-                  text-white
-                  backdrop-blur-sm
-                  transition-all
-                  hover:bg-red-950/40
-                  active:scale-95
-                "
-              >
-                <ChevronLeft className="h-4 w-4 text-rose-100" />
-              </button>
-
-              <button
-                onClick={() => handleNavigateStep("next")}
-                aria-label="Next page"
-                className="
-                  flex
-                  h-9
-                  w-9
-                  items-center
-                  justify-center
-                  rounded-full
-                  border
-                  border-red-500/30
-                  bg-black/80
-                  text-white
-                  backdrop-blur-sm
-                  transition-all
-                  hover:bg-red-950/40
-                  active:scale-95
-                "
-              >
-                <ChevronRight className="h-4 w-4 text-rose-100" />
-              </button>
-            </div>
-          )}
+          
 
           {/* Hamburger / Close Animated Button Wrapper */}
           <button
