@@ -11,7 +11,7 @@ export default function QuizzitchHeading() {
       transition={{ duration: 0.7, ease: "easeOut" }}
       className="relative z-10 flex flex-col items-center text-center outline-none border-none [backface-visibility:hidden]"
     >
-      <h2 className="mt-2 font-baloo text-3xl sm:text-6xl md:text-7xl leading-[1.1] font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-red-200 to-red-500 drop-shadow-[0_0_30px_rgba(255,30,67,0.6)] select-none">
+      <h2 className="mt-2 font-baloo text-4xl sm:text-6xl md:text-7xl leading-[1.1] font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-red-200 to-red-500 drop-shadow-[0_0_30px_rgba(255,30,67,0.6)] select-none">
         Quizzitch Cup
       </h2>
     </motion.div>
