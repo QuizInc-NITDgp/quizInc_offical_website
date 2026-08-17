@@ -54,11 +54,3 @@ body {
   -webkit-backdrop-filter: none !important;
 }
 
-@media (min-width: 768px) {
-  body,
-  a,
-  button,
-  [role="button"] {
-    cursor: none !important;
-  }
-}
