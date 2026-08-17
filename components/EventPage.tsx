@@ -1,4 +1,4 @@
-  "use client";
+"use client";
 
   import { useRef, useState } from "react";
   import { motion, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
@@ -181,7 +181,6 @@
                   <h3 className="text-2xl font-bold font-baloo bg-gradient-to-r from-white to-red-400 bg-clip-text text-transparent">
                     {event.name}
                   </h3>
-                  <span className="text-xs text-gray-400 font-space">↺ Back</span>
                 </div>
                 <p className="mt-4 text-sm text-gray-200 leading-relaxed font-sans whitespace-pre-line">
                   {event.description}
