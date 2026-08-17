@@ -26,6 +26,10 @@ type DomeGalleryProps = {
   imageBorderRadius?: string;
   openedImageBorderRadius?: string;
   grayscale?: boolean;
+  /** Continuously spin the sphere when the user isn't interacting with it. Default: true */
+  autoRotate?: boolean;
+  /** Auto-rotation speed in degrees per second. Default: 4 */
+  autoRotateSpeed?: number;
 };
 
 type ItemDef = {
@@ -52,7 +56,8 @@ const DEFAULTS = {
   maxVerticalRotationDeg: 5,
   dragSensitivity: 20,
   enlargeTransitionMs: 300,
-  segments: 35
+  segments: 35,
+  autoRotateSpeed: 4
 };
 
 const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max);
@@ -123,7 +128,9 @@ const DomeGallery = forwardRef<DomeGalleryRef, DomeGalleryProps>(function DomeGa
     openedImageHeight = '400px',
     imageBorderRadius = '30px',
     openedImageBorderRadius = '30px',
-    grayscale = true
+    grayscale = true,
+    autoRotate = true,
+    autoRotateSpeed = DEFAULTS.autoRotateSpeed
   },
   ref
 ) {
@@ -151,6 +158,11 @@ const DomeGallery = forwardRef<DomeGalleryRef, DomeGalleryProps>(function DomeGa
   const openingRef = useRef(false);
   const openStartedAtRef = useRef(0);
   const lastDragEndAt = useRef(0);
+
+  // Auto-rotation state
+  const autoRotateRAF = useRef<number | null>(null);
+  const autoRotateResumeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const autoRotatePausedRef = useRef(false);
 
   const scrollLockedRef = useRef(false);
   const lockScroll = useCallback(() => {
@@ -181,6 +193,43 @@ const DomeGallery = forwardRef<DomeGalleryRef, DomeGalleryProps>(function DomeGa
       inertiaRAF.current = null;
     }
   }, []);
+
+  // Continuous auto-rotation loop. Runs whenever the user isn't dragging,
+  // an image isn't opened, inertia isn't playing, and (optionally) the
+  // pointer isn't hovering the gallery.
+  useEffect(() => {
+    if (!autoRotate) return;
+
+    let lastTs: number | null = null;
+
+    const tick = (ts: number) => {
+      if (lastTs === null) lastTs = ts;
+      const dt = ts - lastTs;
+      lastTs = ts;
+
+      const shouldSpin =
+        !draggingRef.current &&
+        !focusedElRef.current &&
+        !inertiaRAF.current &&
+        !autoRotatePausedRef.current;
+
+      if (shouldSpin) {
+        const nextY = wrapAngleSigned(rotationRef.current.y + (autoRotateSpeed * dt) / 1000);
+        rotationRef.current = { x: rotationRef.current.x, y: nextY };
+        applyTransform(rotationRef.current.x, nextY);
+      }
+
+      autoRotateRAF.current = requestAnimationFrame(tick);
+    };
+
+    autoRotateRAF.current = requestAnimationFrame(tick);
+    return () => {
+      if (autoRotateRAF.current) {
+        cancelAnimationFrame(autoRotateRAF.current);
+        autoRotateRAF.current = null;
+      }
+    };
+  }, [autoRotate, autoRotateSpeed]);
 
   useImperativeHandle(ref, () => ({
     rotateBy: (deltaDegrees: number) => {
@@ -339,6 +388,13 @@ const DomeGallery = forwardRef<DomeGalleryRef, DomeGalleryProps>(function DomeGa
       onDragStart: ({ event }) => {
         if (focusedElRef.current) return;
         stopInertia();
+        // Pause auto-rotation immediately on interaction, and cancel any
+        // pending resume from a previous drag.
+        autoRotatePausedRef.current = true;
+        if (autoRotateResumeTimeout.current) {
+          clearTimeout(autoRotateResumeTimeout.current);
+          autoRotateResumeTimeout.current = null;
+        }
         const evt = event as PointerEvent;
         draggingRef.current = true;
         movedRef.current = false;
@@ -390,6 +446,12 @@ const DomeGallery = forwardRef<DomeGalleryRef, DomeGalleryProps>(function DomeGa
           if (movedRef.current) lastDragEndAt.current = performance.now();
 
           movedRef.current = false;
+
+          // Resume auto-rotation shortly after the user lets go, giving
+          // inertia time to finish first.
+          autoRotateResumeTimeout.current = setTimeout(() => {
+            autoRotatePausedRef.current = false;
+          }, 600);
         }
       }
     },
@@ -685,6 +747,9 @@ const DomeGallery = forwardRef<DomeGalleryRef, DomeGalleryProps>(function DomeGa
   useEffect(() => {
     return () => {
       document.body.classList.remove('dg-scroll-lock');
+      if (autoRotateResumeTimeout.current) {
+        clearTimeout(autoRotateResumeTimeout.current);
+      }
     };
   }, []);
 
