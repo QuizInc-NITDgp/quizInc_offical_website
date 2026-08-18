@@ -35,9 +35,6 @@ export default async function MembersPage() {
         {/* Header Section */}
         <div className="text-center flex flex-col items-center pt-8 sm:pt-12">
           <MembersHeader />
-          <p className="mt-4 text-xs font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em] text-red-400 drop-shadow-[0_0_15px_rgba(255,30,67,0.6)] sm:text-sm font-space">
-            THE VOICES & BRAINS BEHIND QUIZINC
-          </p>
         </div>
 
         {/* ================= FACULTY ADVISORS SECTION ================= */}

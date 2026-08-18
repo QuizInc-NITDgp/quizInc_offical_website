@@ -10,7 +10,7 @@ export default function MembersHeader() {
         hidden: {},
         visible: { transition: { staggerChildren: 0.02 } },
       }}
-      className="text-3xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white drop-shadow-[0_0_20px_rgba(255,30,67,0.25)] font-baloo flex flex-wrap justify-center items-center gap-x-2 sm:gap-x-4 leading-[1.1]"
+      className="text-3xl xs:text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white drop-shadow-[0_0_20px_rgba(255,30,67,0.25)] font-baloo flex flex-wrap justify-center items-center gap-x-1.5 sm:gap-x-4 leading-[1.1]"
     >
       <span className="whitespace-nowrap">
         {"The Quizzing".split("").map((c, i) => (

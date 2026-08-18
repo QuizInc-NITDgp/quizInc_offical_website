@@ -1,4 +1,4 @@
-"use client";
+  "use client";
 
   import { useRef, useState } from "react";
   import { motion, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
@@ -49,7 +49,7 @@
                 hidden: {},
                 visible: { transition: { staggerChildren: 0.02 } },
               }}
-              className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-white drop-shadow-[0_0_20px_rgba(255,30,67,0.25)] font-baloo whitespace-nowrap flex flex-wrap justify-center items-center gap-x-3 sm:gap-x-4"
+              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-white drop-shadow-[0_0_20px_rgba(255,30,67,0.25)] font-baloo whitespace-nowrap flex flex-wrap justify-center items-center gap-x-3 sm:gap-x-4"
             >
               <span>
                 {"The Quizzing".split("").map((c, i) => (
@@ -82,14 +82,7 @@
             </motion.h1>
           </div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
-            className="mt-5 text-[10px] sm:text-sm font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em] text-gray-300 drop-shadow-[0_0_10px_rgba(255,30,67,0.2)] text-center font-space"
-          >
-            Every Event, Every Buzz, Every Win
-          </motion.p>
+          
 
           {/* Scroll Indicator */}
           <motion.div
@@ -181,6 +174,7 @@
                   <h3 className="text-2xl font-bold font-baloo bg-gradient-to-r from-white to-red-400 bg-clip-text text-transparent">
                     {event.name}
                   </h3>
+                  <span className="text-xs text-gray-400 font-space">↺ Back</span>
                 </div>
                 <p className="mt-4 text-sm text-gray-200 leading-relaxed font-sans whitespace-pre-line">
                   {event.description}

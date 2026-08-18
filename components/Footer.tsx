@@ -57,7 +57,6 @@ export default function Footer() {
         <div className="flex w-full flex-col lg:flex-row lg:items-start lg:justify-between gap-12 lg:gap-8 items-center text-center lg:text-left">
 
           {/* ================= BRAND & CONTACTS ================= */}
-          {/* Mobile Order: 2 (Comes below Quick Links on mobile) | Desktop Order: 1 (Left column) */}
           <div className="order-2 lg:order-1 flex flex-1 flex-col items-center lg:items-start">
             <Link href="/" className="flex items-center gap-2 transition-transform duration-300 hover:scale-105">
               <span className="font-serif text-2xl font-bold text-white">
@@ -81,27 +80,41 @@ export default function Footer() {
           </div>
 
           {/* ================= QUICK LINKS ================= */}
-          {/* Mobile Order: 1 (Comes first on mobile) | Desktop Order: 2 (Center column) */}
           <div className="order-1 lg:order-2 flex flex-1 flex-col items-center">
             <p className="text-xs font-bold uppercase tracking-[0.3em] text-red-500 drop-shadow-[0_0_8px_rgba(255,30,67,0.6)]">
               Quick Links
             </p>
 
-            <nav className="mt-5 grid grid-cols-3 gap-x-8 gap-y-3 text-center">
-              {quickLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-sm font-medium text-rose-100/70 transition-all duration-300 hover:scale-105 hover:text-red-400 whitespace-nowrap"
-                >
-                  {link.label}
-                </Link>
-              ))}
+            <nav className="mt-5 flex flex-col gap-3 w-full max-w-[240px]">
+              {/* Row 1: Home, Quizittch Cup, Events (Tighter spacing) */}
+              <div className="flex justify-between items-center gap-2">
+                {quickLinks.slice(0, 3).map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="text-sm font-medium text-rose-100/70 transition-all duration-300 hover:scale-105 hover:text-red-400 whitespace-nowrap"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+
+              {/* Row 2: Gallery, Team */}
+              <div className="flex justify-center items-center gap-8">
+                {quickLinks.slice(3).map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="text-sm font-medium text-rose-100/70 transition-all duration-300 hover:scale-105 hover:text-red-400 whitespace-nowrap"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
             </nav>
           </div>
 
           {/* ================= SOCIAL ICONS ================= */}
-          {/* Mobile Order: 3 (Comes last on mobile) | Desktop Order: 3 (Right column) */}
           <div className="order-3 lg:order-3 flex flex-1 flex-col items-center lg:items-end">
             <p className="text-xs font-bold uppercase tracking-[0.3em] text-red-500 drop-shadow-[0_0_8px_rgba(255,30,67,0.6)]">
               Follow Us
