@@ -9,7 +9,7 @@ import { usePageTransition } from "./PagetransitionProvider";
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "Quizittch Cup", href: "/qc" },
+  { label: "Quizzitch Cup", href: "/qc" },
   { label: "Team", href: "/member" },
   { label: "Events", href: "/events" },
   { label: "Gallery", href: "/gallery" },

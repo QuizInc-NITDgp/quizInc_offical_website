@@ -34,7 +34,7 @@ const socialLinks = [
 
 const quickLinks = [
   { label: "Home", href: "/" },
-  { label: "Quizittch Cup", href: "/Qc" },
+  { label: "Quizzitch Cup", href: "/Qc" },
   { label: "Events", href: "/events" },
   { label: "Gallery", href: "/gallery" },
   { label: "Team", href: "/member" },

@@ -45,7 +45,6 @@ export default function MemberCard({
   const hasImage = Boolean(image && image.trim().length > 0) && !isGooglePhoto;
   const hasSocials = Boolean(linkedin || instagram);
 
-  // Check if the name is long to conditionally reduce font size
   const isLongName = name.trim().length > 16;
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -73,30 +72,31 @@ export default function MemberCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.6, delay: delay * 0.08, ease: "easeOut" }}
-      className="relative w-full h-[310px] sm:h-[370px] md:w-[330px] md:h-[405px] flex items-center justify-center perspective-1000 select-none"
+
+      className="relative w-full aspect-[4/5] md:w-[330px] md:h-[405px] md:aspect-auto flex items-center justify-center perspective-1000 select-none"
       onClick={() => setIsTouched(!isTouched)}
     >
-      {/* Background Animated Ambient Red Glow */}
+      {/* Background Glow */}
       <div
-        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-[360px] max-h-[425px] bg-red-600/40 rounded-full blur-[50px] sm:blur-[70px] transition-all duration-700 ease-out pointer-events-none z-0 ${
-          isTouched ? "bg-red-500/70 blur-[80px] scale-110" : "animate-pulse"
+        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-red-600/40 rounded-full blur-[40px] sm:blur-[70px] transition-all duration-700 ease-out pointer-events-none z-0 ${
+          isTouched ? "bg-red-500/70 blur-[70px] scale-105" : "animate-pulse"
         }`}
       />
 
-      {/* Main Interactive Card Container */}
+      {/* Main Interactive Card */}
       <div
         ref={cardRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         style={{ transform: transformStyle, transition: "transform 0.15s ease-out, box-shadow 0.5s ease" }}
-        className={`group absolute top-1/2 left-1/2 w-[90%] h-[90%] sm:w-[290px] sm:h-[360px] -translate-x-1/2 -translate-y-1/2 rounded-[16px] sm:rounded-[20px] overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.8),0_0_20px_rgba(239,68,68,0.3)] border border-red-500/30 cursor-pointer bg-[#0a0204] z-10 transition-all duration-500 ${
+        className={`group absolute top-1/2 left-1/2 w-full h-full md:w-[290px] md:h-[360px] -translate-x-1/2 -translate-y-1/2 rounded-[16px] sm:rounded-[20px] overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.8),0_0_20px_rgba(239,68,68,0.3)] border border-red-500/30 cursor-pointer bg-[#0a0204] z-10 transition-all duration-500 ${
           isTouched ? "active-touch" : ""
         }`}
       >
         {/* Top Image Container */}
         <div
-          className={`absolute top-0 left-0 w-full h-full z-10 bg-black transition-transform duration-700 cubic-bezier(0.16, 1, 0.3, 1) group-hover:-translate-y-[110px] ${
-            isTouched ? "-translate-y-[110px]" : ""
+          className={`absolute top-0 left-0 w-full h-full z-10 bg-black transition-transform duration-700 cubic-bezier(0.16, 1, 0.3, 1) group-hover:-translate-y-[90px] md:group-hover:-translate-y-[110px] ${
+            isTouched ? "-translate-y-[90px] md:-translate-y-[110px]" : ""
           }`}
         >
           {hasImage ? (
@@ -109,17 +109,19 @@ export default function MemberCard({
               }`}
             />
           ) : (
-            <div className={`h-full w-full bg-gradient-to-br from-zinc-900 via-black to-zinc-950 transition-opacity duration-500 group-hover:opacity-40 ${
-              isTouched ? "opacity-40" : ""
-            }`} />
+            <div
+              className={`h-full w-full bg-gradient-to-br from-zinc-900 via-black to-zinc-950 transition-opacity duration-500 group-hover:opacity-40 ${
+                isTouched ? "opacity-40" : ""
+              }`}
+            />
           )}
 
           <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none transform -translate-x-full group-hover:translate-x-full duration-1000" />
         </div>
 
-        {/* Initial Overlay Name & Role */}
+        {/* Initial Name & Role Overlay */}
         <div
-          className={`absolute bottom-0 left-0 right-0 p-3.5 sm:p-4 z-15 flex flex-col text-left bg-gradient-to-t from-black via-black/70 to-transparent transition-all duration-500 group-hover:opacity-0 group-hover:translate-y-4 pointer-events-none ${
+          className={`absolute bottom-0 left-0 right-0 p-3 sm:p-4 z-15 flex flex-col text-left bg-gradient-to-t from-black via-black/70 to-transparent transition-all duration-500 group-hover:opacity-0 group-hover:translate-y-4 pointer-events-none ${
             isTouched ? "opacity-0 translate-y-4" : ""
           }`}
         >
@@ -130,14 +132,14 @@ export default function MemberCard({
           >
             {name}
           </h3>
-          <p className="font-sans text-[8px] sm:text-[11px] font-semibold uppercase tracking-[0.18em] sm:tracking-[0.25em] text-red-400 mt-0.5 sm:mt-1 break-words w-full leading-snug">
+          <p className="font-sans text-[8px] sm:text-[11px] font-semibold uppercase tracking-[0.15em] sm:tracking-[0.25em] text-red-400 mt-0.5 sm:mt-1 break-words w-full leading-snug">
             {role}
           </p>
         </div>
 
-        {/* Social Floating Icons (Centered Horizontally and Vertically) */}
+        {/* Floating Social Icons */}
         {hasSocials && (
-          <ul className="absolute top-[calc(50%-55px)] left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex gap-3 pointer-events-none group-hover:pointer-events-auto">
+          <ul className="absolute top-[calc(50%-45px)] md:top-[calc(50%-55px)] left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex gap-2.5 sm:gap-3 pointer-events-none group-hover:pointer-events-auto">
             {linkedin && (
               <li className="list-none">
                 <a
@@ -146,11 +148,11 @@ export default function MemberCard({
                   rel="noopener noreferrer"
                   aria-label="LinkedIn Profile"
                   onClick={(e) => e.stopPropagation()}
-                  className={`relative flex items-center justify-center w-[34px] h-[34px] sm:w-[38px] sm:h-[38px] bg-white/95 text-[#0077b5] rounded-xl shadow-lg border border-white/20 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-100 hover:scale-110 hover:bg-[#0077b5] hover:text-white ${
+                  className={`relative flex items-center justify-center w-[32px] h-[32px] sm:w-[38px] sm:h-[38px] bg-white/95 text-[#0077b5] rounded-xl shadow-lg border border-white/20 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-100 hover:scale-110 hover:bg-[#0077b5] hover:text-white ${
                     isTouched ? "!translate-y-0 !opacity-100 pointer-events-auto" : ""
                   }`}
                 >
-                  <LinkedinIcon className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+                  <LinkedinIcon className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5" />
                 </a>
               </li>
             )}
@@ -163,20 +165,20 @@ export default function MemberCard({
                   rel="noopener noreferrer"
                   aria-label="Instagram Profile"
                   onClick={(e) => e.stopPropagation()}
-                  className={`relative flex items-center justify-center w-[34px] h-[34px] sm:w-[38px] sm:h-[38px] bg-white/95 text-[#e1306c] rounded-xl shadow-lg border border-white/20 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-200 hover:scale-110 hover:text-white ${
+                  className={`relative flex items-center justify-center w-[32px] h-[32px] sm:w-[38px] sm:h-[38px] bg-white/95 text-[#e1306c] rounded-xl shadow-lg border border-white/20 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1) translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 delay-200 hover:scale-110 hover:text-white ${
                     isTouched ? "!translate-y-0 !opacity-100 pointer-events-auto" : ""
                   }`}
                 >
-                  <InstagramIcon className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+                  <InstagramIcon className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5" />
                 </a>
               </li>
             )}
           </ul>
         )}
 
-        {/* Bottom Slide-Up Glassmorphism Detail Panel */}
+        {/* Slide-Up Panel */}
         <div
-          className={`absolute -bottom-[110px] left-0 w-full min-h-[110px] z-30 p-3.5 bg-black/85 backdrop-blur-xl border-t border-red-500/30 opacity-0 transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1) group-hover:bottom-0 group-hover:opacity-100 flex flex-col justify-center items-center text-center ${
+          className={`absolute -bottom-[90px] md:-bottom-[110px] left-0 w-full h-[90px] md:h-[110px] z-30 p-3 sm:p-3.5 bg-black/85 backdrop-blur-xl border-t border-red-500/30 opacity-0 transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1) group-hover:bottom-0 group-hover:opacity-100 flex flex-col justify-center items-center text-center ${
             isTouched ? "!bottom-0 !opacity-100" : ""
           }`}
         >
@@ -187,7 +189,7 @@ export default function MemberCard({
           >
             {name}
           </h2>
-          <span className="font-sans text-[10px] sm:text-[13px] font-bold uppercase tracking-[0.18em] sm:tracking-[0.2em] text-red-500 mt-0.5 sm:mt-1 break-words w-full leading-snug">
+          <span className="font-sans text-[10px] sm:text-[13px] font-bold uppercase tracking-[0.15em] sm:tracking-[0.2em] text-red-500 mt-0.5 sm:mt-1 break-words w-full leading-snug">
             {role}
           </span>
           <div className="w-6 h-[2px] bg-red-600 rounded-full mt-1 sm:mt-1.5 shrink-0" />
