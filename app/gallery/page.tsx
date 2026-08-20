@@ -74,12 +74,6 @@ const photos = [
   "/photo90(1)_compressed.webp",
   "/photo91(1)_compressed.webp",
   "/photo92(1)_compressed.webp",
-  "/photo93(1)_compressed.webp",
-  "/photo94(1)_compressed.webp",
-  "/photo95(1)_compressed.webp",
-  "/photo97(1)_compressed.webp",
-  "/photo98(1)_compressed.webp",
-  "/photo99(1)_compressed.webp",
 ];
 
 export default function PhotoGlobe() {
