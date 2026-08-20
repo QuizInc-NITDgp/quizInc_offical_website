@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
-const nextConfig = {
+const nextConfig: NextConfig = {
   images: {
+    qualities: [75, 100],
     remotePatterns: [
       {
         protocol: "https",
@@ -11,7 +12,6 @@ const nextConfig = {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
       },
-
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
