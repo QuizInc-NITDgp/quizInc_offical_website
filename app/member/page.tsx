@@ -24,7 +24,7 @@ export default async function MembersPage() {
       id: "faculty-2",
       name: "Aurpan Majumdar",
       role: "Faculty-in-Charge",
-      image: "/AurpanMajumdar.jpg",
+      image: "/aurpanmajumdar.webp",
     },
   ];
 
