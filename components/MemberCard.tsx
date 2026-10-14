@@ -45,7 +45,7 @@ export default function MemberCard({
   const hasImage = Boolean(image && image.trim().length > 0) && !isGooglePhoto;
   const hasSocials = Boolean(linkedin || instagram);
 
-  const isLongName = name.trim().length > 16;
+  const isLongName = name.trim().length > 20;
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;

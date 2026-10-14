@@ -22,9 +22,9 @@ export default async function MembersPage() {
     },
     {
       id: "faculty-2",
-      name: "Dr. Parag Kumar Guhathakurta",
+      name: "Aurpan Majumdar",
       role: "Faculty-in-Charge",
-      image: "/facultyadvisor2.webp",
+      image: "/AurpanMajumdar.jpg",
     },
   ];
 
